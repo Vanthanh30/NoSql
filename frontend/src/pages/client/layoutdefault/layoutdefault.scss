@@ -1,0 +1,337 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+$primary: #0056ff;
+$muted: #f6f7fb;
+$text: #222;
+$radius: 12px;
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Inter", Arial, sans-serif;
+    color: $text;
+    margin: 0;
+}
+
+.ld-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Header */
+.ld-header {
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+
+    .ld-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+
+    img {
+        height: 90px;
+        width: auto;
+        vertical-align: middle;
+        background: none;
+    }
+
+    span {
+        color: #2894CA;
+        background: linear-gradient(90deg, #2894CA, #201E7A);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        font-weight: 700;
+        font-size: 24px;
+        margin-left: -30px;
+        padding-left: 0;
+    }
+}
+
+.search-bar {
+    flex: 1;
+    margin: 0 20px;
+    max-width: 400px;
+
+    input {
+        width: 100%;
+        padding: 10px 15px;
+        border: 1px solid #ddd;
+        border-radius: $radius;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.3s, box-shadow 0.3s;
+
+        &:focus {
+            border-color: $primary;
+            box-shadow: 0 0 6px rgba($primary, 0.3);
+        }
+    }
+}
+
+.top-nav {
+    display: flex;
+    align-items: center;
+
+    a {
+        margin-left: 25px;
+        color: $text;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s;
+
+        &:hover {
+            color: $primary;
+        }
+
+        &.btn {
+            padding: 10px 20px;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #201E7A, #2894CA);
+            /* Thay đổi gradient mới */
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 12px rgba(46, 123, 255, 0.18);
+
+            &:hover {
+                background: linear-gradient(90deg, darken(#201E7A, 10%), darken(#2894CA, 10%));
+                /* Gradient hover mới */
+                transform: translateY(-1px);
+            }
+        }
+    }
+}
+
+.btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid $primary;
+    color: $primary;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #2894CA, #201E7A);
+    color: #fff;
+    margin-left: 8px;
+    box-shadow: 0 4px 12px rgba(46, 123, 255, 0.18);
+}
+
+/* Main */
+.ld-main {
+    background: #fff;
+    min-height: 60vh;
+}
+
+/* Footer */
+.ld-footer {
+    background: $muted;
+    padding: 40px 0;
+    border-top: 1px solid #eee;
+    color: #555;
+    font-size: 14px;
+
+    .footer-inner {
+        display: flex;
+        gap: 40px;
+        align-items: stretch;
+        /* Giãn các cột theo chiều cao lớn nhất */
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .footer-left {
+        flex: 1;
+        min-width: 250px;
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0;
+            margin-top: -29px;
+
+            img {
+                height: 110px;
+                width: auto;
+                vertical-align: middle;
+                background: none;
+            }
+
+            span {
+                color: #2894CA;
+                background: linear-gradient(90deg, #2894CA, #201E7A);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                font-weight: 700;
+                font-size: 28px;
+                margin-left: -30px;
+                padding-left: 0;
+            }
+        }
+
+        .footer-contact {
+            margin-top: -30px;
+            margin-left: 40px;
+            padding-left: 0;
+
+            div {
+                margin: 5px 0;
+                font-size: 14px;
+                color: #666;
+            }
+        }
+    }
+
+    .footer-middle {
+        display: flex;
+        gap: 40px;
+        flex: 2;
+        min-width: 400px;
+
+        .col {
+            flex: 1;
+
+            h4 {
+                margin-bottom: 10px;
+                font-size: 16px;
+                color: #222;
+                font-weight: 600;
+            }
+
+            a {
+                display: block;
+                margin-bottom: 10px;
+                /* Đều khoảng cách giữa các liên kết */
+                color: #666;
+                text-decoration: none;
+                transition: color 0.3s;
+
+                &:hover {
+                    color: $primary;
+                }
+            }
+
+            .infor {
+                margin-bottom: 8px;
+                color: #666;
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+        }
+    }
+
+    .footer-right {
+        flex: 1;
+        min-width: 150px;
+        text-align: left;
+        min-height: 120px;
+        /* Đảm bảo chiều cao tối thiểu để cân bằng */
+        padding-top: 10px;
+
+        .footer-title {
+            margin-bottom: 10px;
+            margin-top: 12px;
+            font-size: 16px;
+            color: #222;
+            font-weight: 600;
+        }
+
+        .socials {
+            display: flex;
+            gap: 15px;
+            /* Tăng khoảng cách giữa các icon cho đều hơn */
+            justify-content: flex-start;
+            align-items: center;
+            /* Căn dọc các icon */
+
+            a {
+                text-decoration: none;
+                padding: 8px;
+                border-radius: 50%;
+                background: #fff;
+                color: $primary;
+                transition: background 0.3s;
+
+                img {
+                    height: 24px;
+                    width: auto;
+                    vertical-align: middle;
+                }
+
+                &:hover {
+                    background: $primary;
+                    color: #fff;
+
+                    img {
+                        filter: brightness(0) invert(1);
+                    }
+                }
+            }
+        }
+    }
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .ld-footer .footer-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-left,
+    .footer-middle,
+    .footer-right {
+        flex: none;
+        width: 100%;
+        text-align: center;
+    }
+
+    .footer-logo {
+        justify-content: center;
+    }
+
+    .footer-contact {
+        margin-top: 10px;
+        margin-left: 0;
+        padding-left: 0;
+
+        div {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #666;
+        }
+    }
+
+    .footer-middle {
+        margin-top: 20px;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .footer-right {
+        margin-top: 20px;
+    }
+
+    .footer-right .socials {
+        justify-content: center;
+    }
+}
