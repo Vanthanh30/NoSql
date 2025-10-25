@@ -3,6 +3,7 @@ import { useRoutes } from "react-router-dom";
 import LayoutDefault from "../../pages/client/layoutdefault";
 import HomePage from "../../pages/client/home";
 import ShoppingCart from "../../pages/client/cart/ShoppingCart";
+import Checkout from "../../pages/client/checkout/Checkout";
 
 export const routes = [
   {
@@ -16,6 +17,10 @@ export const routes = [
       {
         path: "/cart",
         element: <ShoppingCart />,
+      },
+      {
+        path: "/checkout",
+        element: <Checkout />,
       },
     ],
   },

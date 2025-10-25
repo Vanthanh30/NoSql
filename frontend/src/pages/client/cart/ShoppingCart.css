@@ -41,7 +41,7 @@
   grid-template-columns: 3fr 1fr 1.5fr 1fr;
   gap: 15px;
   padding: 15px;
-  background-color: #f0f0ff; /* Light blue/purple background */
+  background-color: #f0f0ff;
   border-bottom: 2px solid #c8c8ff;
   font-weight: 700;
   color: #4a4a9d;
