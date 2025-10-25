@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom"; // ✅ import Link
 import "./layoutdefault.scss";
 import logo from "../../../assets/images/logo.png";
 
@@ -10,15 +11,18 @@ const Header = () => {
                     <img src={logo} alt="Learn 1" />
                     <span>Learn 1</span>
                 </div>
+
                 <div className="search-bar">
                     <input type="text" placeholder="Tìm kiếm..." />
                 </div>
+
                 <nav className="top-nav">
-                    <a href="#">Bài viết</a>
-                    <a href="#">Blog</a>
-                    <a href="#">Liên hệ</a>
-                    <a href="#" className="btn">Đăng nhập</a>
-                    <a href="#" className="btn">Đăng ký</a>
+                    {/* ✅ Dùng Link thay vì <a> */}
+                    <Link to="/posts">Bài viết</Link>
+                    <Link to="/blog">Blog</Link>
+                    <Link to="/contact">Liên hệ</Link>
+                    <Link to="/login" className="btn">Đăng nhập</Link>
+                    <Link to="/register" className="btn">Đăng ký</Link>
                 </nav>
             </div>
         </header>

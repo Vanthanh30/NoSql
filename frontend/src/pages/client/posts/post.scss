@@ -1,0 +1,308 @@
+.posts-container {
+    max-width: 860px;
+    margin: 30px auto 50px;
+    padding: 0 15px;
+    font-family: "Poppins", sans-serif;
+    color: #222;
+
+    /* ✅ Giữ footer ở đáy khi ít bài */
+    min-height: calc(100vh - 200px); // tùy chỉnh: 200px = header + footer
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .topic-filter {
+        margin-bottom: 25px;
+        text-align: center;
+
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .topic-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+
+            .topic-btn {
+                padding: 6px 14px;
+                border: 1px solid #ccc;
+                border-radius: 18px;
+                background: #fff;
+                font-size: 13px;
+                cursor: pointer;
+                transition: 0.25s;
+
+                &:hover {
+                    background: #007bff;
+                    color: #fff;
+                    border-color: #007bff;
+                }
+
+                &.active {
+                    background: #007bff;
+                    color: #fff;
+                }
+            }
+        }
+    }
+
+    .featured-posts {
+        flex: 1; // ✅ Giúp phần bài viết chiếm không gian còn lại
+        display: flex;
+        flex-direction: column;
+
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+
+            .post-item {
+                display: flex;
+                gap: 16px;
+                padding: 12px;
+                border-radius: 10px;
+                border: 1px solid #eee;
+                background: #fff;
+                transition: 0.3s ease;
+
+                &:hover {
+                    transform: translateY(-3px);
+                    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+                }
+
+                .post-image {
+                    flex: 0 0 180px;
+
+                    img {
+                        width: 100%;
+                        height: 120px;
+                        border-radius: 8px;
+                        object-fit: cover;
+                    }
+                }
+
+                .post-info {
+                    flex: 1;
+
+                    .post-header {
+                        display: flex;
+                        align-items: center;
+                        margin-bottom: 8px;
+
+                        .avatar {
+                            width: 35px;
+                            height: 35px;
+                            border-radius: 50%;
+                            object-fit: cover;
+                            margin-right: 10px;
+                        }
+
+                        .author {
+                            font-size: 14px;
+                            font-weight: 600;
+                        }
+
+                        .time {
+                            display: block;
+                            font-size: 12px;
+                            color: #888;
+                        }
+                    }
+
+                    .post-title {
+                        font-size: 15px;
+                        font-weight: 600;
+                        margin: 4px 0 6px;
+                        line-height: 1.4;
+                    }
+
+                    .post-desc {
+                        font-size: 13px;
+                        color: #555;
+                        margin-bottom: 8px;
+                        line-height: 1.5;
+                    }
+
+                    .post-footer {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+
+                        .tag {
+                            font-size: 12px;
+                            background: #f0f4ff;
+                            color: #007bff;
+                            padding: 3px 8px;
+                            border-radius: 10px;
+                            font-weight: 500;
+                        }
+
+                        .read-time {
+                            font-size: 12px;
+                            color: #999;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 25px;
+
+        .page-btn {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background: #fff;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.25s;
+
+            &:hover {
+                background: #007bff;
+                color: #fff;
+                border-color: #007bff;
+            }
+
+            &.active {
+                background: #007bff;
+                color: #fff;
+                border-color: #007bff;
+            }
+        }
+    }
+
+    @media (max-width: 600px) {
+        .post-item {
+            flex-direction: column;
+
+            .post-image {
+                width: 100% !important;
+
+                img {
+                    height: 180px !important;
+                }
+            }
+        }
+    }
+}
+
+/* ======================================
+   ✅ THÊM MỚI: STYLE CHO TRANG CHI TIẾT BÀI VIẾT
+   ====================================== */
+.post-detail-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: "Poppins", sans-serif;
+    color: #222;
+
+    .back-btn {
+        background: none;
+        border: none;
+        color: #007bff;
+        font-size: 15px;
+        cursor: pointer;
+        margin-bottom: 15px;
+        font-weight: 500;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    .post-title {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        line-height: 1.4;
+    }
+
+    .post-meta {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+
+        .avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        h4 {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        span {
+            font-size: 13px;
+            color: #777;
+        }
+    }
+
+    .post-cover {
+        width: 100%;
+        border-radius: 8px;
+        margin-bottom: 25px;
+        object-fit: cover;
+    }
+
+    .post-content {
+        font-size: 15px;
+        line-height: 1.7;
+        color: #333;
+        white-space: pre-line;
+    }
+
+    /* Bài viết cùng tác giả */
+    .related-posts {
+        margin-top: 40px;
+        border-top: 1px solid #eee;
+        padding-top: 25px;
+
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .related-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            a {
+                color: #007bff;
+                text-decoration: none;
+                font-size: 14px;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}
