@@ -11,8 +11,8 @@ const Footer = () => {
             <div className="ld-container footer-inner">
                 <div className="footer-left">
                     <div className="footer-logo">
-                        <img src={logo} alt="Learn 1" />
-                        <span>Learn 1</span>
+                        <img src={logo} alt="Learn1" />
+                        <span>Learn1</span>
                     </div>
                     <div className="footer-contact">
                         <div>Điện thoại: 09 2238 1523</div>

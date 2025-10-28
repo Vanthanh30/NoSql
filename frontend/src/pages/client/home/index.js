@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "./homepage.scss";
 import { FaChevronLeft, FaChevronRight, FaUserGroup, FaPlay } from "react-icons/fa6";
 import { FaRegClock } from "react-icons/fa";
@@ -23,10 +24,10 @@ const courses = [
 ];
 
 const posts = [
-    { id: 1, title: "Tổng hợp các sản phẩm của học viên", author: "Sơn Đông", readTime: "5 phút đọc", image: english },
-    { id: 2, title: "Getting Started with ES6", author: "Minh Kha", readTime: "4 phút đọc", image: math },
-    { id: 3, title: "Cách đưa code lên GitHub", author: "Võ Minh Kha", readTime: "6 phút đọc", image: develop },
-    { id: 4, title: "Kỹ sư ngày 25 học", author: "Sơn Đông", readTime: "3 phút đọc", image: photo },
+    { id: 1, title: "Trải nghiệm học thử React Native, DevOps, C++ - Vô cùng chất lượng cùng F8", author: "Nguyễn Hạ Ngọc", readTime: "2 phút đọc", image: post1 },
+    { id: 2, title: "Giới thiệu ngành CNTT và các kiến thức nền tảng cần học", author: "Hoàng Tuấn Tài", readTime: "3 phút đọc", image: post2 },
+    { id: 3, title: "Học tiếng Anh qua các chủ đề giao tiếp thông dụng 2025", author: "Văn Sơn", readTime: "4 phút đọc", image: post3 },
+    { id: 4, title: "Hành trình trở thành nhiếp ảnh gia tự do", author: "Ngọc Mai", readTime: "5 phút đọc", image: post4 },
 ];
 
 const slides = [
@@ -34,6 +35,8 @@ const slides = [
     { title: "Thành công từ học tập", content: "Học tập đều đặn giúp bạn tiến xa hơn trong sự nghiệp.", img: "/images/learn-together.png" },
     { title: "Cơ hội mới mỗi ngày", content: "Khám phá các khóa học để mở rộng cơ hội của bạn.", img: "/images/opportunity.png" },
 ];
+
+
 
 const SectionHead = ({ title, linkText }) => (
     <div className="section-head">
@@ -46,7 +49,7 @@ const SectionHead = ({ title, linkText }) => (
 
 const HomePage = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
-
+    const navigate = useNavigate();
     useEffect(() => {
         const interval = setInterval(() => setCurrentSlide((i) => (i + 1) % slides.length), 5000);
         return () => clearInterval(interval);
@@ -79,7 +82,12 @@ const HomePage = () => {
 
                 <div className="course-grid">
                     {courses.map((c) => (
-                        <div className="course-card" key={c.id}>
+                        <div
+                            className="course-card"
+                            key={c.id}
+                            onClick={() => navigate(`/course/${c.id}`)}
+                            style={{ cursor: "pointer" }}
+                        >
                             <div className="thumb">
                                 <img src={c.image} alt={c.title} />
                             </div>
@@ -114,7 +122,12 @@ const HomePage = () => {
 
                 <div className="post-list">
                     {posts.map((p) => (
-                        <div className="post-card" key={p.id}>
+                        <div
+                            className="post-card"
+                            key={p.id}
+                            style={{ cursor: "pointer" }}
+                            onClick={() => navigate(`/post/${p.id}`)} // <-- thêm điều hướng
+                        >
                             <div className="post-thumb">
                                 <img src={p.image} alt={p.title} />
                             </div>

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./post.scss";
 
-// ✅ Import ảnh
 import post1 from "../../../assets/images/post1.png";
 import post2 from "../../../assets/images/post2.png";
 import post3 from "../../../assets/images/post3.png";
@@ -41,21 +40,18 @@ const Posts = () => {
     const navigate = useNavigate();
 
 
-    // Lọc theo chủ đề
     const filteredPosts =
         selectedTag === "Tất cả"
             ? allPosts
             : allPosts.filter((p) => p.tag === selectedTag);
 
-    // Tính số trang
     const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
-    // Lấy bài viết của trang hiện tại
+
     const indexOfLast = currentPage * postsPerPage;
     const indexOfFirst = indexOfLast - postsPerPage;
     const currentPosts = filteredPosts.slice(indexOfFirst, indexOfLast);
 
-    // Chuyển trang
     const handlePageChange = (page) => {
         setCurrentPage(page);
         window.scrollTo({ top: 0, behavior: "smooth" });

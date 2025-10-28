@@ -4,6 +4,7 @@ import HomePage from "../../pages/client/home";
 import Login from "../../pages/client/auth/login";
 import Register from "../../pages/client/auth/register";
 import Posts from "../../pages/client/posts";
+import CoursePage from "../../pages/client/course";
 import PostDetail from "../../pages/client/posts/postdetail.js";
 
 export const routes = [
@@ -16,17 +17,21 @@ export const routes = [
         element: <Login />,
     },
     {
-        path: "/home",
+        path: "/",
         element: <LayoutDefault />,
         children: [
             {
                 index: true,
                 element: <HomePage />,
             },
+            {
+                path: "course/:id",
+                element: <CoursePage />,
+            },
         ],
     },
     {
-        path: "/",
+        path: "/posts",
         element: <LayoutDefault />,
         children: [
             {
@@ -40,7 +45,7 @@ export const routes = [
         element: <LayoutDefault />,
         children: [
             {
-                index: true,
+                index: ":id",
                 element: <PostDetail />,
             },
         ],

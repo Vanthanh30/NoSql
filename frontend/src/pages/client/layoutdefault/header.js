@@ -8,8 +8,8 @@ const Header = () => {
         <header className="ld-header">
             <div className="ld-container">
                 <div className="logo">
-                    <img src={logo} alt="Learn 1" />
-                    <span>Learn 1</span>
+                    <img src={logo} alt="Learn1" />
+                    <span>Learn1</span>
                 </div>
 
                 <div className="search-bar">
