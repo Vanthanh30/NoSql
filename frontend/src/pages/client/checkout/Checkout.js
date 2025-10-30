@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Checkout.css";
+import "./Checkout.scss";
 
 export default function Checkout() {
   const [formData, setFormData] = useState({

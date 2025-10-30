@@ -1,0 +1,257 @@
+$bg-color-page: #f9f9f9;
+$color-primary: #ff6b35;
+$color-discount: #10b981;
+$color-dark: #333;
+$color-medium: #666;
+$color-light-gray: #ddd;
+$color-soft-border: #f0f0f0;
+$color-box-border: #ff9966;
+
+.checkout-page {
+  background-color: $bg-color-page;
+  min-height: 100vh;
+  padding: 40px 0;
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+}
+
+.page-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: $color-dark;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.page-subtitle {
+  color: $color-medium;
+  margin-bottom: 30px;
+  font-size: 14px;
+}
+
+.link-coupon {
+  color: $color-primary;
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+.billing-section {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: $color-dark;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid $color-soft-border;
+  text-transform: uppercase;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 14px;
+  color: $color-dark;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.required {
+  color: #ff4444;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid $color-light-gray;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.2);
+  }
+}
+
+.form-textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.order-section {
+  position: sticky;
+  top: 20px;
+
+  .order-box {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border: 2px solid $color-box-border;
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+      border-bottom: 2px solid $color-soft-border;
+      margin-bottom: 15px;
+
+      .order-header-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: $color-medium;
+        text-transform: uppercase;
+        width: 50%;
+
+        &.text-right {
+          text-align: right;
+        }
+      }
+    }
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+      border-bottom: 1px dashed #e0e0e0;
+      gap: 15px;
+
+      .item-info {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        .item-name {
+          font-size: 14px;
+          color: $color-dark;
+          line-height: 1.4;
+        }
+
+        .item-quantity {
+          font-size: 13px;
+          color: #999;
+          margin-top: 5px;
+        }
+      }
+
+      .item-price {
+        font-size: 14px;
+        font-weight: 500;
+        color: $color-dark;
+      }
+    }
+  }
+}
+
+.order-summary {
+  padding: 15px 0;
+  border-top: 1px solid #e0e0e0;
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 20px;
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    font-size: 15px;
+    color: #555;
+  }
+
+  .discount-row {
+    color: $color-discount;
+    font-weight: 600;
+    .discount-value {
+      font-weight: 700;
+    }
+  }
+
+  .summary-total {
+    font-weight: bold;
+    font-size: 18px;
+    color: $color-dark;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .summary-value {
+    font-weight: 600;
+  }
+
+  .summary-total-value {
+    color: $color-primary;
+  }
+}
+
+.btn-order {
+  width: 100%;
+  padding: 15px;
+  background-color: $color-primary;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.1s;
+  margin-top: 20px;
+  text-transform: uppercase;
+
+  &:hover {
+    background-color: darken($color-primary, 5%);
+  }
+}
+
+.order-note {
+  font-size: 12px;
+  color: #999;
+  margin-top: 20px;
+  line-height: 1.5;
+
+  a {
+    color: $color-primary;
+    text-decoration: none;
+  }
+}
+
+@media (max-width: 992px) {
+  .checkout-layout {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-title {
+    font-size: 24px;
+  }
+  .order-box {
+    padding: 20px;
+  }
+}

@@ -5,6 +5,8 @@ import HomePage from "../../pages/client/home";
 import ShoppingCart from "../../pages/client/cart/ShoppingCart";
 import Checkout from "../../pages/client/checkout/Checkout";
 import OrderConfirmation from "../../pages/client/confirm/OrderConfirmation";
+import LayoutHeaderOnly from "../../pages/client/layoutdefault/LayoutHeaderOnly";
+import CourseVideo from "../../pages/client/course/CourseVideo";
 
 export const routes = [
   {
@@ -26,6 +28,16 @@ export const routes = [
       {
         path: "/confirm",
         element: <OrderConfirmation />,
+      },
+    ],
+  },
+  {
+    path: "/",
+    element: <LayoutHeaderOnly />,
+    children: [
+      {
+        path: "/course",
+        element: <CourseVideo />,
       },
     ],
   },

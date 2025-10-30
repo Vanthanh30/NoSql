@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Trash2, Tag } from "lucide-react";
-import "./ShoppingCart.css";
+import "./ShoppingCart.scss";
 import post1 from "../../../assets/images/post1.png";
 
 export default function ShoppingCart() {

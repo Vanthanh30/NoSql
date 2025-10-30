@@ -1,5 +1,5 @@
 import React from "react";
-import "./OrderConfirmation.css";
+import "./OrderConfirmation.scss";
 import { useNavigate } from "react-router-dom";
 
 export default function OrderConfirmation() {
