@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./auth.scss";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "react-router-dom";
 import logo from "../../../assets/images/logo.png";
 import googleLogo from "../../../assets/images/google.png";
 import facebookLogo from "../../../assets/images/facebook.png";
@@ -32,7 +33,7 @@ const Login = () => {
                 <div className="auth-card">
                     <div className="auth-header">
                         <img src={logo} alt="Logo" />
-                        <h2>LEARN 1</h2>
+                        <h2>LEARN1</h2>
                     </div>
 
                     <h3>Chào mừng trở lại</h3>
@@ -58,7 +59,7 @@ const Login = () => {
 
                                 <div className="auth-options">
                                     <span className="link">Dùng số điện thoại</span>
-                                    <span className="link">Quên mật khẩu?</span>
+                                    <Link to="/forgot-password" className="link">Quên mật khẩu?</Link>
                                 </div>
 
                                 <button type="submit" className="btn-primary">
@@ -113,7 +114,7 @@ const Login = () => {
                                     <span className="link" onClick={handleBack}>
                                         ← Quay lại
                                     </span>
-                                    <span className="link">Quên mật khẩu?</span>
+                                    <Link to="/forgot-password" className="link">Quên mật khẩu?</Link>
                                 </div>
 
                                 <button type="submit" className="btn-primary">

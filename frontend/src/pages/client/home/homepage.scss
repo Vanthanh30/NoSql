@@ -371,6 +371,11 @@
                 margin-bottom: 8px;
                 font-weight: 600;
                 line-height: 1.45;
+                height: 44px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: -webkit-box;
+                -webkit-box-orient: vertical;
             }
 
             .price {

@@ -16,7 +16,7 @@ const Register = () => {
                 <div className="auth-card">
                     <div className="auth-header">
                         <img src={logo} alt="Logo" />
-                        <h2>LEARN 1</h2>
+                        <h2>LEARN1</h2>
                     </div>
 
                     <h3>Tạo tài khoản</h3>

@@ -2,6 +2,7 @@ import React from "react";
 import LayoutDefault from "../../pages/client/layoutdefault";
 import HomePage from "../../pages/client/home";
 import Login from "../../pages/client/auth/login";
+import ForgotPassword from "../../pages/client/auth/forgot_password";
 import Register from "../../pages/client/auth/register";
 import Posts from "../../pages/client/posts";
 import CoursePage from "../../pages/client/course";
@@ -15,6 +16,10 @@ export const routes = [
     {
         path: "/login",
         element: <Login />,
+    },
+    {
+        path: "/forgot-password",
+        element: <ForgotPassword />,
     },
     {
         path: "/",

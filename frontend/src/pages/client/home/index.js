@@ -19,7 +19,7 @@ import post4 from "../../../assets/images/post4.png";
 const courses = [
     { id: 1, title: "Kiến Thức Nhập Môn IT", subtitle: "", price: "Miễn phí", students: "137.076", image: post1, lessons: 9, time: "3h12p" },
     { id: 2, title: "Lập Trình C++ Cơ Bản", subtitle: "", price: "Miễn phí", students: "37.400", image: post2, lessons: 10, time: "4h10p" },
-    { id: 3, title: "HTML, CSS Từ Zero Đến Hero", subtitle: "", price: "Miễn phí", students: "215.400", image: post3, lessons: 18, time: "5h45p" },
+    { id: 3, title: "HTML,CSS Từ Zero Đến Hero", subtitle: "", price: "Miễn phí", students: "215.400", image: post3, lessons: 18, time: "5h45p" },
     { id: 4, title: "Responsive Web Design", subtitle: "", price: "Miễn phí", students: "47.900", image: post4, lessons: 8, time: "2h50p" },
 ];
 
