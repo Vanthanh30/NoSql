@@ -1,104 +1,164 @@
+// src/components/admin/accounts/AddAccount.jsx
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import accountService from "../../../services/admin/accountService";
 
+function AddAccount() {
+    const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        fullName: "",
+        email: "",
+        password: "",
+        phone: "",
+        role_Id: "User", // Mặc định
+        avatar: null
+    });
+    const [preview, setPreview] = useState(null);
+    const [error, setError] = useState("");
 
-import "./account.scss";
+    const handleChange = (e) => {
+        const { name, value, files } = e.target;
+        if (name === "avatar") {
+            const file = files[0];
+            setFormData({ ...formData, avatar: file });
+            setPreview(URL.createObjectURL(file));
+        } else {
+            setFormData({ ...formData, [name]: value });
+        }
+    };
 
-function AddUser() {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError("");
+
+        const submitData = new FormData();
+        Object.entries(formData).forEach(([key, value]) => {
+            if (value !== null && value !== "") {
+                submitData.append(key, value);
+            }
+        });
+
+        try {
+            await accountService.createAccount(submitData);
+            alert("Thêm tài khoản thành công!");
+            navigate("/admin/account");
+        } catch (err) {
+            setError(err.response?.data?.message || "Thêm thất bại!");
+        }
+    };
 
     return (
-        <div className="add-user">
-            <div className="card">
-                <h1 className="card-title"> Thêm tài khoản</h1>
+        <div className="add-account">
+            <div className="container">
+                <div className="card">
+                    <h1>Thêm tài khoản</h1>
 
-                <form className="form">
-                    <div className="form-group">
-                        <label>Họ tên</label>
-                        <input
-                            type="text"
-                            name="fullName"
-                            value=""
-                            placeholder="Nhập họ tên"
-                            required
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Email</label>
-                        <input
-                            type="email"
-                            name="email"
-                            value=""
-                            placeholder="Nhập email"
-                            required
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Mật khẩu</label>
-                        <input
-                            type="password"
-                            name="password"
-                            value=""
-                            placeholder="Nhập mật khẩu"
-                            required
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Số điện thoại</label>
-                        <input
-                            type="text"
-                            name="phone"
-                            value=""
-                            placeholder="Nhập số điện thoại"
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Vai trò</label>
-                        <select
-                            name="role_id"
-                            value=""
-                        >
-                            <option value="admin">Admin</option>
-                            <option value="user">User</option>
-                            <option value="editor">Editor</option>
-                        </select>
-                    </div>
-                    <div className="form-group toggle-status">
-                        <label>Trạng thái</label>
-                        <div
-                            className="active-toggle"
-                        >
-                            <div className="slider">
-
-                            </div>
-                        </div>
-                        <span className="status-text">
-                            Hoạt động
-                        </span>
-                    </div>
-
-                    <div className="form-group">
-                        <label>Ảnh đại diện</label>
-                        <input type="file" accept="image/*" />
-                        <div className="avatar-preview">
-                            <img src="" alt="preview" />
+                    <form onSubmit={handleSubmit}>
+                        {/* Họ tên */}
+                        <div className="form-group">
+                            <label>Họ tên *</label>
+                            <input
+                                type="text"
+                                name="fullName"
+                                value={formData.fullName}
+                                onChange={handleChange}
+                                required
+                                placeholder="Nhập họ tên"
+                            />
                         </div>
 
-                    </div>
+                        {/* Email */}
+                        <div className="form-group">
+                            <label>Email *</label>
+                            <input
+                                type="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                                placeholder="Nhập email"
+                            />
+                        </div>
 
-                    <div className="form-actions">
-                        <button type="submit" className="btn btn-primary" >
-                            Thêm tài khoản
-                        </button>
-                        <button type="button" className="btn btn-secondary">
-                            Hủy
-                        </button>
-                    </div>
-                </form>
+                        {/* Mật khẩu */}
+                        <div className="form-group">
+                            <label>Mật khẩu *</label>
+                            <input
+                                type="password"
+                                name="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                required
+                                placeholder="Nhập mật khẩu"
+                            />
+                        </div>
+
+                        {/* Điện thoại */}
+                        <div className="form-group">
+                            <label>Điện thoại</label>
+                            <input
+                                type="text"
+                                name="phone"
+                                value={formData.phone}
+                                onChange={handleChange}
+                                placeholder="Nhập số điện thoại"
+                            />
+                        </div>
+
+                        {/* VAI TRÒ - SELECT Ở ĐÂY */}
+                        <div className="form-group">
+                            <label>Vai trò *</label>
+                            <select
+                                name="role_Id"
+                                value={formData.role_Id}
+                                onChange={handleChange}
+                                required
+                                className="form-control"
+                            >
+                                <option value="">-- Chọn vai trò --</option>
+                                <option value="Admin">Admin</option>
+                                <option value="User">User</option>
+                                <option value="Editor">Editor</option>
+                            </select>
+                        </div>
+
+                        {/* Avatar */}
+                        <div className="form-group">
+                            <label>Ảnh đại diện</label>
+                            <input
+                                type="file"
+                                name="avatar"
+                                accept="image/*"
+                                onChange={handleChange}
+                            />
+                            {preview && (
+                                <div className="avatar-preview">
+                                    <img src={preview} alt="Preview" />
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Lỗi */}
+                        {error && <p className="text-danger">{error}</p>}
+
+                        {/* Nút hành động */}
+                        <div className="form-actions">
+                            <button type="submit" className="btn btn-primary">
+                                Lưu
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-secondary"
+                                onClick={() => navigate("/admin/account")}
+                            >
+                                Hủy
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     );
 }
 
-export default AddUser;
+export default AddAccount;
