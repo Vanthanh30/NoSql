@@ -1,14 +1,19 @@
+// ✅ đúng
 const express = require("express");
 const cors = require("cors");
-const connectDB = require("./src/config/db");
-require("dotenv").config();
-const app = express();
+const dotenv = require("dotenv");
+dotenv.config(); // ⚠️ load env TRƯỚC
 
+const connectDB = require("./src/configs/db.js");
+const route = require('./src/routes/admin/index.js');
+
+const app = express();
 app.use(cors());
 app.use(express.json());
 
-connectDB();
+connectDB(); // gọi sau khi dotenv đã load
 
+route(app);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
