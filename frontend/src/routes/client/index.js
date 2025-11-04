@@ -1,5 +1,4 @@
 import React from "react";
-import { useRoutes } from "react-router-dom";
 import LayoutDefault from "../../pages/client/layoutdefault";
 import HomePage from "../../pages/client/home";
 
