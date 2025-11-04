@@ -1,13 +1,10 @@
 // App.js
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
-import AllRoute from "./components/AllRoutes";
+import AllRoute from "./components/AllRoutes/index";
 
 function App() {
   return (
-    <BrowserRouter>
-      <AllRoute />
-    </BrowserRouter>
+    <AllRoute />
   );
 }
 
