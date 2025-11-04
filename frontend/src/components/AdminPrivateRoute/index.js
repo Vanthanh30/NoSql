@@ -1,8 +1,9 @@
-import { useRoutes } from "react-router-dom";
-import { adminRoutes } from "../../routes/admin";
+import { Navigate, Outlet } from "react-router-dom";
 const AdminPrivateRoute = () => {
-    const element = useRoutes(adminRoutes);
-    return element;
+    const user = JSON.parse(localStorage.getItem("user"));
+    const isAdmin = user && user.role === "admin";
+    return isAdmin ? <Outlet /> : <Navigate to="admin/login" />;
+
 }
 
 export default AdminPrivateRoute;
