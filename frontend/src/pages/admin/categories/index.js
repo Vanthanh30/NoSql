@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
 import "./categories.scss";
 import categoryAPI from "../../../services/admin/categoryService";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 function CategoriesPage() {
   const [categories, setCategories] = useState([]);
@@ -22,6 +23,23 @@ function CategoriesPage() {
       setError("Không thể tải danh sách categories");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const navigate = useNavigate();
+
+  const handleEdit = (id) => {
+    navigate(`/admin/categories/edit/${id}`);
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Bạn có chắc muốn xóa danh mục này?")) {
+      try {
+        await categoryAPI.delete(id);
+        window.location.reload();
+      } catch (err) {
+        alert("Lỗi khi xóa!");
+      }
     }
   };
 
@@ -56,13 +74,12 @@ function CategoriesPage() {
       </div>
     );
   }
-
   return (
     <div className="categories">
       <div className="container">
         <div className="row">
           <div className="col-12">
-            <h1 className="categories__title">Danh sách danh mục</h1>
+            <h1 className="categories__title">Danh sách khóa học</h1>
 
             <table className="categories__table">
               <thead>
@@ -76,13 +93,13 @@ function CategoriesPage() {
               <tbody>
                 {categories.length === 0 ? (
                   <tr>
-                    <td colSpan="4" className="text-center">
+                    <td colPan="4" className="text-center">
                       Không có danh mục nào
                     </td>
                   </tr>
                 ) : (
                   categories.map((category, index) => (
-                    <tr key={category._id}>
+                    <tr key={categories._id}>
                       <td>{index + 1}</td>
                       <td>{category.title}</td>
                       <td>
@@ -99,10 +116,12 @@ function CategoriesPage() {
                         </span>
                       </td>
                       <td>
-                        <button className="btn categories__btn-edit">
-                          <a href={`/admin/categories/edit/${category._id}`}>
-                            Sửa
-                          </a>
+                        <button
+                          className="btn categories__btn-edit"
+                          onClick={() => handleEdit(category._id)}
+                        >
+                          {" "}
+                          Sửa
                         </button>
                         <button
                           className="btn categories__btn-delete"
@@ -126,15 +145,5 @@ function CategoriesPage() {
     </div>
   );
 }
-const handleDelete = async (id) => {
-  if (window.confirm("Bạn có chắc muốn xóa danh mục này?")) {
-    try {
-      await categoryAPI.delete(id);
-      window.location.reload();
-    } catch (err) {
-      alert("Lỗi khi xóa!");
-    }
-  }
-};
 
 export default CategoriesPage;
