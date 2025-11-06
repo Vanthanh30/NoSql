@@ -46,10 +46,6 @@
         height: 70px;
         object-fit: cover;
         border-radius: 8px;
-
-
-
-
     }
 
     &__btn-edit.btn {
@@ -106,6 +102,7 @@
 }
 
 // end show list
+
 // add course
 .add-course {
     --bg: #ffffff;
@@ -115,7 +112,6 @@
     --primary: #1890ff;
     --danger: #ef4444;
     --save: #198754;
-
     max-width: 1200px;
     margin: 24px auto;
     padding: 16px;
@@ -161,6 +157,11 @@
             background: transparent;
             border: none;
             padding: 6px 8px;
+
+            &.btn-sm {
+                padding: 4px 6px;
+                font-size: 0.8rem;
+            }
         }
     }
 
@@ -315,10 +316,100 @@
                 gap: 8px;
 
                 .lesson {
-                    display: grid;
-                    grid-template-columns: 1fr auto;
-                    gap: 8px;
-                    align-items: center;
+                    margin-bottom: 12px;
+                    background: #fff;
+                    border: 1px solid #eee;
+                    border-radius: 12px;
+                    overflow: hidden;
+
+                    &__wrapper {
+                        position: relative;
+                        display: flex;
+                        align-items: center;
+                        height: 48px;
+                        padding-right: 8px;
+                    }
+
+                    &__title {
+                        flex: 1;
+                        border: none !important;
+                        padding: 0 16px !important;
+                        font-size: 15px;
+                        background: transparent;
+                    }
+
+                    &__right-actions {
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                    }
+
+                    &__upload-btn {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        height: 36px;
+                        padding: 0 16px;
+                        background: #f0f0f0;
+                        color: #555;
+                        font-size: 13px;
+                        font-weight: 500;
+                        border-radius: 8px;
+                        margin-right: 6px;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                        border: 1px solid #ddd;
+
+                        &:hover {
+                            background: #e5e5e5;
+                            color: #000;
+                        }
+
+                        input {
+                            display: none;
+                        }
+                    }
+
+                    &__delete {
+                        font-size: 18px;
+                        color: #999;
+                        padding: 0 8px;
+
+                        &:hover {
+                            color: #ef4444;
+                        }
+                    }
+
+                    &__video-info {
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                        height: 36px;
+                        padding: 0 12px;
+                        background: #f0fdf4;
+                        border-radius: 8px;
+                        border: 1px solid #bbf7d0;
+
+                        .video-name {
+                            font-size: 12px;
+                            color: #166534;
+                            max-width: 90px;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+                    }
+
+                    &__preview {
+                        padding: 8px 12px 12px;
+
+                        .video-thumb {
+                            width: 100%;
+                            max-height: 160px;
+                            border-radius: 8px;
+                            background: #000;
+                        }
+                    }
                 }
             }
         }
@@ -327,6 +418,7 @@
     .muted {
         color: var(--muted);
         font-size: 14px;
+        padding: 0 12px;
     }
 }
 
