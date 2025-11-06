@@ -1,8 +1,8 @@
-// src/components/admin/accounts/AccountList.jsx
 import React, { useEffect, useState } from "react";
 import accountService from "../../../services/admin/accountService";
 import "./account.scss";
 import { useNavigate } from "react-router-dom";
+import Pagination from "../../../components/common/Pagination";
 
 function AccountList() {
     const navigate = useNavigate();
@@ -31,6 +31,7 @@ function AccountList() {
         loadAccounts();
     }, []);
 
+    // XỬ LÝ XÓA
     const handleDelete = async (id) => {
         if (!window.confirm("Bạn có chắc muốn xóa tài khoản này?")) return;
 
@@ -38,6 +39,8 @@ function AccountList() {
             await accountService.deleteAccount(id);
             await loadAccounts();
             alert("Xóa thành công!");
+
+            // Tự động về trang trước nếu trang hiện tại trống
             const newTotal = Math.ceil((accounts.length - 1) / itemsPerPage);
             if (currentPage > newTotal && currentPage > 1) {
                 setCurrentPage(currentPage - 1);
@@ -47,16 +50,15 @@ function AccountList() {
         }
     };
 
+    // XỬ LÝ SỬA (mới thêm)
+    const handleEdit = (id) => {
+        navigate(`/admin/account/edit/${id}`);
+    };
+
     // PHÂN TRANG
     const totalPages = Math.ceil(accounts.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const currentAccounts = accounts.slice(startIndex, startIndex + itemsPerPage);
-
-    const goToPage = (page) => {
-        if (page >= 1 && page <= totalPages) {
-            setCurrentPage(page);
-        }
-    };
 
     if (loading) return <p className="text-center">Đang tải danh sách...</p>;
     if (error) return <p className="text-danger text-center">{error}</p>;
@@ -110,12 +112,15 @@ function AccountList() {
                                                 : "-"}
                                         </td>
                                         <td>
+                                            {/* DÙNG handleEdit */}
                                             <button
                                                 className="btn btn-edit me-2"
-                                                onClick={() => navigate(`/admin/account/edit/${acc._id}`)}
+                                                onClick={() => handleEdit(acc._id)}
                                             >
                                                 Sửa
                                             </button>
+
+                                            {/* DÙNG handleDelete */}
                                             <button
                                                 className="btn btn-delete"
                                                 onClick={() => handleDelete(acc._id)}
@@ -131,37 +136,13 @@ function AccountList() {
                 </div>
 
                 {/* PHÂN TRANG */}
-                {totalPages > 1 && (
-                    <div className="pagination-wrapper">
-                        <button
-                            className="pagination-btn"
-                            onClick={() => goToPage(currentPage - 1)}
-                            disabled={currentPage === 1}
-                        >
-                            Trước
-                        </button>
+                <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={setCurrentPage}
+                />
 
-                        {[...Array(totalPages)].map((_, i) => (
-                            <button
-                                key={i + 1}
-                                className={`pagination-btn ${currentPage === i + 1 ? "active" : ""}`}
-                                onClick={() => goToPage(i + 1)}
-                            >
-                                {i + 1}
-                            </button>
-                        ))}
-
-                        <button
-                            className="pagination-btn"
-                            onClick={() => goToPage(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                        >
-                            Sau
-                        </button>
-                    </div>
-                )}
-
-                {/* NÚT THÊM - TỰ CÁCH THEO BẢNG */}
+                {/* NÚT THÊM */}
                 <div className="add-button-wrapper">
                     <button
                         className="btn-add-account"
