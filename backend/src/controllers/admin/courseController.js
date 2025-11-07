@@ -12,9 +12,9 @@ const createCourse = async (req, res) => {
             instructor,
             status,
             time,
-            media,
             pricing,
             description,
+            createdBy,
             chapters
         } = req.body;
 
@@ -46,7 +46,8 @@ const createCourse = async (req, res) => {
             await newChapter.save();
             chapterIds.push(newChapter._id);
         }
-
+        let imageUrl = req.files?.["imageUrl"] ? req.files["imageUrl"][0].path : null;
+        let videoUrl = req.files?.["videoUrl"] ? req.files["videoUrl"][0].path : null;
         // Tạo khóa học
         const newCourse = new Course({
             title,
@@ -56,8 +57,12 @@ const createCourse = async (req, res) => {
             instructor,
             status,
             time,
-            media,
+            media: { imageUrl, videoUrl },
             pricing,
+            createdBy: {
+                account_id: createdBy.account_id,
+                createdAt: Date.now()
+            },
             description,
             chapters: chapterIds
         });
