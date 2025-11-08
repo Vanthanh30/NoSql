@@ -11,6 +11,14 @@ const createArticle = async (req, res) => {
                 createdAt: Date.now()
             }
         });
+        let imageUrl = null;
+        if (req.file) {
+            const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+                folder: 'article_images',
+            });
+            imageUrl = uploadResult.secure_url;
+            newArticle.image = imageUrl;
+        }
         await newArticle.save();
         res.status(201).json(newArticle);
     } catch (error) {
@@ -44,11 +52,25 @@ const updateArticle = async (req, res) => {
     try {
         const articleId = req.params.id;
         const updateData = req.body;
-        const updatedArticle = await Article.findByIdAndUpdate(articleId, updateData, { new: true });
-        if (!updatedArticle) {
+        const article = await Article.findById(articleId);
+        if (!article || article.deleted) {
             return res.status(404).json({ error: 'Article not found' });
         }
-        res.status(200).json(updatedArticle);
+        if (req.file) {
+            const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+                folder: 'article_images',
+            });
+            updateData.image = uploadResult.secure_url;
+        }
+        article.title = updateData.title || article.title;
+        article.content = updateData.content || article.content;
+        article.status = updateData.status || article.status;
+        article.updatedBy = {
+            account_id: req.account_id,  // hoặc từ token đăng nhập
+            updatedAt: Date.now()
+        };
+        await article.save();
+        res.status(200).json(article);
     } catch (error) {
         console.error('Error updating article:', error);
         res.status(500).json({ error: 'Internal server error' });
