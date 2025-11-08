@@ -1,32 +1,14 @@
 const Lesson = require('../../models/admin/lesson');
 const Chapter = require('../../models/admin/chapter');
 const Course = require('../../models/admin/course');
-const Category = require('../../models/admin/categories');
+
+
 const createCourse = async (req, res) => {
     try {
-        const {
-            title,
-            category,
-            level,
-            language,
-            instructor,
-            status,
-            time,
-            pricing,
-            description,
-            createdBy,
-            chapters
-        } = req.body;
-
-
-        // Validate input
-        if (!title || !Array.isArray(chapters)) {
-            return res.status(400).json({ error: "Title and chapters are required." });
-        }
+        const { title, category, level, language, instructor, status, time, pricing, description, createdBy, chapters } = req.body;
+        if (!title || !Array.isArray(chapters)) return res.status(400).json({ error: "Title and chapters are required." });
 
         const chapterIds = [];
-
-        // Lưu từng chapter và lesson
         for (const ch of chapters) {
             const lessonIds = [];
 
@@ -38,137 +20,89 @@ const createCourse = async (req, res) => {
                 }
             }
 
-            const newChapter = new Chapter({
-                title: ch.title,
-                lessons: lessonIds
-            });
-
+            const newChapter = new Chapter({ title: ch.title, lessons: lessonIds });
             await newChapter.save();
             chapterIds.push(newChapter._id);
         }
-        let imageUrl = req.files?.["imageUrl"] ? req.files["imageUrl"][0].path : null;
-        let videoUrl = req.files?.["videoUrl"] ? req.files["videoUrl"][0].path : null;
-        // Tạo khóa học
+
+        const imageUrl = req.files?.["imageUrl"] ? req.files["imageUrl"][0].path : null;
+        const videoUrl = req.files?.["videoUrl"] ? req.files["videoUrl"][0].path : null;
+
         const newCourse = new Course({
-            title,
-            category,
-            level,
-            language,
-            instructor,
-            status,
-            time,
+            title, category, level, language, instructor, status, time,
             media: { imageUrl, videoUrl },
             pricing,
-            createdBy: {
-                account_id: createdBy.account_id,
-                createdAt: Date.now()
-            },
             description,
-            chapters: chapterIds
+            chapters: chapterIds,
+            createdBy: { account_id: createdBy?.account_id || "admin", createdAt: Date.now() }
         });
 
         await newCourse.save();
+        const populated = await Course.findById(newCourse._id).populate({ path: 'chapters', populate: { path: 'lessons' } });
 
-        // Populate để trả về dữ liệu đầy đủ
-        const populatedCourse = await Course.findById(newCourse._id)
-            .populate({
-                path: 'chapters',
-                populate: { path: 'lessons' }
-            });
-
-        res.status(201).json({
-            message: 'Khóa học tạo thành công!',
-            course: populatedCourse
-        });
-
+        res.status(201).json({ message: 'Course created successfully', course: populated });
     } catch (error) {
-        console.error(' Error creating course:', error);
         res.status(500).json({ error: error.message });
     }
 };
+
+
 const getCourses = async (req, res) => {
     try {
-        const courses = await Course.find()
-            .populate({
-                path: 'chapters',
-                populate: { path: 'lessons' }
-            });
+        const courses = await Course.find({ deleted: false }).populate({ path: 'chapters', populate: { path: 'lessons' } });
         res.status(200).json(courses);
     } catch (error) {
-        console.error(' Error fetching courses:', error);
         res.status(500).json({ error: error.message });
     }
 };
+
+
 const getCourseById = async (req, res) => {
     try {
-        const courseId = req.params.id;
-        const course = await Course.findById(courseId)
-            .populate({
-                path: 'chapters',
-                populate: { path: 'lessons' }
-            });
+        const course = await Course.findById(req.params.id).populate({ path: 'chapters', populate: { path: 'lessons' } });
+        if (!course) return res.status(404).json({ message: 'Course not found' });
         res.status(200).json(course);
     } catch (error) {
-        console.error('Error fetching course:', error);
         res.status(500).json({ error: error.message });
     }
 };
+
 const updateCourse = async (req, res) => {
     try {
         const courseId = req.params.id;
+        const updateData = req.body.data ? JSON.parse(req.body.data) : req.body;
 
-        // Parse JSON từ FormData
-        const updateData = req.body.data ? JSON.parse(req.body.data) : {};
-
-        // Xử lý file nếu có
-        if (req.files?.imageFile) {
+        if (req.files?.imageUrl) {
             updateData.media = updateData.media || {};
-            updateData.media.imageUrl = req.files.imageFile[0].path;
+            updateData.media.imageUrl = req.files.imageUrl[0].path;
         }
-        if (req.files?.videoFile) {
+        if (req.files?.videoUrl) {
             updateData.media = updateData.media || {};
-            updateData.media.videoUrl = req.files.videoFile[0].path;
-        }
-        // Thêm thông tin updatedBy
-        if (updateData.updatedBy) {
-            updateData.updatedBy = {
-                account_id: updateData.updatedBy.account_id,
-                updatedAt: Date.now()
-            };
-        }
-        // Update vào DB
-        const updatedCourse = await Course.findByIdAndUpdate(courseId, updateData, { new: true })
-            .populate({
-                path: 'chapters',
-                populate: { path: 'lessons' }
-            });
-
-        if (!updatedCourse) {
-            return res.status(404).json({ error: 'Course not found' });
+            updateData.media.videoUrl = req.files.videoUrl[0].path;
         }
 
-        res.status(200).json({
-            message: 'Course updated successfully',
-            course: updatedCourse
-        });
+        const updated = await Course.findByIdAndUpdate(courseId, updateData, { new: true })
+            .populate({ path: 'chapters', populate: { path: 'lessons' } });
+
+        if (!updated) return res.status(404).json({ message: 'Course not found' });
+
+        res.status(200).json({ message: 'Course updated successfully', course: updated });
     } catch (error) {
-        console.error('Error updating course:', error);
         res.status(500).json({ error: error.message });
     }
 };
+
+
 const deleteCourse = async (req, res) => {
     try {
-        const courseId = req.params.id;
-        const deletedCourse = await Course.findByIdAndUpdate(courseId, { deleted: true }, { new: true });
-        if (!deletedCourse) {
-            return res.status(404).json({ message: 'Course not found' });
-        }
+        const deleted = await Course.findByIdAndUpdate(req.params.id, { deleted: true }, { new: true });
+        if (!deleted) return res.status(404).json({ message: 'Course not found' });
         res.status(200).json({ message: 'Course deleted successfully' });
     } catch (error) {
-        console.error('Error deleting course:', error);
         res.status(500).json({ error: error.message });
     }
 };
+
 module.exports = {
     createCourse,
     getCourses,
