@@ -80,6 +80,14 @@ const updateCourse = async (req, res) => {
             updateData.media = updateData.media || {};
             updateData.media.videoUrl = req.files.videoUrl[0].path;
         }
+        if (updateData.updatedBy && updateData.updatedBy.account_id) {
+            updateData.$push = {
+                updatedBy: {
+                    account_id: updateData.updatedBy.account_id,
+                    updatedAt: new Date()
+                }
+            };
+        }
 
         const updated = await Course.findByIdAndUpdate(courseId, updateData, { new: true })
             .populate({ path: 'chapters', populate: { path: 'lessons' } });
