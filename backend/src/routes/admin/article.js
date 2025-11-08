@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const upload = require('../../middlewares/upload');
+
 const articleController = require('../../controllers/admin/articleController');
 
 router.post('/', upload.single('image'), articleController.createArticle);

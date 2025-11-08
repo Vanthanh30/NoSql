@@ -7,10 +7,7 @@ const ArticleSchema = new Schema({
         type: String,
         default: 'active'
     },
-    image: {
-        type: String,
-        default: ''
-    },
+    image: String,
     createdBy: {
         account_id: String,
         createdAt: { type: Date, default: Date.now }
