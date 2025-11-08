@@ -42,10 +42,24 @@
     }
 
     &__image {
-        max-width: 70px;
-        height: 70px;
+        width: 60px;
+        height: 60px;
         object-fit: cover;
-        border-radius: 8px;
+        border-radius: 10px;
+        border: 2px solid #ddd;
+        display: block;
+        margin: 0 auto;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+        &.placeholder {
+            background: #f8f9fa;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #aaa;
+        }
     }
 
     &__btn-edit.btn {

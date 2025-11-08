@@ -116,7 +116,27 @@ const getCourseById = async (req, res) => {
 const updateCourse = async (req, res) => {
     try {
         const courseId = req.params.id;
-        const updateData = req.body;
+
+        // Parse JSON từ FormData
+        const updateData = req.body.data ? JSON.parse(req.body.data) : {};
+
+        // Xử lý file nếu có
+        if (req.files?.imageFile) {
+            updateData.media = updateData.media || {};
+            updateData.media.imageUrl = req.files.imageFile[0].path;
+        }
+        if (req.files?.videoFile) {
+            updateData.media = updateData.media || {};
+            updateData.media.videoUrl = req.files.videoFile[0].path;
+        }
+        // Thêm thông tin updatedBy
+        if (updateData.updatedBy) {
+            updateData.updatedBy = {
+                account_id: updateData.updatedBy.account_id,
+                updatedAt: Date.now()
+            };
+        }
+        // Update vào DB
         const updatedCourse = await Course.findByIdAndUpdate(courseId, updateData, { new: true })
             .populate({
                 path: 'chapters',

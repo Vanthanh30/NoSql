@@ -1,7 +1,63 @@
+// src/pages/admin/courses/CourseList.jsx
+import React, { useEffect, useState } from "react";
+import courseService from "../../../services/admin/courseService";
 import "./course.scss";
+import { useNavigate } from "react-router-dom";
+import Pagination from "../../../components/common/Pagination";
 
+function CourseList() {
+    const navigate = useNavigate();
+    const [courses, setCourses] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 5;
 
-function Courses() {
+    const loadCourses = async () => {
+        try {
+            setLoading(true);
+            const data = await courseService.getCourses();
+            setCourses(Array.isArray(data) ? data : data.courses || []);
+            setError(null);
+        } catch (err) {
+            console.error("Lỗi load:", err);
+            setError(err.message || "Lỗi tải danh sách");
+            setCourses([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        loadCourses();
+    }, []);
+
+    const handleDelete = (id) => {
+        if (!window.confirm("Bạn có chắc muốn xóa khóa học này?")) return;
+
+        // Xóa mềm → chỉ thao tác trên state
+        setCourses(prev => prev.filter(course => course._id !== id));
+
+        // Cập nhật phân trang nếu cần
+        const newTotal = Math.ceil((courses.length - 1) / itemsPerPage);
+        if (currentPage > newTotal && currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+
+        alert("Khóa học đã bị xóa khỏi danh sách (soft delete)!");
+    };
+
+    // SỬA: ĐÚNG ROUTE (có "s")
+    const handleEdit = (id) => {
+        navigate(`/admin/courses/edit/${id}`);
+    };
+
+    const totalPages = Math.ceil(courses.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const currentCourses = courses.slice(startIndex, startIndex + itemsPerPage);
+
+    if (loading) return <p className="text-center">Đang tải danh sách...</p>;
+    if (error) return <p className="text-danger text-center">{error}</p>;
 
     return (
         <div className="courses">
@@ -23,42 +79,70 @@ function Courses() {
                                 </tr>
                             </thead>
                             <tbody>
-
-                                <tr >
-                                    <td>1</td>
-                                    <td>lập trình</td>
-                                    <td>
-
-                                        <img
-                                            src="https://i.pravatar.cc/100"
-                                            alt="quản trị viên"
-                                            className="courses__image"
-                                        />
-
-                                    </td>
-                                    <td>giảng viên</td>
-                                    <td>110</td>
-                                    <td>
-                                        <span
-                                            className={`badge bg-success`
-                                            }
-                                        >
-                                            đang hoạt động
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <button className="btn courses__btn-edit">Sửa</button>
-                                        <button className="btn courses__btn-delete">Xóa</button>
-                                    </td>
-                                </tr>
-
-
-
+                                {currentCourses.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={7} className="text-center">
+                                            Không có khóa học nào
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    currentCourses.map((course, i) => (
+                                        <tr key={course._id}>
+                                            <td>{startIndex + i + 1}</td>
+                                            <td>{course.title}</td>
+                                            <td>
+                                                {course.media?.imageUrl ? (
+                                                    <img
+                                                        src={course.media.imageUrl}
+                                                        alt="Ảnh khóa học"
+                                                        className="courses__image"
+                                                    />
+                                                ) : (
+                                                    <div className="courses__image placeholder">Không có ảnh</div>
+                                                )}
+                                            </td>
+                                            <td>{course.instructor}</td>
+                                            <td>{course.time?.durationHours ?? 110}</td>
+                                            <td>
+                                                {/* SỬA: class → className */}
+                                                <span
+                                                    className={`badge ${course.status === "active" ? "bg-success" : "bg-secondary"}`}
+                                                >
+                                                    {course.status === "active" ? "đang hoạt động" : "không hoạt động"}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button
+                                                    className="btn courses__btn-edit"
+                                                    onClick={() => handleEdit(course._id)}
+                                                >
+                                                    Sửa
+                                                </button>
+                                                <button
+                                                    className="btn courses__btn-delete"
+                                                    onClick={() => handleDelete(course._id)}
+                                                >
+                                                    Xóa
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
                             </tbody>
                         </table>
 
-                        <button className="courses__btn-add">
-                            <a href="/admin/courses/create">Thêm khóa học</a>
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={setCurrentPage}
+                        />
+
+                        {/* SỬA: Dùng navigate thay <a href> */}
+                        <button
+                            className="courses__btn-add"
+                            onClick={() => navigate("/admin/courses/create")}
+                        >
+                            Thêm khóa học
                         </button>
                     </div>
                 </div>
@@ -67,4 +151,4 @@ function Courses() {
     );
 }
 
-export default Courses;
+export default CourseList;
