@@ -2,64 +2,78 @@ const Lesson = require('../../models/admin/lesson');
 const Chapter = require('../../models/admin/chapter');
 const Course = require('../../models/admin/course');
 
-
 const createCourse = async (req, res) => {
     try {
-        const { title, category, level, language, instructor, status, time, pricing, description, createdBy, chapters } = req.body;
-        if (!title || !Array.isArray(chapters)) return res.status(400).json({ error: "Title and chapters are required." });
+        // Lấy dữ liệu từ req.body
+        const {
+            title,
+            category,
+            level,
+            language,
+            instructor,
+            status,
+            time,
+            pricing,
+            description,
+            createdBy
+        } = req.body;
 
-        const chapterIds = [];
-        for (const ch of chapters) {
-            const lessonIds = [];
+        if (!title) return res.status(400).json({ error: "Title is required." });
 
-            if (Array.isArray(ch.lessons)) {
-                for (const lesson of ch.lessons) {
-                    const newLesson = new Lesson(lesson);
-                    await newLesson.save();
-                    lessonIds.push(newLesson._id);
-                }
-            }
+        // Parse chapters: frontend gửi mảng ID dạng JSON string
+        let chapters = req.body.chapters;
+        if (!chapters) return res.status(400).json({ error: "Chapters are required." });
+        if (typeof chapters === "string") chapters = JSON.parse(chapters); // JSON string -> array
+        if (!Array.isArray(chapters) || chapters.length === 0)
+            return res.status(400).json({ error: "Chapters must be a non-empty array of IDs." });
 
-            const newChapter = new Chapter({ title: ch.title, lessons: lessonIds });
-            await newChapter.save();
-            chapterIds.push(newChapter._id);
-        }
-
+        // Xử lý file upload
         const imageUrl = req.files?.["imageUrl"] ? req.files["imageUrl"][0].path : null;
         const videoUrl = req.files?.["videoUrl"] ? req.files["videoUrl"][0].path : null;
 
+        // Tạo course
         const newCourse = new Course({
-            title, category, level, language, instructor, status, time,
-            media: { imageUrl, videoUrl },
-            pricing,
+            title,
+            category,
+            level,
+            language,
+            instructor,
+            status,
+            time: time ? JSON.parse(time) : {},     // nếu frontend gửi object stringified
+            pricing: pricing ? JSON.parse(pricing) : {},
             description,
-            chapters: chapterIds,
+            media: { imageUrl, videoUrl },
+            chapters,                               // chỉ là mảng ObjectId
             createdBy: { account_id: createdBy?.account_id || "admin", createdAt: Date.now() }
         });
 
         await newCourse.save();
-        const populated = await Course.findById(newCourse._id).populate({ path: 'chapters', populate: { path: 'lessons' } });
+
+        // Populate để trả về thông tin đầy đủ
+        const populated = await Course.findById(newCourse._id)
+            .populate({ path: 'chapters', populate: { path: 'lessons' } });
 
         res.status(201).json({ message: 'Course created successfully', course: populated });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: error.message });
     }
 };
 
-
 const getCourses = async (req, res) => {
     try {
-        const courses = await Course.find({ deleted: false }).populate({ path: 'chapters', populate: { path: 'lessons' } });
+        const courses = await Course.find({ deleted: false })
+            .populate({ path: 'chapters', populate: { path: 'lessons' } });
         res.status(200).json(courses);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-
 const getCourseById = async (req, res) => {
     try {
-        const course = await Course.findById(req.params.id).populate({ path: 'chapters', populate: { path: 'lessons' } });
+        const course = await Course.findById(req.params.id)
+            .populate({ path: 'chapters', populate: { path: 'lessons' } });
         if (!course) return res.status(404).json({ message: 'Course not found' });
         res.status(200).json(course);
     } catch (error) {
@@ -72,7 +86,6 @@ const updateCourse = async (req, res) => {
         const courseId = req.params.id;
         const updateData = req.body.data ? JSON.parse(req.body.data) : req.body;
 
-        // Xử lý file
         if (req.files?.imageUrl) {
             updateData.media = updateData.media || {};
             updateData.media.imageUrl = req.files.imageUrl[0].path;
@@ -82,7 +95,6 @@ const updateCourse = async (req, res) => {
             updateData.media.videoUrl = req.files.videoUrl[0].path;
         }
 
-        // Xử lý updatedBy
         let pushUpdate = {};
         if (updateData.updatedBy?.account_id) {
             pushUpdate = {
@@ -93,10 +105,9 @@ const updateCourse = async (req, res) => {
                     }
                 }
             };
-            delete updateData.updatedBy; // Quan trọng: xóa để không ghi đè
+            delete updateData.updatedBy;
         }
 
-        // Gộp dữ liệu update
         const finalUpdate = { ...updateData, ...pushUpdate };
 
         const updated = await Course.findByIdAndUpdate(
@@ -111,7 +122,6 @@ const updateCourse = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-
 
 const deleteCourse = async (req, res) => {
     try {

@@ -106,39 +106,61 @@ function CreateCourse() {
         e.preventDefault();
         try {
             const chaptersData = [];
-            // 1️⃣ Tạo từng lesson và upload video
+
+            // 1️⃣ Tạo từng lesson và upload video, rồi tạo chapter
             for (const module of modules) {
                 const lessonIds = [];
                 for (const lesson of module.lessons) {
-                    const lessonForm = new FormData();
-                    lessonForm.append("title", lesson.title);
-                    if (lesson.videoFile) lessonForm.append("videoUrl", lesson.videoFile);
-                    const resLesson = await lessonAPI.create(lessonForm);
-                    lessonIds.push(resLesson.data.lesson._id);
+                    // Nếu muốn, có thể gọi lessonAPI.create riêng
+                    // hoặc backend không cần tạo lesson riêng, tùy nhu cầu
+                    if (lesson.videoFile) {
+                        const lessonForm = new FormData();
+                        lessonForm.append("title", lesson.title);
+                        lessonForm.append("videoUrl", lesson.videoFile);
+                        const resLesson = await lessonAPI.create(lessonForm);
+                        lessonIds.push(resLesson.data.lesson._id);
+                    } else {
+                        // Nếu không có video, vẫn tạo lesson
+                        const resLesson = await lessonAPI.create({ title: lesson.title });
+                        lessonIds.push(resLesson.data.lesson._id);
+                    }
                 }
-                // 2️⃣ Tạo chapter với các lessonId
+
+                // Tạo chapter với các lessonId
                 const chapterRes = await chapterAPI.create({ title: module.title, lessons: lessonIds });
                 chaptersData.push(chapterRes.data.chapter._id);
             }
 
-            // 3️⃣ Tạo khóa học
+            // 2️⃣ Tạo FormData cho khóa học
             const formData = new FormData();
             formData.append("title", courseInfo.title);
             formData.append("category", courseInfo.category);
             formData.append("level", courseInfo.level);
             formData.append("language", courseInfo.language);
-            formData.append("instructor", courseInfo.instruc);
+            formData.append("instructor", courseInfo.teacher); // sửa từ instruc
             formData.append("status", courseInfo.status);
-            formData.append("time[startDate]", courseInfo.startDate);
-            formData.append("time[endDate]", courseInfo.endDate);
-            formData.append("time[durationHours]", courseInfo.duration);
-            formData.append("pricing[price]", courseInfo.price);
-            formData.append("pricing[discount]", courseInfo.discount);
+
+            // Gửi object time và pricing dưới dạng JSON string
+            formData.append("time", JSON.stringify({
+                startDate: courseInfo.startDate,
+                endDate: courseInfo.endDate,
+                durationHours: courseInfo.duration
+            }));
+            formData.append("pricing", JSON.stringify({
+                price: courseInfo.price,
+                discount: courseInfo.discount
+            }));
+
             formData.append("description", courseInfo.description);
+
+            // chapters: mảng ID
             formData.append("chapters", JSON.stringify(chaptersData));
+
+            // Media files
             if (courseInfo.thumbnail) formData.append("imageUrl", courseInfo.thumbnail);
             if (courseInfo.introVideo) formData.append("videoUrl", courseInfo.introVideo);
 
+            // 3️⃣ Gọi API tạo course
             const courseRes = await courseAPI.create(formData);
             alert("Tạo khóa học thành công!");
             console.log(courseRes.data);
@@ -147,6 +169,7 @@ function CreateCourse() {
             alert("Tạo khóa học thất bại, kiểm tra console log!");
         }
     };
+
 
     return (
         <div className="add-course">

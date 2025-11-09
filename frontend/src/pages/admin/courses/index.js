@@ -13,15 +13,18 @@ function CourseList() {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
+    // --- Load courses từ backend ---
     const loadCourses = async () => {
         try {
             setLoading(true);
-            const data = await courseService.getCourses();
-            setCourses(Array.isArray(data) ? data : data.courses || []);
+            const res = await courseService.getAll(); // gọi đúng function trong service
+            // backend trả về data dạng { courses: [...] } hoặc mảng trực tiếp
+            const coursesData = res.data?.courses || res.data || [];
+            setCourses(coursesData);
             setError(null);
         } catch (err) {
             console.error("Lỗi load:", err);
-            setError(err.message || "Lỗi tải danh sách");
+            setError(err.response?.data?.error || err.message || "Lỗi tải danh sách");
             setCourses([]);
         } finally {
             setLoading(false);
@@ -32,26 +35,32 @@ function CourseList() {
         loadCourses();
     }, []);
 
-    const handleDelete = (id) => {
+    // --- Xóa mềm ---
+    const handleDelete = async (id) => {
         if (!window.confirm("Bạn có chắc muốn xóa khóa học này?")) return;
 
-        // Xóa mềm → chỉ thao tác trên state
-        setCourses(prev => prev.filter(course => course._id !== id));
+        try {
+            await courseService.delete(id); // gọi API xóa mềm backend
+            setCourses(prev => prev.filter(course => course._id !== id));
 
-        // Cập nhật phân trang nếu cần
-        const newTotal = Math.ceil((courses.length - 1) / itemsPerPage);
-        if (currentPage > newTotal && currentPage > 1) {
-            setCurrentPage(currentPage - 1);
+            // Cập nhật phân trang nếu cần
+            const newTotal = Math.ceil((courses.length - 1) / itemsPerPage);
+            if (currentPage > newTotal && currentPage > 1) {
+                setCurrentPage(currentPage - 1);
+            }
+
+            alert("Khóa học đã bị xóa!");
+        } catch (err) {
+            console.error("Lỗi xóa:", err);
+            alert("Xóa khóa học thất bại!");
         }
-
-        alert("Khóa học đã bị xóa khỏi danh sách (soft delete)!");
     };
 
-    // SỬA: ĐÚNG ROUTE (có "s")
     const handleEdit = (id) => {
         navigate(`/admin/courses/edit/${id}`);
     };
 
+    // --- Phân trang ---
     const totalPages = Math.ceil(courses.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const currentCourses = courses.slice(startIndex, startIndex + itemsPerPage);
@@ -102,13 +111,13 @@ function CourseList() {
                                                 )}
                                             </td>
                                             <td>{course.instructor}</td>
-                                            <td>{course.time?.durationHours ?? 110}</td>
+                                            <td>{course.time?.durationHours ?? 0}</td>
                                             <td>
-                                                {/* SỬA: class → className */}
                                                 <span
-                                                    className={`badge ${course.status === "active" ? "bg-success" : "bg-secondary"}`}
+                                                    className={`badge ${course.status === "active" ? "bg-success" : "bg-secondary"
+                                                        }`}
                                                 >
-                                                    {course.status === "active" ? "đang hoạt động" : "không hoạt động"}
+                                                    {course.status === "active" ? "Đang hoạt động" : "Không hoạt động"}
                                                 </span>
                                             </td>
                                             <td>
@@ -137,7 +146,6 @@ function CourseList() {
                             onPageChange={setCurrentPage}
                         />
 
-                        {/* SỬA: Dùng navigate thay <a href> */}
                         <button
                             className="courses__btn-add"
                             onClick={() => navigate("/admin/courses/create")}
