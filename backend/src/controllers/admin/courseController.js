@@ -72,6 +72,7 @@ const updateCourse = async (req, res) => {
         const courseId = req.params.id;
         const updateData = req.body.data ? JSON.parse(req.body.data) : req.body;
 
+        // Xử lý file
         if (req.files?.imageUrl) {
             updateData.media = updateData.media || {};
             updateData.media.imageUrl = req.files.imageUrl[0].path;
@@ -80,20 +81,31 @@ const updateCourse = async (req, res) => {
             updateData.media = updateData.media || {};
             updateData.media.videoUrl = req.files.videoUrl[0].path;
         }
-        if (updateData.updatedBy && updateData.updatedBy.account_id) {
-            updateData.$push = {
-                updatedBy: {
-                    account_id: updateData.updatedBy.account_id,
-                    updatedAt: new Date()
+
+        // Xử lý updatedBy
+        let pushUpdate = {};
+        if (updateData.updatedBy?.account_id) {
+            pushUpdate = {
+                $push: {
+                    updatedBy: {
+                        account_id: updateData.updatedBy.account_id,
+                        updatedAt: new Date()
+                    }
                 }
             };
+            delete updateData.updatedBy; // Quan trọng: xóa để không ghi đè
         }
 
-        const updated = await Course.findByIdAndUpdate(courseId, updateData, { new: true })
-            .populate({ path: 'chapters', populate: { path: 'lessons' } });
+        // Gộp dữ liệu update
+        const finalUpdate = { ...updateData, ...pushUpdate };
+
+        const updated = await Course.findByIdAndUpdate(
+            courseId,
+            finalUpdate,
+            { new: true }
+        ).populate({ path: 'chapters', populate: { path: 'lessons' } });
 
         if (!updated) return res.status(404).json({ message: 'Course not found' });
-
         res.status(200).json({ message: 'Course updated successfully', course: updated });
     } catch (error) {
         res.status(500).json({ error: error.message });

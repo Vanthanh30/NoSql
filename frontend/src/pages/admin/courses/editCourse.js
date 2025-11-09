@@ -75,8 +75,15 @@ function EditCourse() {
     // --- SUBMIT FORM ---
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Lấy thông tin user hiện tại (điều chỉnh theo cách bạn lưu)
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const account_id = user?._id || 'unknown'; // fallback nếu không có
+
         const payload = new FormData();
-        payload.append('data', JSON.stringify({
+
+        // Dữ liệu chính + updatedBy
+        const formData = {
             title,
             category,
             level,
@@ -85,8 +92,12 @@ function EditCourse() {
             status,
             time: { startDate, endDate, durationHours: duration },
             pricing: { price, discount },
-            description
-        }));
+            description,
+            updatedBy: { account_id } // THÊM DÒNG NÀY
+        };
+
+        payload.append('data', JSON.stringify(formData));
+
         if (imageFile) payload.append('imageUrl', imageFile);
         if (videoFile) payload.append('videoUrl', videoFile);
 
