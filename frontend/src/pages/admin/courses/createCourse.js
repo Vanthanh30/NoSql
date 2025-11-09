@@ -1,21 +1,14 @@
 import './course.scss';
 import TextEditor from '../../../components/TinyMCE/index';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import courseAPI from '../../../services/admin/courseService';
 import lessonAPI from '../../../services/admin/lessonService';
 import chapterAPI from '../../../services/admin/chapterService';
 
 function CreateCourse() {
-    const [modules, setModules] = useState([
-        {
-            id: 1,
-            title: 'Chương 1',
-            lessons: [
-                { id: 1, title: 'bài học 1', videoFile: null, videoUrl: null }
-            ]
-        }
-    ]);
-
+    const [modules, setModules] = useState([]);
+    const navigate = useNavigate();
     const [courseInfo, setCourseInfo] = useState({
         title: '',
         category: '',
@@ -160,10 +153,11 @@ function CreateCourse() {
             if (courseInfo.thumbnail) formData.append("imageUrl", courseInfo.thumbnail);
             if (courseInfo.introVideo) formData.append("videoUrl", courseInfo.introVideo);
 
-            // 3️⃣ Gọi API tạo course
+            // Gọi API tạo course
             const courseRes = await courseAPI.create(formData);
             alert("Tạo khóa học thành công!");
             console.log(courseRes.data);
+            navigate('/admin/courses');
         } catch (err) {
             console.error(err.response?.data || err.message);
             alert("Tạo khóa học thất bại, kiểm tra console log!");
@@ -194,9 +188,9 @@ function CreateCourse() {
                             <label>Danh mục</label>
                             <select name="category" className="form-control" onChange={handleInputChange} value={courseInfo.category}>
                                 <option value="">Chọn danh mục</option>
-                                <option value="category1">Danh mục 1</option>
-                                <option value="category2">Danh mục 2</option>
-                                <option value="category3">Danh mục 3</option>
+                                <option value="category1">BackEnd</option>
+                                <option value="category2">FrontEnd</option>
+                                <option value="category3">FullStack</option>
                             </select>
                         </div>
                         <div className="form-group">

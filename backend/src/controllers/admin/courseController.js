@@ -84,17 +84,28 @@ const getCourseById = async (req, res) => {
 const updateCourse = async (req, res) => {
     try {
         const courseId = req.params.id;
+        if (!courseId) return res.status(400).json({ message: "Course ID is required" });
+
+        // Parse dữ liệu
         const updateData = req.body.data ? JSON.parse(req.body.data) : req.body;
 
+        // ✅ Lấy course hiện tại để giữ media cũ
+        const currentCourse = await Course.findById(courseId);
+        if (!currentCourse) return res.status(404).json({ message: "Course not found" });
+
+        // ✅ Xử lý file upload
+        const media = { ...currentCourse.media }; // Giữ nguyên media cũ
+
         if (req.files?.imageUrl) {
-            updateData.media = updateData.media || {};
-            updateData.media.imageUrl = req.files.imageUrl[0].path;
+            media.imageUrl = req.files.imageUrl[0].path;
         }
         if (req.files?.videoUrl) {
-            updateData.media = updateData.media || {};
-            updateData.media.videoUrl = req.files.videoUrl[0].path;
+            media.videoUrl = req.files.videoUrl[0].path;
         }
 
+        updateData.media = media; // Gắn lại media đã xử lý
+
+        // ✅ Xử lý updatedBy
         let pushUpdate = {};
         if (updateData.updatedBy?.account_id) {
             pushUpdate = {
@@ -108,21 +119,18 @@ const updateCourse = async (req, res) => {
             delete updateData.updatedBy;
         }
 
-        const finalUpdate = { ...updateData, ...pushUpdate };
-
         const updated = await Course.findByIdAndUpdate(
             courseId,
-            finalUpdate,
+            { ...updateData, ...pushUpdate },
             { new: true }
         ).populate({ path: 'chapters', populate: { path: 'lessons' } });
 
-        if (!updated) return res.status(404).json({ message: 'Course not found' });
         res.status(200).json({ message: 'Course updated successfully', course: updated });
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: error.message });
     }
 };
-
 const deleteCourse = async (req, res) => {
     try {
         const deleted = await Course.findByIdAndUpdate(req.params.id, { deleted: true }, { new: true });

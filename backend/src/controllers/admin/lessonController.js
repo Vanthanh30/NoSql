@@ -3,31 +3,52 @@ const Lesson = require('../../models/admin/lesson');
 
 const createLesson = async (req, res) => {
     try {
-        const { title, preview, videoDuration, attachmentUrl } = req.body;
+        const { _id, title, chapterId, preview, videoDuration, attachmentUrl } = req.body;
         let videoUrl = req.file ? req.file.path : null;
 
+        // Convert videoDuration nếu có định dạng "mm:ss"
         let durationInSeconds = null;
         if (videoDuration) {
-            if (typeof videoDuration === 'string' && videoDuration.includes(':')) {
-                const [min, sec] = videoDuration.split(':').map(Number);
+            if (typeof videoDuration === "string" && videoDuration.includes(":")) {
+                const [min, sec] = videoDuration.split(":").map(Number);
                 durationInSeconds = min * 60 + sec;
             } else {
                 durationInSeconds = Number(videoDuration);
             }
         }
 
+        // Nếu có _id thì là update
+        if (_id) {
+            const updated = await Lesson.findByIdAndUpdate(
+                _id,
+                {
+                    title,
+                    preview,
+                    videoDuration: durationInSeconds,
+                    attachmentUrl,
+                    videoUrl,
+                    chapterId,
+                },
+                { new: true }
+            );
+            if (!updated) return res.status(404).json({ error: "Lesson not found" });
+            return res.status(200).json({ message: "Lesson updated", lesson: updated });
+        }
+
+        // Nếu không có _id → tạo mới
         const newLesson = new Lesson({
             title,
             preview,
             videoDuration: durationInSeconds,
             attachmentUrl,
-            videoUrl
+            videoUrl,
+            chapterId,
         });
 
         await newLesson.save();
-        res.status(201).json({ message: 'Lesson created successfully', lesson: newLesson });
+        res.status(201).json({ message: "Lesson created", lesson: newLesson });
     } catch (error) {
-        console.error('Error creating lesson:', error);
+        console.error("Error creating lesson:", error);
         res.status(500).json({ error: error.message });
     }
 };
