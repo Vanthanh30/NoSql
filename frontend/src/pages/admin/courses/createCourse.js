@@ -1,217 +1,184 @@
 import './course.scss';
 import TextEditor from '../../../components/TinyMCE/index';
-import { useState, useRef } from 'react';
-import courseService from '../../../services/admin/courseService';
-import chapterService from '../../../services/admin/chapterService';
-import lessonService from '../../../services/admin/lessonService';
+import { useState } from 'react';
+import courseAPI from '../../../services/admin/courseService';
+import lessonAPI from '../../../services/admin/lessonService';
+import chapterAPI from '../../../services/admin/chapterService';
 
 function CreateCourse() {
-    const [modules, setModules] = useState([]);
+    const [modules, setModules] = useState([
+        {
+            id: 1,
+            title: 'Chương 1',
+            lessons: [
+                { id: 1, title: 'bài học 1', videoFile: null, videoUrl: null }
+            ]
+        }
+    ]);
 
-    const [courseData, setCourseData] = useState({
-        title: '', category: '', level: 'basic', language: 'vietnamese',
-        instructor: '', status: 'upcoming', startDate: '', endDate: '',
-        durationHours: 0, price: 0, discount: 0,
-        imageFile: null, introVideoFile: null,
+    const [courseInfo, setCourseInfo] = useState({
+        title: '',
+        category: '',
+        level: 'basic',
+        language: 'vietnamese',
+        teacher: '',
+        status: 'Sắp khai giảng',
+        startDate: '',
+        endDate: '',
+        duration: 0,
+        price: 0,
+        discount: 0,
+        thumbnail: null,
+        introVideo: null,
+        description: ''
     });
 
-    const [previewImage, setPreviewImage] = useState('https://via.placeholder.com/150');
-    const [previewIntroVideo, setPreviewIntroVideo] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState('');
-    const editorRef = useRef(null);
-    const finalPrice = courseData.price * (1 - courseData.discount / 100);
-
-    // === UI HANDLERS (GIỮ NGUYÊN 100%) ===
-    const handleInput = (e) => {
-        const { name, value } = e.target;
-        setCourseData(prev => ({ ...prev, [name]: value }));
+    // --- Module / Lesson logic ---
+    const addModule = () => {
+        const newModule = { id: Date.now(), title: `Chương ${modules.length + 1}`, lessons: [] };
+        setModules([...modules, newModule]);
     };
-
-    const handleImage = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setCourseData(prev => ({ ...prev, imageFile: file }));
-            setPreviewImage(URL.createObjectURL(file));
-        }
-    };
-
-    const handleIntroVideo = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setCourseData(prev => ({ ...prev, introVideoFile: file }));
-            setPreviewIntroVideo(URL.createObjectURL(file));
-        }
-    };
-
-    const addModule = () => setModules(prev => [...prev, { id: Date.now(), title: `Chương ${prev.length + 1}`, lessons: [] }]);
-    const removeModule = (id) => setModules(prev => prev.filter(m => m.id !== id));
-    const updateModuleTitle = (id, title) => setModules(prev => prev.map(m => m.id === id ? { ...m, title } : m));
-
+    const removeModule = (moduleId) => setModules(modules.filter(m => m.id !== moduleId));
+    const updateModuleTitle = (moduleId, title) =>
+        setModules(modules.map(m => m.id === moduleId ? { ...m, title } : m));
     const addLesson = (moduleId) => {
-        setModules(prev => prev.map(m =>
-            m.id === moduleId
-                ? { ...m, lessons: [...m.lessons, { id: Date.now(), title: `Bài học ${m.lessons.length + 1}`, videoFile: null, videoUrl: null }] }
-                : m
+        const newLesson = {
+            id: Date.now(),
+            title: `bài học ${modules.find(m => m.id === moduleId).lessons.length + 1}`,
+            videoFile: null,
+            videoUrl: null
+        };
+        setModules(modules.map(m =>
+            m.id === moduleId ? { ...m, lessons: [...m.lessons, newLesson] } : m
         ));
     };
-
-    const updateLessonTitle = (moduleId, lessonId, title) => {
-        setModules(prev => prev.map(m =>
-            m.id === moduleId
-                ? { ...m, lessons: m.lessons.map(l => l.id === lessonId ? { ...l, title } : l) }
-                : m
-        ));
-    };
-
-    const handleVideoUpload = (moduleId, lessonId, file) => {
-        if (!file) return;
-        const url = URL.createObjectURL(file);
-        setModules(prev => prev.map(m =>
-            m.id === moduleId
-                ? { ...m, lessons: m.lessons.map(l => l.id === lessonId ? { ...l, videoFile: file, videoUrl: url } : l) }
-                : m
-        ));
-    };
-
-    const removeVideo = (moduleId, lessonId) => {
-        setModules(prev => prev.map(m =>
-            m.id === moduleId
-                ? { ...m, lessons: m.lessons.map(l => l.id === lessonId ? { ...l, videoFile: null, videoUrl: null } : l) }
-                : m
-        ));
-    };
-    const removeLesson = (moduleId, lessonId) => {
-        setModules(prev => prev.map(m =>
+    const removeLesson = (moduleId, lessonId) =>
+        setModules(modules.map(m =>
             m.id === moduleId
                 ? { ...m, lessons: m.lessons.filter(l => l.id !== lessonId) }
                 : m
         ));
+    const updateLessonTitle = (moduleId, lessonId, title) =>
+        setModules(modules.map(m =>
+            m.id === moduleId
+                ? {
+                    ...m,
+                    lessons: m.lessons.map(l => l.id === lessonId ? { ...l, title } : l)
+                }
+                : m
+        ));
+    const handleVideoUpload = (moduleId, lessonId, file) => {
+        if (file && file.type.startsWith('video/')) {
+            const videoUrl = URL.createObjectURL(file);
+            setModules(modules.map(m =>
+                m.id === moduleId
+                    ? {
+                        ...m,
+                        lessons: m.lessons.map(l =>
+                            l.id === lessonId ? { ...l, videoFile: file, videoUrl } : l
+                        )
+                    }
+                    : m
+            ));
+        }
     };
-    // === SUBMIT: DÙNG ĐỦ 3 SERVICE ===
+    const removeVideo = (moduleId, lessonId) =>
+        setModules(modules.map(m =>
+            m.id === moduleId
+                ? {
+                    ...m,
+                    lessons: m.lessons.map(l =>
+                        l.id === lessonId ? { ...l, videoFile: null, videoUrl: null } : l
+                    )
+                }
+                : m
+        ));
+
+    // --- Input change handler ---
+    const handleInputChange = (e) => {
+        const { name, value, files } = e.target;
+        if (files) setCourseInfo({ ...courseInfo, [name]: files[0] });
+        else setCourseInfo({ ...courseInfo, [name]: value });
+    };
+
+    // --- Submit form ---
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!courseData.title || !courseData.imageFile) {
-            setMessage('Vui lòng nhập tên và chọn ảnh!');
-            return;
-        }
-        setLoading(true); setMessage('');
-        try { // ======= 1. Tạo khóa học ======= 
-            const formData = new FormData();
-            formData.append('title', courseData.title);
-            formData.append('category', courseData.category || 'Uncategorized');
-            formData.append('level', courseData.level);
-            formData.append('language', courseData.language);
-            formData.append('instructor', courseData.instructor || 'Admin');
-            formData.append('status', courseData.status);
-            formData.append('time[startDate]', courseData.startDate);
-            formData.append('time[endDate]', courseData.endDate);
-            formData.append('time[durationHours]',
-                courseData.durationHours);
-            formData.append('pricing[price]',
-                courseData.price);
-            formData.append('pricing[discount]',
-                courseData.discount);
-            formData.append('description', editorRef.current?.getContent() || '');
-            formData.append('createdBy[account_id]', 'admin');
-            // Ảnh + video tổng khóa học 
-            formData.append('imageUrl',
-                courseData.imageFile);
-            if (courseData.introVideoFile) {
-                formData.append('videoUrl', courseData.introVideoFile);
-            }
-            // ======= Thêm chapters và lesson title (không video) ======= 
-            modules.forEach((m, mi) => {
-                formData.append(`chapters[${mi}][title]`, m.title);
-                m.lessons.forEach((l, li) => {
-                    formData.append(`chapters[${mi}][lessons][${li}][title]`, l.title);
-                });
-            });
-            const createdCourse = await courseService.createCourse(formData);
-            // ======= 2. Upload video cho từng lesson đã có trong DB =======
-            if (createdCourse && createdCourse.chapters) {
-                const updatedModules = [...modules]; // copy modules hiện tại
-
-                for (let mi = 0; mi < createdCourse.chapters.length; mi++) {
-                    const backendChapter = createdCourse.chapters[mi];
-                    const localModule = updatedModules[mi];
-
-                    for (let li = 0; li < backendChapter.lessons.length; li++) {
-                        const backendLesson = backendChapter.lessons[li];
-                        const localLesson = localModule.lessons[li];
-
-                        if (localLesson.videoFile) {
-                            try {
-                                const updatedLesson = await lessonService.uploadVideoForLesson(
-                                    backendLesson._id,      // ID thật từ DB
-                                    localLesson.videoFile   // File object
-                                );
-
-                                // cập nhật videoUrl từ backend
-                                localLesson.videoUrl = updatedLesson.videoUrl;
-
-                            } catch (err) {
-                                console.error(`Lỗi upload video cho "${localLesson.title}":`, err.response?.data || err.message);
-                            }
-                        }
-                    }
+        try {
+            const chaptersData = [];
+            // 1️⃣ Tạo từng lesson và upload video
+            for (const module of modules) {
+                const lessonIds = [];
+                for (const lesson of module.lessons) {
+                    const lessonForm = new FormData();
+                    lessonForm.append("title", lesson.title);
+                    if (lesson.videoFile) lessonForm.append("videoUrl", lesson.videoFile);
+                    const resLesson = await lessonAPI.create(lessonForm);
+                    lessonIds.push(resLesson.data.lesson._id);
                 }
-
-                // Cập nhật lại state modules để UI hiển thị videoUrl thật
-                setModules(updatedModules);
+                // 2️⃣ Tạo chapter với các lessonId
+                const chapterRes = await chapterAPI.create({ title: module.title, lessons: lessonIds });
+                chaptersData.push(chapterRes.data.chapter._id);
             }
-            setMessage('Tạo khóa học và upload video thành công!');
-            setTimeout(() => window.location.href = '/admin/courses', 1500);
-        } catch (error) {
-            console.error('Lỗi:', error.response?.data || error.message);
-            setMessage('Lỗi: ' + (error.response?.data?.error || 'Lỗi server'));
-        } finally {
-            setLoading(false);
+
+            // 3️⃣ Tạo khóa học
+            const formData = new FormData();
+            formData.append("title", courseInfo.title);
+            formData.append("category", courseInfo.category);
+            formData.append("level", courseInfo.level);
+            formData.append("language", courseInfo.language);
+            formData.append("instructor", courseInfo.instruc);
+            formData.append("status", courseInfo.status);
+            formData.append("time[startDate]", courseInfo.startDate);
+            formData.append("time[endDate]", courseInfo.endDate);
+            formData.append("time[durationHours]", courseInfo.duration);
+            formData.append("pricing[price]", courseInfo.price);
+            formData.append("pricing[discount]", courseInfo.discount);
+            formData.append("description", courseInfo.description);
+            formData.append("chapters", JSON.stringify(chaptersData));
+            if (courseInfo.thumbnail) formData.append("imageUrl", courseInfo.thumbnail);
+            if (courseInfo.introVideo) formData.append("videoUrl", courseInfo.introVideo);
+
+            const courseRes = await courseAPI.create(formData);
+            alert("Tạo khóa học thành công!");
+            console.log(courseRes.data);
+        } catch (err) {
+            console.error(err.response?.data || err.message);
+            alert("Tạo khóa học thất bại, kiểm tra console log!");
         }
     };
 
-    // === UI GIỮ NGUYÊN 100% (copy từ bạn) ===
     return (
         <div className="add-course">
             <div className="add-course__header">
                 <h1>Thêm khóa học mới</h1>
                 <div className="add-course__header-actions">
-                    <button type="button" className="btn btn-secondary" onClick={() => window.location.reload()}>
-                        Làm mới
-                    </button>
-                    <button type="submit" form="add-course-form" className="btn btn-primary" disabled={loading}>
-                        {loading ? 'Đang lưu...' : 'Lưu khóa học'}
-                    </button>
+                    <button type="button" className="btn btn-secondary">Làm mới</button>
+                    <button onClick={handleSubmit} className="btn btn-primary">Lưu khóa học</button>
                 </div>
             </div>
 
-            {message && (
-                <div className={`alert ${message.includes('thành công') ? 'alert-success' : 'alert-danger'}`}>
-                    {message}
-                </div>
-            )}
-
-            <form id="add-course-form" onSubmit={handleSubmit} className="add-course__form">
-                {/* LEFT */}
+            <form id="add-course-form" className="add-course__form">
+                {/* Left column */}
                 <div className="add-course__left">
                     <div className="form-group">
-                        <label>Tên khóa học *</label>
-                        <input name="title" className="form-control" required value={courseData.title} onChange={handleInput} />
+                        <label htmlFor="title">Tên khóa học</label>
+                        <input id="title" name="title" value={courseInfo.title} onChange={handleInputChange} className="form-control" placeholder="Nhập tên khóa học" />
                     </div>
 
                     <div className="grid-3">
                         <div className="form-group">
-                            <label>Danh mục *</label>
-                            <select name="category" className="form-control" required value={courseData.category} onChange={handleInput}>
+                            <label>Danh mục</label>
+                            <select name="category" className="form-control" onChange={handleInputChange} value={courseInfo.category}>
                                 <option value="">Chọn danh mục</option>
-                                <option>BackEnd</option>
-                                <option>FrontEnd</option>
-                                <option>FullStack</option>
+                                <option value="category1">Danh mục 1</option>
+                                <option value="category2">Danh mục 2</option>
+                                <option value="category3">Danh mục 3</option>
                             </select>
                         </div>
                         <div className="form-group">
                             <label>Trình độ</label>
-                            <select name="level" className="form-control" value={courseData.level} onChange={handleInput}>
+                            <select name="level" className="form-control" onChange={handleInputChange} value={courseInfo.level}>
                                 <option value="basic">Cơ bản</option>
                                 <option value="intermediate">Trung cấp</option>
                                 <option value="advanced">Nâng cao</option>
@@ -219,7 +186,7 @@ function CreateCourse() {
                         </div>
                         <div className="form-group">
                             <label>Ngôn ngữ</label>
-                            <select name="language" className="form-control" value={courseData.language} onChange={handleInput}>
+                            <select name="language" className="form-control" onChange={handleInputChange} value={courseInfo.language}>
                                 <option value="vietnamese">Tiếng Việt</option>
                                 <option value="english">Tiếng Anh</option>
                             </select>
@@ -228,9 +195,10 @@ function CreateCourse() {
 
                     <div className="form-group">
                         <label>Mô tả chi tiết</label>
-                        <TextEditor ref={editorRef} />
+                        <TextEditor />
                     </div>
 
+                    {/* Modules */}
                     <div className="panel">
                         <div className="panel__title">Nội dung khóa học</div>
                         <div className="modules">
@@ -240,20 +208,14 @@ function CreateCourse() {
                                         <input
                                             className="form-control"
                                             value={module.title}
-                                            onChange={e => updateModuleTitle(module.id, e.target.value)}
+                                            onChange={(e) => updateModuleTitle(module.id, e.target.value)}
+                                            placeholder="Tên chương"
                                         />
                                         <div className="module__actions">
-                                            <button type="button" className="btn btn-light" onClick={() => addLesson(module.id)}>
-                                                + Bài học
-                                            </button>
-                                            {modules.length > 1 && (
-                                                <button type="button" className="btn btn-danger" onClick={() => removeModule(module.id)}>
-                                                    Xóa chương
-                                                </button>
-                                            )}
+                                            <button type="button" className="btn btn-light" onClick={() => addLesson(module.id)}>+ Bài học</button>
+                                            {modules.length > 1 && <button type="button" className="btn btn-danger" onClick={() => removeModule(module.id)}>Xóa chương</button>}
                                         </div>
                                     </div>
-
                                     <div className="lessons">
                                         {module.lessons.map(lesson => (
                                             <div key={lesson.id} className="lesson">
@@ -261,93 +223,77 @@ function CreateCourse() {
                                                     <input
                                                         className="form-control lesson__title"
                                                         value={lesson.title}
-                                                        onChange={e => updateLessonTitle(module.id, lesson.id, e.target.value)}
+                                                        onChange={(e) => updateLessonTitle(module.id, lesson.id, e.target.value)}
+                                                        placeholder="Tên bài học"
                                                     />
                                                     <div className="lesson__right-actions">
                                                         {!lesson.videoFile ? (
-                                                            <label className="lesson__upload-btn">
-                                                                Tải video
-                                                                <input
-                                                                    type="file"
-                                                                    accept="video/*"
-                                                                    onChange={e => handleVideoUpload(module.id, lesson.id, e.target.files[0])}
-                                                                />
-                                                            </label>
+                                                            <>
+                                                                <label className="lesson__upload-btn">
+                                                                    Tải video
+                                                                    <input type="file" accept="video/*" onChange={(e) => handleVideoUpload(module.id, lesson.id, e.target.files[0])} />
+                                                                </label>
+                                                                <button type="button" className="btn btn-ghost lesson__delete" onClick={() => removeLesson(module.id, lesson.id)}>×</button>
+                                                            </>
                                                         ) : (
                                                             <div className="lesson__video-info">
-                                                                <span>{lesson.videoFile.name}</span>
-                                                                <button type="button" className="btn btn-ghost btn-sm" onClick={() => removeVideo(module.id, lesson.id)}>x</button>
+                                                                <span className="video-name">{lesson.videoFile.name}</span>
+                                                                <button type="button" className="btn btn-ghost btn-sm" onClick={() => removeVideo(module.id, lesson.id)}>×</button>
+                                                                <button type="button" className="btn btn-ghost lesson__delete" onClick={() => removeLesson(module.id, lesson.id)}>×</button>
                                                             </div>
                                                         )}
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-ghost lesson__delete"
-                                                            onClick={() => removeLesson(module.id, lesson.id)}
-                                                        >
-                                                            x
-                                                        </button>
                                                     </div>
                                                 </div>
-                                                {lesson.videoFile && (
-                                                    <div className="lesson__preview">
-                                                        <video src={lesson.videoUrl} controls className="video-thumb" />
-                                                    </div>
-                                                )}
+                                                {lesson.videoFile && <div className="lesson__preview"><video src={lesson.videoUrl} controls className="video-thumb" /></div>}
                                             </div>
                                         ))}
                                         {module.lessons.length === 0 && <div className="muted">Chưa có bài học</div>}
                                     </div>
                                 </div>
                             ))}
-                            <button type="button" className="btn btn-outline" onClick={addModule}>
-                                + Thêm chương
-                            </button>
+                            <button type="button" className="btn btn-outline" onClick={addModule}>+ Thêm chương</button>
                         </div>
                     </div>
                 </div>
 
-                {/* RIGHT */}
+                {/* Right column */}
                 <div className="add-course__right">
                     <div className="form-group">
                         <label>Giảng viên</label>
-                        <input name="instructor" className="form-control" value={courseData.instructor} onChange={handleInput} />
+                        <input name="teacher" className="form-control" onChange={handleInputChange} placeholder="Tên giảng viên" />
                     </div>
-
                     <div className="form-group">
                         <label>Trạng thái</label>
-                        <select name="status" className="form-control" value={courseData.status} onChange={handleInput}>
-                            <option value="upcoming">Sắp khai giảng</option>
-                            <option value="ongoing">Đang diễn ra</option>
-                            <option value="completed">Hoàn thành</option>
-                            <option value="canceled">Đã hủy</option>
+                        <select name="status" className="form-control" onChange={handleInputChange}>
+                            <option>Sắp khai giảng</option>
+                            <option>Đang diễn ra</option>
+                            <option>Hoàn thành</option>
+                            <option>Đã hủy</option>
                         </select>
                     </div>
-
                     <div className="form-group">
                         <label>Ngày bắt đầu</label>
-                        <input type="date" name="startDate" className="form-control" value={courseData.startDate} onChange={handleInput} />
+                        <input name="startDate" type="date" className="form-control" onChange={handleInputChange} />
                     </div>
-
                     <div className="form-group">
                         <label>Ngày kết thúc</label>
-                        <input type="date" name="endDate" className="form-control" value={courseData.endDate} onChange={handleInput} />
+                        <input name="endDate" type="date" className="form-control" onChange={handleInputChange} />
                     </div>
-
                     <div className="form-group">
                         <label>Thời lượng (giờ)</label>
-                        <input type="number" name="durationHours" className="form-control" value={courseData.durationHours} onChange={handleInput} />
+                        <input name="duration" type="number" min="0" className="form-control" onChange={handleInputChange} />
                     </div>
 
                     <div className="panel">
-                        <div className="panel__title">Ảnh đại diện *</div>
-                        <input type="file" accept="image/*" required onChange={handleImage} />
-                        <img src={previewImage} alt="preview" className="preview-image" />
+                        <div className="panel__title">Ảnh đại diện</div>
+                        <input type="file" accept="image/*" name="thumbnail" className="form-control" onChange={handleInputChange} />
+                        {courseInfo.thumbnail && <img className="preview-image" src={URL.createObjectURL(courseInfo.thumbnail)} alt="preview" />}
                     </div>
 
                     <div className="panel">
                         <div className="panel__title">Video giới thiệu</div>
-                        <input type="file" accept="video/*" onChange={handleIntroVideo} />
-                        {previewIntroVideo && <video src={previewIntroVideo} controls className="preview-video" />}
+                        <input type="file" accept="video/*" name="introVideo" className="form-control" onChange={handleInputChange} />
+                        {courseInfo.introVideo && <video className="preview-video" src={URL.createObjectURL(courseInfo.introVideo)} controls style={{ width: '100%', marginTop: '8px' }} />}
                     </div>
 
                     <div className="panel">
@@ -355,16 +301,14 @@ function CreateCourse() {
                         <div className="grid-2">
                             <div className="form-group">
                                 <label>Giá gốc (VNĐ)</label>
-                                <input type="number" name="price" className="form-control" value={courseData.price} onChange={handleInput} />
+                                <input name="price" type="number" min="0" className="form-control" onChange={handleInputChange} />
                             </div>
                             <div className="form-group">
                                 <label>Giảm giá (%)</label>
-                                <input type="number" name="discount" min="0" max="100" className="form-control" value={courseData.discount} onChange={handleInput} />
+                                <input name="discount" type="number" min="0" max="100" className="form-control" onChange={handleInputChange} />
                             </div>
                         </div>
-                        <div className="final-price">
-                            Giá sau giảm: <strong>{finalPrice.toLocaleString()} VNĐ</strong>
-                        </div>
+                        <div className="final-price">Giá sau giảm: <strong>{courseInfo.price - (courseInfo.price * courseInfo.discount / 100)} VNĐ</strong></div>
                     </div>
                 </div>
             </form>
