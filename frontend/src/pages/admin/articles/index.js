@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import articleAPI from "../../../services/admin/articleService";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./article.scss";
 
 function ArticlesPage() {
@@ -29,7 +28,7 @@ function ArticlesPage() {
       } else if (res.data?.data && Array.isArray(res.data.data)) {
         list = res.data.data;
       } else if (res.data && typeof res.data === "object") {
-        list = [res.data]; // 1 object
+        list = [res.data];
       }
 
       console.log("Danh sách bài viết:", list);
@@ -99,7 +98,11 @@ function ArticlesPage() {
                     <tr key={art._id}>
                       <td>{idx + 1}</td>
                       <td>{art.title}</td>
-                      <td>{art.category?.title || "Chưa chọn"}</td>
+                      <td>
+                        {art.category && art.category.title
+                          ? art.category.title
+                          : "Chưa chọn / Lỗi ID"}
+                      </td>
                       <td>
                         {art.createdBy?.name
                           ? art.createdBy.name

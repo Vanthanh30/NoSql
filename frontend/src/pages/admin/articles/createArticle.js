@@ -42,20 +42,12 @@ function CreateArticles() {
     }
   };
   const handleEditorChange = (content) => {
-    console.log("Nội dung từ TinyMCE:", content);
     setFormData((prev) => ({ ...prev, content }));
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const editorIframe = document.querySelector("iframe.tox-edit-area__iframe");
-    let contentHTML = formData.content;
-
-    if (editorIframe) {
-      const innerDoc =
-        editorIframe.contentDocument || editorIframe.contentWindow.document;
-      contentHTML = innerDoc.body.innerHTML.trim();
-    }
+    const contentHTML = formData.content.trim();
 
     if (!formData.title.trim()) return alert("Vui lòng nhập tiêu đề");
     if (!contentHTML || contentHTML === "<br>")
