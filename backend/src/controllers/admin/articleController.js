@@ -2,10 +2,10 @@ const Article = require('../../models/admin/articles');
 
 const createArticle = async (req, res) => {
     try {
-        const { title, content, createdBy } = req.body;
+        const { title, content, category, createdBy } = req.body;
 
-        if (!title || !content || !createdBy) {
-            return res.status(400).json({ error: "title, content and createdBy are required" });
+        if (!title || !content || !category || !createdBy) {
+            return res.status(400).json({ error: "title, content, category and createdBy are required" });
         }
 
 
@@ -18,6 +18,7 @@ const createArticle = async (req, res) => {
         const newArticle = new Article({
             title,
             content,
+            category,
             image: req.file?.path || null, // multer đã upload, path = Cloudinary URL
             createdBy: {
                 account_id: creator.account_id,
@@ -70,6 +71,7 @@ const updateArticle = async (req, res) => {
 
         article.title = updateData.title || article.title;
         article.content = updateData.content || article.content;
+        article.category = updateData.category || article.category;
         article.status = updateData.status || article.status;
         article.image = req.file?.path || article.image; // multer đã upload
         article.updatedBy = {
