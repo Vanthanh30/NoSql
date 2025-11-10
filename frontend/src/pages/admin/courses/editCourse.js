@@ -4,6 +4,7 @@ import courseService from '../../../services/admin/courseService';
 import chapterService from '../../../services/admin/chapterService';
 import lessonService from '../../../services/admin/lessonService';
 import TextEditor from '../../../components/TinyMCE/index';
+import categoryAPI from '../../../services/admin/categoryService';
 import './course.scss';
 
 function EditCourse() {
@@ -24,6 +25,7 @@ function EditCourse() {
     const [discount, setDiscount] = useState(0);
     const [description, setDescription] = useState('');
     const [chapters, setChapters] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [imageFile, setImageFile] = useState(null);
     const [videoFile, setVideoFile] = useState(null);
     const [lessonVideoFiles, setLessonVideoFiles] = useState({}); // { [lessonId]: File }
@@ -34,10 +36,20 @@ function EditCourse() {
 
     // --- LOAD COURSE ---
     useEffect(() => {
+        loadCategories(); // gọi thêm API danh mục
         if (!id) return;
         loadCourse();
     }, [id]);
 
+    const loadCategories = async () => {
+        try {
+            const { data } = await categoryAPI.getAll();
+            setCategories(data.categories || []);
+        } catch (err) {
+            console.error('Lỗi tải danh mục:', err);
+            alert('Không tải được danh mục');
+        }
+    };
     const loadCourse = async () => {
         try {
             const { data } = await courseService.getById(id);
@@ -376,15 +388,17 @@ function EditCourse() {
                             <select
                                 className="form-control"
                                 value={category}
-                                onChange={e => {
+                                onChange={(e) => {
                                     setCategory(e.target.value);
                                     updateCourseField('category', e.target.value);
                                 }}
                             >
-                                <option value="">Chọn danh mục</option>
-                                <option value="Lập trình">BackEnd</option>
-                                <option value="Thiết kế">FrontEnd</option>
-                                <option value="Marketing">FullStack</option>
+                                <option value="">-- Chọn danh mục --</option>
+                                {categories.map((cat) => (
+                                    <option key={cat._id} value={cat._id}>
+                                        {cat.title}
+                                    </option>
+                                ))}
                             </select>
                         </div>
                         <div className="form-group">

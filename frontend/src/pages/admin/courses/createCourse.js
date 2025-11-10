@@ -1,13 +1,15 @@
 import './course.scss';
 import TextEditor from '../../../components/TinyMCE/index';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import courseAPI from '../../../services/admin/courseService';
 import lessonAPI from '../../../services/admin/lessonService';
 import chapterAPI from '../../../services/admin/chapterService';
+import categoryAPI from '../../../services/admin/categoryService';
 
 function CreateCourse() {
     const [modules, setModules] = useState([]);
+    const [categories, setCategories] = useState([]);
     const navigate = useNavigate();
     const [courseInfo, setCourseInfo] = useState({
         title: '',
@@ -25,7 +27,18 @@ function CreateCourse() {
         introVideo: null,
         description: ''
     });
-
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await categoryAPI.getAll();
+                setCategories(res.data.categories || []);
+            } catch (err) {
+                console.error(err);
+                alert('Không thể tải danh mục!');
+            }
+        };
+        fetchCategories();
+    }, []);
     // --- Module / Lesson logic ---
     const addModule = () => {
         const newModule = { id: Date.now(), title: `Chương ${modules.length + 1}`, lessons: [] };
@@ -186,11 +199,18 @@ function CreateCourse() {
                     <div className="grid-3">
                         <div className="form-group">
                             <label>Danh mục</label>
-                            <select name="category" className="form-control" onChange={handleInputChange} value={courseInfo.category}>
+                            <select
+                                name="category"
+                                className="form-control"
+                                onChange={handleInputChange}
+                                value={courseInfo.category}
+                            >
                                 <option value="">Chọn danh mục</option>
-                                <option value="category1">BackEnd</option>
-                                <option value="category2">FrontEnd</option>
-                                <option value="category3">FullStack</option>
+                                {categories.map(cat => (
+                                    <option key={cat._id} value={cat._id}>
+                                        {cat.title}
+                                    </option>
+                                ))}
                             </select>
                         </div>
                         <div className="form-group">
