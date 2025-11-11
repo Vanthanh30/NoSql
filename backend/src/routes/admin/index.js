@@ -5,7 +5,9 @@ const categoryRoutes = require('./category');
 const courseRoutes = require('./course');
 const lessonRoutes = require('./lesson');
 const chapterRoutes = require('./chapter');
+const articleRoutes = require('./article');
 module.exports = (app) => {
+    app.use(`${systemConfig.prefixApi}/admin/article`, articleRoutes);
     app.use(`${systemConfig.prefixApi}/admin/accounts`, accountRoutes);
     app.use(`${systemConfig.prefixApi}/admin/auth`, authRoutes);
     app.use(`${systemConfig.prefixApi}/admin/categories`, categoryRoutes);
