@@ -1,19 +1,36 @@
 import axios from "axios";
-
+import userService from "./userService";
 const API_URL = "http://localhost:3000/api/admin/course";
 
 const courseAPI = {
-    getAll: () => axios.get(API_URL),
-    getById: (id) => axios.get(`${API_URL}/${id}`),
-    create: (formData) =>
-        axios.post(API_URL, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-        }),
-    update: (id, formData) =>
-        axios.put(`${API_URL}/${id}`, formData, {
-            headers: { "Content-Type": "multipart/form-data" },
-        }),
-    delete: (id) => axios.delete(`${API_URL}/${id}`),
+    getAll: () => {
+        const token = userService.getToken();
+        return axios.get(API_URL, { headers: { Authorization: `Bearer ${token}` } });
+    },
+    getById: (id) => {
+        const token = userService.getToken();
+        return axios.get(`${API_URL}/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+    },
+    create: (formData) => {
+        const token = userService.getToken();
+        return axios.post(API_URL, formData, {
+            headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` },
+        });
+    },
+    update: (id, formData) => {
+        const token = userService.getToken();
+        return axios.put(`${API_URL}/${id}`, formData, {
+            headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` },
+        });
+    },
+    delete: (id) => {
+        const token = userService.getToken();
+        return axios.delete(`${API_URL}/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+    },
 };
 
 export default courseAPI;
+// // getAll: () => {
+//     const token = userService.getToken();
+//     return axios.get(API_URL, { headers: { Authorization: `Bearer ${token}` } });
+//   },

@@ -69,6 +69,7 @@ const updateArticle = async (req, res) => {
     article.updatedBy = { account_id: req.userId, updatedAt: Date.now() };
 
     await article.save();
+
     res.status(200).json(article);
   } catch (error) {
     console.error(error);

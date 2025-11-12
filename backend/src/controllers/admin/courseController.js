@@ -15,7 +15,6 @@ const createCourse = async (req, res) => {
             time,
             pricing,
             description,
-            createdBy
         } = req.body;
 
         if (!title) return res.status(400).json({ error: "Title is required." });
@@ -44,7 +43,7 @@ const createCourse = async (req, res) => {
             description,
             media: { imageUrl, videoUrl },
             chapters,                               // chỉ là mảng ObjectId
-            createdBy: { account_id: createdBy?.account_id || "admin", createdAt: Date.now() }
+            createdBy: { account_id: req.userId, createdAt: new Date() }
         });
 
         await newCourse.save();
@@ -83,54 +82,63 @@ const getCourseById = async (req, res) => {
 
 const updateCourse = async (req, res) => {
     try {
-        const courseId = req.params.id;
-        if (!courseId) return res.status(400).json({ message: "Course ID is required" });
+        const course = await Course.findById(req.params.id);
+        if (!course || course.deleted)
+            return res.status(404).json({ error: "Course not found" });
 
-        // Parse dữ liệu
-        const updateData = req.body.data ? JSON.parse(req.body.data) : req.body;
+        const {
+            title,
+            category,
+            level,
+            language,
+            instructor,
+            status,
+            time,
+            pricing,
+            description,
+            chapters
+        } = req.body;
 
-        // ✅ Lấy course hiện tại để giữ media cũ
-        const currentCourse = await Course.findById(courseId);
-        if (!currentCourse) return res.status(404).json({ message: "Course not found" });
+        // Cập nhật các field nếu có, giữ giá trị cũ nếu không có
+        course.title = title || course.title;
+        course.category = category || course.category;
+        course.level = level || course.level;
+        course.language = language || course.language;
+        course.instructor = instructor || course.instructor;
+        course.status = status || course.status;
+        course.description = description || course.description;
 
-        // ✅ Xử lý file upload
-        const media = { ...currentCourse.media }; // Giữ nguyên media cũ
+        // time và pricing có thể là object stringified
+        course.time = time ? JSON.parse(time) : course.time;
+        course.pricing = pricing ? JSON.parse(pricing) : course.pricing;
 
-        if (req.files?.imageUrl) {
-            media.imageUrl = req.files.imageUrl[0].path;
+        // chapters nếu gửi mảng mới
+        if (chapters) {
+            course.chapters = typeof chapters === "string" ? JSON.parse(chapters) : chapters;
         }
-        if (req.files?.videoUrl) {
-            media.videoUrl = req.files.videoUrl[0].path;
-        }
 
-        updateData.media = media; // Gắn lại media đã xử lý
+        // Media
+        if (req.files?.imageUrl) course.media.imageUrl = req.files.imageUrl[0].path;
+        if (req.files?.videoUrl) course.media.videoUrl = req.files.videoUrl[0].path;
 
-        // ✅ Xử lý updatedBy
-        let pushUpdate = {};
-        if (updateData.updatedBy?.account_id) {
-            pushUpdate = {
-                $push: {
-                    updatedBy: {
-                        account_id: updateData.updatedBy.account_id,
-                        updatedAt: new Date()
-                    }
-                }
-            };
-            delete updateData.updatedBy;
-        }
+        // Lưu thông tin người update
+        course.updatedBy = { account_id: req.userId, updateAt: new Date() };
 
-        const updated = await Course.findByIdAndUpdate(
-            courseId,
-            { ...updateData, ...pushUpdate },
-            { new: true }
-        ).populate({ path: 'chapters', populate: { path: 'lessons' } });
+        await course.save();
 
-        res.status(200).json({ message: 'Course updated successfully', course: updated });
+        // Populate để trả về đầy đủ info
+        const populated = await Course.findById(course._id)
+            .populate({ path: 'chapters', populate: { path: 'lessons' } });
+
+        res.status(200).json({ message: "Course updated successfully", course: populated });
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: error.message });
     }
 };
+
+
 const deleteCourse = async (req, res) => {
     try {
         const deleted = await Course.findByIdAndUpdate(req.params.id, { deleted: true }, { new: true });
