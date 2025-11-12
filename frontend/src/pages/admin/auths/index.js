@@ -1,4 +1,3 @@
-// src/pages/admin/auths/index.jsx
 import './login.scss';
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -29,16 +28,16 @@ function Login() {
                     return;
                 }
 
-                // 2. LƯU VÀO localStorage DƯỚI TÊN "user" (để AdminPrivateRoute đọc được)
+                // 2. LƯU VÀO localStorage DƯỚI TÊN "user"
                 localStorage.setItem("user", JSON.stringify(account));
 
-                // 3. CHUYỂN VÀO /admin + KHÔNG QUAY LẠI ĐƯỢC
+                // 3. CHUYỂN VÀO /admin
                 navigate("/admin", { replace: true });
             } else {
-                setError("Phản hồi không hợp lệ từ máy chủ!");
+                setError(res.message || "Phản hồi không hợp lệ từ máy chủ!");
             }
         } catch (err) {
-            setError(err.message || "Sai tài khoản hoặc mật khẩu!");
+            setError(err.response?.data?.message || "Sai tài khoản hoặc mật khẩu!");
         } finally {
             setLoading(false);
         }

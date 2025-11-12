@@ -47,7 +47,7 @@ function EditArticles() {
           category: data.category?._id || data.category || "",
           content: data.content || "",
           image: data.image
-            ? `http://localhost:3000/${data.image}`
+            ? (data.image.startsWith("http") ? data.image : `http://localhost:3000/${data.image}`)
             : "https://via.placeholder.com/150",
         });
 

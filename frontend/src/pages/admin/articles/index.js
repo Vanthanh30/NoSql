@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import articleAPI from "../../../services/admin/articleService";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./article.scss";
 
 function ArticlesPage() {
@@ -104,22 +104,23 @@ function ArticlesPage() {
                           : "Chưa chọn / Lỗi ID"}
                       </td>
                       <td>
-                        {art.createdBy?.name
-                          ? art.createdBy.name
+                        {art.createdBy?.account_id?.fullName
+                          ? art.createdBy.account_id.fullName
                           : art.createdBy?.account_id
-                          ? `User_${art.createdBy.account_id.slice(-6)}`
-                          : "Admin"}
+                            ? art.createdBy.account_id.toString().slice(-6)
+                            : "Admin"}
                       </td>
+
+
                       <td>
                         {new Date(art.createdAt).toLocaleDateString("vi-VN")}
                       </td>
                       <td>
                         <span
-                          className={`badge ${
-                            art.status === "active"
-                              ? "bg-success"
-                              : "bg-secondary"
-                          }`}
+                          className={`badge ${art.status === "active"
+                            ? "bg-success"
+                            : "bg-secondary"
+                            }`}
                         >
                           {art.status === "active" ? "Hoạt động" : "Ẩn"}
                         </span>

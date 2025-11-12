@@ -4,25 +4,16 @@ const BASE_URL = "http://localhost:3000/api/admin/auth";
 
 const userService = {
     login: async (email, password) => {
-        try {
-            const res = await axios.post(`${BASE_URL}/login`, { email, password });
-            return res.data;
-        } catch (err) {
-            if (err.response && err.response.data && err.response.data.message) {
-                throw new Error(err.response.data.message);
-            }
-            throw new Error("Lỗi kết nối máy chủ!");
+        const res = await axios.post(`${BASE_URL}/login`, { email, password });
+        if (res.data.token) {
+            localStorage.setItem("token", res.data.token);
         }
+        return res.data;
     },
-
     logout: () => {
-        localStorage.removeItem("account");
+        localStorage.removeItem("token");
     },
-
-    getCurrentUser: () => {
-        const user = localStorage.getItem("account");
-        return user ? JSON.parse(user) : null;
-    },
+    getToken: () => localStorage.getItem("token")
 };
 
 export default userService;
