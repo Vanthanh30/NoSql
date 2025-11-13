@@ -229,6 +229,15 @@ a {
                 margin-bottom: 3px;
             }
         }
+
+        &__item--active a {
+            color: #2894CA;
+            font-weight: 600;
+
+            .icon {
+                color: #2894CA;
+            }
+        }
     }
 }
 
@@ -276,5 +285,213 @@ a {
         margin-top: 10px;
         font-size: 13px;
         color: #999;
+    }
+}
+
+/* Laptop 14 inch hoặc nhỏ hơn */
+@media (max-width: 1366px) {
+    .header {
+        padding: 5px 20px;
+
+        &__container-fluid {
+            .logo {
+                width: 100px;
+                height: 60px;
+
+                span {
+                    font-size: 20px;
+                }
+            }
+
+            .search {
+                .search-bar__form {
+                    max-width: 700px;
+
+                    input {
+                        height: 38px;
+                        font-size: 14px;
+                    }
+
+                    button {
+                        width: 45px;
+                        height: 38px;
+                        font-size: 14px;
+                    }
+                }
+            }
+
+            .infor {
+                &__img {
+                    width: 36px;
+                    height: 36px;
+                }
+
+                &__name {
+                    font-size: 12px;
+                    max-width: 80px;
+                }
+            }
+
+            .language-selector {
+                width: 140px;
+
+                .language-selected {
+                    padding: 5px 8px;
+
+                    img {
+                        width: 22px;
+                        height: 14px;
+                    }
+
+                    span {
+                        font-size: 13px;
+                    }
+                }
+            }
+        }
+    }
+
+    .footer {
+        font-size: 13px;
+
+        .social-links a {
+            margin: 0 12px;
+            font-size: 13px;
+
+            .icon {
+                font-size: 16px;
+            }
+        }
+
+        .copyright {
+            font-size: 12px;
+        }
+    }
+}
+
+/* Khi thu nhỏ trình duyệt hoặc trên tablet */
+@media (max-width: 992px) {
+    .header {
+        padding: 8px 12px;
+
+        &__container-fluid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+
+            .logo {
+                width: 90px;
+                height: 50px;
+                text-align: center;
+
+                span {
+                    font-size: 18px;
+                }
+            }
+
+            .search {
+                width: 100%;
+
+                .search-bar__form {
+                    width: 100%;
+                    max-width: 500px;
+
+                    input {
+                        font-size: 13px;
+                        height: 36px;
+                    }
+
+                    button {
+                        width: 40px;
+                        height: 36px;
+                    }
+                }
+            }
+
+            .language-selector {
+                width: 130px;
+                margin: 6px 0;
+            }
+
+            .infor {
+                flex-direction: row;
+                justify-content: center;
+                gap: 8px;
+
+                &__img {
+                    width: 34px;
+                    height: 34px;
+                    margin-bottom: 0;
+                }
+
+                &__name {
+                    font-size: 12px;
+                    max-width: none;
+                }
+            }
+        }
+    }
+
+    .footer {
+        padding: 8px 0;
+        font-size: 12.5px;
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+
+            a {
+                margin: 0;
+                font-size: 12.5px;
+            }
+        }
+
+        .copyright {
+            margin-top: 8px;
+            font-size: 12px;
+        }
+    }
+}
+
+/* Màn hình rất nhỏ (mobile) */
+@media (max-width: 576px) {
+    .header {
+        &__container-fluid {
+            .logo {
+                width: 80px;
+                height: 45px;
+
+                span {
+                    font-size: 16px;
+                }
+            }
+
+            .search .search-bar__form {
+                max-width: 100%;
+                flex-direction: column;
+                gap: 6px;
+
+                button {
+                    margin-left: 0;
+                    width: 100%;
+                }
+            }
+
+            .language-selector {
+                width: 120px;
+            }
+        }
+    }
+
+    .footer {
+        font-size: 12px;
+
+        .social-links {
+            flex-direction: column;
+            gap: 6px;
+        }
     }
 }

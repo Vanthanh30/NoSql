@@ -436,3 +436,210 @@
         }
     }
 }
+
+
+/* Laptop 14-15 inch và nhỏ hơn */
+@media (max-width: 1366px) {
+    .accounts {
+        padding: 20px 0;
+
+        .container {
+            max-width: 96%;
+            padding: 0 12px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .accounts__table {
+
+            th,
+            td {
+                padding: 10px 8px;
+                font-size: 13.5px;
+            }
+
+            .accounts__image {
+                width: 44px;
+                height: 44px;
+            }
+
+            .btn {
+                padding: 5px 10px;
+                font-size: 13px;
+                min-width: 50px;
+            }
+        }
+
+        .btn-add-account {
+            padding: 8px 14px;
+            font-size: 14px;
+        }
+
+        .pagination-wrapper .pagination-btn {
+            padding: 6px 10px;
+            font-size: 13px;
+        }
+
+        /* Form */
+        .card {
+            padding: 28px 30px;
+        }
+
+        .form-actions {
+            gap: 12px;
+            flex-wrap: wrap;
+            /* tránh đè nút */
+        }
+    }
+}
+
+/* Tablet / cửa sổ thu nhỏ */
+@media (max-width: 992px) {
+    .accounts {
+        padding: 16px 0;
+
+        .container {
+            max-width: 98%;
+            padding: 0 10px;
+        }
+
+        /* Cho phép cuộn ngang khi bảng quá rộng */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .accounts__table {
+            display: block;
+            white-space: nowrap;
+
+            th,
+            td {
+                padding: 8px 6px;
+                font-size: 13px;
+            }
+
+            tr {
+                display: table-row;
+            }
+
+            .accounts__image {
+                width: 42px;
+                height: 42px;
+            }
+
+            .btn {
+                padding: 5px 8px;
+                font-size: 12.5px;
+            }
+        }
+
+        .add-button-wrapper {
+            justify-content: center;
+            padding: 0 8px;
+        }
+
+        .btn-add-account {
+            width: 100%;
+            max-width: 320px;
+            display: block;
+            text-align: center;
+        }
+
+        .pagination-wrapper {
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        /* Form: chuyển layout form sang dọc nếu cần */
+        .card form {
+            grid-template-columns: 1fr !important;
+            gap: 16px 20px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            align-items: stretch;
+
+            .btn {
+                width: 100%;
+            }
+        }
+    }
+}
+
+/* Mobile nhỏ */
+@media (max-width: 576px) {
+    .accounts {
+        padding: 12px 0;
+
+        h1 {
+            font-size: 20px;
+            margin-bottom: 14px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .accounts__table {
+
+            th,
+            td {
+                padding: 6px 8px;
+                font-size: 12px;
+            }
+
+            .accounts__image {
+                width: 36px;
+                height: 36px;
+            }
+
+            .btn {
+                padding: 5px 8px;
+                font-size: 12px;
+                min-width: 44px;
+            }
+        }
+
+        .add-button-wrapper {
+            justify-content: center;
+            padding: 0 10px;
+        }
+
+        .btn-add-account {
+            width: 100%;
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+
+        .pagination-wrapper {
+            gap: 4px;
+
+            .pagination-btn {
+                padding: 4px 8px;
+                font-size: 12px;
+            }
+        }
+
+        /* Form (mobile): co gọn */
+        .card {
+            padding: 18px;
+        }
+
+        .avatar-preview img {
+            width: 100px;
+            height: 100px;
+        }
+
+        .form-actions {
+            gap: 10px;
+
+            .btn {
+                width: 100%;
+            }
+        }
+    }
+}

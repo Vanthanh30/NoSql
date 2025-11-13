@@ -277,3 +277,261 @@
     }
   }
 }
+
+/* Laptop ≤ 1366px */
+@media (max-width: 1366px) {
+  .articles {
+    padding: 20px 0;
+
+    &__title {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    &__table {
+
+      th,
+      td {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+
+    &__btn-add {
+      padding: 0.6rem 1rem;
+      font-size: 14px;
+      margin-top: 1rem;
+    }
+  }
+
+  .create-article {
+    padding: 30px 0;
+
+    &__title {
+      font-size: 24px;
+    }
+
+    &__form {
+      padding: 1.8rem 2rem;
+
+      label {
+        font-size: 14px;
+      }
+
+      input[type="text"],
+      select,
+      input[type="file"] {
+        font-size: 0.95rem;
+      }
+    }
+  }
+}
+
+/* Tablet ≤ 992px */
+@media (max-width: 992px) {
+  .articles {
+    padding: 15px 0;
+
+    &__table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+
+      th,
+      td {
+        font-size: 13px;
+        padding: 8px;
+      }
+
+      tr {
+        display: table-row;
+      }
+    }
+
+    &__btn-add {
+      display: block;
+      width: 100%;
+      text-align: center;
+      margin-top: 1.25rem;
+    }
+  }
+
+  .create-article {
+    &__form {
+      padding: 1.5rem;
+
+      .avatar-preview {
+        flex-direction: column;
+        align-items: center;
+
+        img {
+          width: 130px;
+          height: 130px;
+        }
+      }
+
+      .btn-actions {
+        flex-direction: column;
+        align-items: stretch;
+
+        button {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
+
+/* Mobile ≤ 576px */
+@media (max-width: 576px) {
+  .articles {
+    &__title {
+      font-size: 20px;
+    }
+
+    &__table {
+
+      th,
+      td {
+        font-size: 12px;
+        padding: 6px;
+      }
+    }
+
+    &__btn-add {
+      font-size: 13px;
+      padding: 0.5rem 0.9rem;
+    }
+  }
+
+  .create-article {
+    padding: 20px 0;
+
+    &__form {
+      padding: 1rem;
+      gap: 1rem;
+
+      label {
+        font-size: 13px;
+      }
+
+      input[type="text"],
+      select,
+      input[type="file"] {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.8rem;
+      }
+
+      .avatar-preview img {
+        width: 100px;
+        height: 100px;
+      }
+
+      .btn-actions {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  }
+}
+
+/* Laptop ≤ 1366px */
+@media (max-width: 1366px) {
+  .courses {
+    padding: 20px 0;
+
+    &__title {
+      font-size: 24px;
+      margin-top: -30px;
+      margin-bottom: 20px;
+    }
+
+    &__table {
+
+      th,
+      td {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+
+    &__btn-add {
+      font-size: 14px;
+      padding: 8px 14px;
+    }
+  }
+}
+
+/* Tablet ≤ 992px */
+@media (max-width: 992px) {
+  .courses {
+    padding: 15px 0;
+
+    &__table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+
+      th,
+      td {
+        font-size: 13px;
+        padding: 8px;
+      }
+    }
+
+    &__btn-add {
+      display: block;
+      width: 100%;
+      text-align: center;
+      margin-top: 20px;
+      float: none;
+    }
+
+    .pagination-wrapper {
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+  }
+}
+
+/* Mobile ≤ 576px */
+@media (max-width: 576px) {
+  .courses {
+    padding: 10px 0;
+
+    &__title {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    &__table {
+
+      th,
+      td {
+        font-size: 12px;
+        padding: 6px;
+      }
+
+      img {
+        width: 45px;
+        height: 45px;
+      }
+    }
+
+    &__btn-add {
+      font-size: 13px;
+      padding: 8px 12px;
+      margin-top: 18px;
+      width: 100%;
+    }
+
+    .pagination-wrapper {
+      gap: 2px;
+
+      .pagination-btn {
+        font-size: 12px;
+        padding: 4px 8px;
+      }
+    }
+  }
+}
