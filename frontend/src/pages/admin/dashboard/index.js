@@ -1,76 +1,89 @@
-import "./dashboard.scss"
-import { FaArrowRight } from "react-icons/fa";
-function Dashboard() {
-    const data = [
-        { title: 'Khóa học', quantity: 22, className: 'orange' },
-        { title: 'Học viên', quantity: 22, className: 'blue' },
-        { title: 'Doanh thu', quantity: '$5000', className: 'yellow' },
-        { title: 'Khóa học hoàn thành', quantity: 22, className: 'green' },
-    ]
-    return (
-        <div className="container">
-            <div className="row"></div>
-            <div className="col-md-12">
-                <div className="dashboard">
-                    {data.map((item, index) => (
-                        <div className={`dashboard-item ${item.className}`} key={index}>
-                            <h2>{item.title}</h2>
-                            <span className="quantity">{item.quantity}</span>
-                        </div>
-                    ))}
-                </div>
-            </div>
-            <div className="col-md-12">
-                <div className="dashboard-list">
-                    <h2>Các khóa học</h2>
-                    <table className="table-course">
-                        <thead>
-                            <tr>
-                                <th>Tên khóa học</th>
-                                <th>Giảng viên</th>
-                                <th>Thời gian</th>
-                                <th>Trạng thái</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Khóa học 1</td>
-                                <td>Giảng viên 1</td>
-                                <td>10 giờ</td>
-                                <td>Đang diễn ra</td>
-                                <td>
-                                    <button className="btn-edit">Sửa</button>
-                                    <button className="btn-delete">Xóa</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Khóa học 2</td>
-                                <td>Giảng viên 2</td>
-                                <td>8 giờ</td>
-                                <td>Hoàn thành</td>
-                                <td>
-                                    <button className="btn-edit">Sửa</button>
-                                    <button className="btn-delete">Xóa</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Khóa học 2</td>
-                                <td>Giảng viên 2</td>
-                                <td>8 giờ</td>
-                                <td>Hoàn thành</td>
-                                <td>
-                                    <button className="btn-edit">Sửa</button>
-                                    <button className="btn-delete">Xóa</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                        <span className='view-more'> <a href="/admin">xem thêm <FaArrowRight /></a></span>
-                    </table>
-                </div>
+import React, { useEffect, useState } from "react";
+import Dashboard from "../../../components/Dashboard";
+import courseAPI from "../../../services/admin/courseService";
+import "./dashboard.scss";
 
+const AdminDashboardPage = () => {
+    const [courses, setCourses] = useState([]);
+    const [refreshFlag, setRefreshFlag] = useState(false); // state để refresh dữ liệu
+
+    // Hàm gọi để trigger refresh khi thêm khóa học/bài viết
+    const triggerRefresh = () => setRefreshFlag(prev => !prev);
+
+    // Load danh sách khóa học
+    useEffect(() => {
+        const fetchCourses = async () => {
+            try {
+                const res = await courseAPI.getAll();
+                setCourses(res.data || []);
+            } catch (error) {
+                console.error("Lỗi khi lấy danh sách khóa học:", error);
+            }
+        };
+
+        fetchCourses();
+    }, [refreshFlag]); // reload mỗi khi refreshFlag thay đổi
+
+    return (
+        <div>
+            <h1>Trang tổng quan</h1>
+
+            {/* Component Dashboard nhận prop refreshFlag */}
+            <Dashboard refreshFlag={refreshFlag} />
+
+            {/* Bảng danh sách khóa học */}
+            <div className="dashboard-list">
+                <h2>Danh sách khóa học</h2>
+                <table className="table-course">
+                    <thead>
+                        <tr>
+                            <th>Tiêu đề</th>
+                            <th>Giá</th>
+                            <th>Giảm giá</th>
+                            <th>Giáo viên</th>
+                            <th>Ngày tạo</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {courses.length > 0 ? (
+                            courses.slice(0, 3).map((course) => (
+                                <tr key={course._id}>
+                                    <td>{course.title}</td>
+                                    <td>{course.pricing?.price?.toLocaleString()}₫</td>
+                                    <td>{course.pricing?.discount || 0}%</td>
+                                    <td>{course.instructor}</td>
+                                    <td>
+                                        {new Date(course.createdAt).toLocaleDateString("vi-VN")}
+                                    </td>
+                                    <td>{course.status}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="6" style={{ textAlign: "center" }}>
+                                    Không có khóa học nào
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+
+                <div style={{ textAlign: "center", marginTop: "10px" }}>
+                    <button
+                        className="btn-view-more"
+                        onClick={() => window.location.href = "/admin/courses"}
+                    >
+                        Xem thêm
+                    </button>
+                </div>
             </div>
+
+            {/* Ví dụ: truyền triggerRefresh xuống component thêm khóa học / bài viết */}
+            {/* <CreateCourse onCreateSuccess={triggerRefresh} /> */}
+            {/* <CreateArticle onCreateSuccess={triggerRefresh} /> */}
         </div>
     );
-}
-export default Dashboard;
+};
+
+export default AdminDashboardPage;

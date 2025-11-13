@@ -1,11 +1,13 @@
 import './course.scss';
 import TextEditor from '../../../components/TinyMCE/index';
 import { useState, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import courseAPI from '../../../services/admin/courseService';
 import lessonAPI from '../../../services/admin/lessonService';
 import chapterAPI from '../../../services/admin/chapterService';
 import categoryAPI from '../../../services/admin/categoryService';
+import userService from '../../../services/admin/userService';
 
 function CreateCourse() {
     const [modules, setModules] = useState([]);
@@ -88,6 +90,9 @@ function CreateCourse() {
             ));
         }
     };
+    const handleDescriptionChange = (content) => {
+        setCourseInfo(prev => ({ ...prev, description: content }));
+    };
     const removeVideo = (moduleId, lessonId) =>
         setModules(modules.map(m =>
             m.id === moduleId
@@ -103,8 +108,17 @@ function CreateCourse() {
     // --- Input change handler ---
     const handleInputChange = (e) => {
         const { name, value, files } = e.target;
-        if (files) setCourseInfo({ ...courseInfo, [name]: files[0] });
-        else setCourseInfo({ ...courseInfo, [name]: value });
+
+        if (files) {
+            setCourseInfo({ ...courseInfo, [name]: files[0] });
+        } else {
+            if (name === "price" || name === "discount" || name === "duration") {
+                const numericValue = value === "" ? 0 : Number(value);
+                setCourseInfo({ ...courseInfo, [name]: numericValue });
+            } else {
+                setCourseInfo({ ...courseInfo, [name]: value });
+            }
+        }
     };
 
     // --- Submit form ---
@@ -166,6 +180,14 @@ function CreateCourse() {
             if (courseInfo.thumbnail) formData.append("imageUrl", courseInfo.thumbnail);
             if (courseInfo.introVideo) formData.append("videoUrl", courseInfo.introVideo);
 
+            const token = userService.getToken();
+            if (token) {
+                const decoded = jwtDecode(token);
+                const userId = decoded.id || decoded._id; // tùy payload token
+                if (userId) {
+                    formData.append("createBy", userId);
+                }
+            }
             // Gọi API tạo course
             const courseRes = await courseAPI.create(formData);
             alert("Tạo khóa học thành công!");
@@ -232,7 +254,10 @@ function CreateCourse() {
 
                     <div className="form-group">
                         <label>Mô tả chi tiết</label>
-                        <TextEditor />
+                        <TextEditor
+                            value={courseInfo.description}
+                            onChange={handleDescriptionChange}
+                        />
                     </div>
 
                     {/* Modules */}

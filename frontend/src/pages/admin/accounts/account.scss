@@ -1,6 +1,6 @@
 // src/styles/account.scss
 // ========================================
-// 1. DANH SÁCH TÀI KHOẢN - CHUẨN HÌNH
+// 1. DANH SÁCH TÀI KHOẢN - GIỮ NGUYÊN HOÀN TOÀN
 // ========================================
 .accounts {
     padding: 30px 0;
@@ -24,16 +24,15 @@
 
         &::after {
             content: "";
-            width: 80px;
+            width: 90px;
             height: 4px;
             background: #0d6efd;
             display: block;
-            margin: 12px auto 0;
+            margin: 14px auto 0;
             border-radius: 2px;
         }
     }
 
-    // BẢNG TRONG WRAPPER ĐỂ CĂN CHỈNH
     .table-wrapper {
         overflow: hidden;
         border-radius: 12px;
@@ -54,8 +53,6 @@
             text-align: center;
             padding: 14px 12px;
             font-size: 15px;
-            text-transform: none;
-            letter-spacing: normal;
 
             &:nth-child(1) {
                 width: 80px;
@@ -140,10 +137,8 @@
             &.btn-edit {
                 background-color: #0d6efd;
                 color: #fff;
-                font-weight: 500;
-                padding: 6px 14px;
                 border-radius: 6px;
-                transition: all 0.3s ease;
+                padding: 6px 14px;
 
                 &:hover {
                     background-color: #0b5ed7;
@@ -154,11 +149,9 @@
             &.btn-delete {
                 background-color: #dc3545;
                 color: #fff;
-                font-weight: 500;
-                padding: 6px 14px;
                 border-radius: 6px;
                 margin-left: 8px;
-                transition: all 0.3s ease;
+                padding: 6px 14px;
 
                 &:hover {
                     background-color: #bb2d3b;
@@ -168,47 +161,46 @@
         }
     }
 
-    // PHÂN TRANG
     .pagination-wrapper {
         display: flex;
         justify-content: center;
         gap: 8px;
         margin: 20px 0;
         flex-wrap: wrap;
+
+        .pagination-btn {
+            padding: 8px 14px;
+            border: 1px solid #ddd;
+            background: #fff;
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 40px;
+
+            &:hover:not(:disabled) {
+                background: #0d6efd;
+                color: #fff;
+                border-color: #0d6efd;
+                transform: translateY(-2px);
+            }
+
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+            &.active {
+                background: #0d6efd;
+                color: #fff;
+                border-color: #0d6efd;
+                font-weight: 600;
+            }
+        }
     }
 
-    .pagination-btn {
-        padding: 8px 14px;
-        border: 1px solid #ddd;
-        background: white;
-        color: #333;
-        font-size: 14px;
-        font-weight: 500;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        min-width: 40px;
-
-        &:hover:not(:disabled) {
-            background: #0d6efd;
-            color: white;
-            border-color: #0d6efd;
-        }
-
-        &:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        &.active {
-            background: #0d6efd;
-            color: white;
-            border-color: #0d6efd;
-            font-weight: 600;
-        }
-    }
-
-    // NÚT THÊM - TỰ CÁCH THEO BẢNG
     .add-button-wrapper {
         display: flex;
         justify-content: flex-end;
@@ -217,7 +209,6 @@
     }
 
     .btn-add-account {
-        float: right;
         margin-top: 15px;
         padding: 10px 18px;
         font-size: 16px;
@@ -240,41 +231,43 @@
     }
 }
 
-//2. FORM THÊM / SỬA (GIỮ NGUYÊN)
+// ========================================
+// 2. FORM THÊM / SỬA – ĐỒNG BỘ VỚI CODE INDEX
+// ========================================
 .add-account,
 .edit-account {
-    padding: 30px 0;
+    padding: 40px 0;
     background: #f8f9fa;
-    min-height: 80vh;
+    min-height: 85vh;
 
     .container {
-        max-width: 1000px;
+        max-width: 900px;
         margin: 0 auto;
         padding: 0 15px;
     }
 
     .card {
-        background: white;
-        padding: 30px;
+        background: #fff;
+        padding: 36px 40px;
         border-radius: 16px;
-        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
-        margin-bottom: 30px;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
 
         h1 {
             font-size: 26px;
             font-weight: 700;
             color: #333;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
             position: relative;
 
             &::after {
                 content: "";
-                width: 80px;
+                width: 90px;
                 height: 4px;
                 background: #0d6efd;
                 display: block;
-                margin: 12px auto 0;
+                margin: 14px auto 0;
                 border-radius: 2px;
             }
         }
@@ -282,12 +275,12 @@
         form {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px 30px;
+            gap: 22px 30px;
 
             label {
                 display: block;
                 font-size: 14.5px;
-                font-weight: 500;
+                font-weight: 600;
                 color: #444;
                 margin-bottom: 8px;
             }
@@ -299,7 +292,7 @@
                 border: 1.5px solid #ddd;
                 border-radius: 8px;
                 font-size: 15px;
-                transition: all 0.2s ease;
+                transition: all 0.25s ease;
 
                 &:focus {
                     outline: none;
@@ -315,17 +308,18 @@
             input[type="file"] {
                 padding: 8px 0;
                 border: none;
+                font-size: 14px;
 
                 &::file-selector-button {
                     background: #0d6efd;
-                    color: white;
+                    color: #fff;
                     border: none;
                     padding: 8px 16px;
                     border-radius: 6px;
                     cursor: pointer;
                     font-weight: 500;
                     margin-right: 12px;
-                    transition: 0.2s;
+                    transition: background 0.25s ease;
 
                     &:hover {
                         background: #0b5ed7;
@@ -334,159 +328,111 @@
             }
 
             .avatar-preview {
-                margin-top: 10px;
+                grid-column: 1 / -1;
                 text-align: center;
+                margin-top: 10px;
 
                 img {
-                    width: 100px;
-                    height: 100px;
+                    width: 150px;
+                    height: 150px;
                     object-fit: cover;
-                    border-radius: 8px;
+                    border-radius: 10px;
                     border: 3px solid #0d6efd;
-                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                    transition: transform 0.3s ease;
+
+                    &:hover {
+                        transform: scale(1.05);
+                    }
                 }
             }
 
-            .actions {
+            // NÚT HÀNH ĐỘNG – TRONG .form-actions
+            .form-actions {
                 grid-column: 1 / -1;
                 display: flex;
-                justify-content: flex-end;
-                gap: 15px;
-                margin-top: 20px;
+                justify-content: flex-start;
+                align-items: center;
+                gap: 16px; // TÁCH RỘNG 32PX
+                margin-top: 40px;
 
                 .btn {
-                    padding: 11px 22px;
-                    border: none;
+                    padding: 11px 24px;
                     border-radius: 8px;
-                    font-size: 15px;
+                    border: none;
                     font-weight: 600;
                     cursor: pointer;
-                    min-width: 100px;
+                    min-width: 120px;
+                    font-size: 15px;
                     transition: all 0.3s ease;
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                }
 
-                    &.btn-primary {
-                        background: #0d6efd;
-                        color: white;
+                // NÚT LƯU – MÀU XANH LÁ #198754
+                .btn-primary {
+                    background: #198754;
+                    color: #fff;
 
-                        &:hover {
-                            background: #0b5ed7;
-                            transform: translateY(-2px);
-                            box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
-                        }
+                    &:hover {
+                        background: #157347;
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 14px rgba(25, 135, 84, 0.35);
                     }
 
-                    &.btn-secondary {
-                        background: #6c757d;
-                        color: white;
+                    &:disabled {
+                        opacity: 0.7;
+                        cursor: not-allowed;
+                        transform: none;
+                        box-shadow: none;
+                    }
+                }
 
-                        &:hover {
-                            background: #5a6268;
-                            transform: translateY(-2px);
-                        }
+                // NÚT HỦY
+                .btn-secondary {
+                    background: #6c757d;
+                    color: #fff;
+
+                    &:hover {
+                        background: #5a6268;
+                        transform: translateY(-2px);
+                        box-shadow: 0 4px 12px rgba(108, 117, 125, 0.25);
                     }
                 }
             }
         }
 
         .text-danger {
+            grid-column: 1 / -1;
             color: #dc3545;
             font-size: 14px;
-            margin-top: 10px;
+            margin-top: 12px;
             text-align: center;
-            grid-column: 1 / -1;
+            font-weight: 500;
         }
     }
-}
 
-// ========================================
-// 3. RESPONSIVE
-// ========================================
-@media (max-width: 992px) {
-    .accounts .accounts__table {
-        font-size: 13.5px;
-    }
-
-    .add-button-wrapper {
-        justify-content: center;
-    }
-
-    .btn-add-account {
-        width: 100%;
-        max-width: 300px;
-    }
-}
-
-@media (max-width: 768px) {
-
-    .accounts,
-    .add-account,
-    .edit-account {
-        padding: 20px 0;
-
-        .container {
-            padding: 0 10px;
-        }
-
-        h1 {
-            font-size: 24px;
+    @media (max-width: 768px) {
+        .card {
+            padding: 20px;
+            margin: 20px auto;
         }
 
         form {
             grid-template-columns: 1fr !important;
-            gap: 18px !important;
         }
 
-        .actions {
-            justify-content: center;
+        .form-actions {
             flex-direction: column;
+            gap: 16px;
 
             .btn {
                 width: 100%;
             }
         }
 
-        .accounts__table {
-            display: block;
-            overflow-x: auto;
-            white-space: nowrap;
-
-            th,
-            td {
-                padding: 10px 8px;
-                min-width: 80px;
-            }
-
-            .accounts__image {
-                width: 40px;
-                height: 40px;
-            }
-
-            .btn {
-                padding: 5px 10px;
-                font-size: 12px;
-            }
-        }
-
-        .pagination-wrapper {
-            gap: 5px;
-
-            .pagination-btn {
-                padding: 6px 10px;
-                font-size: 13px;
-            }
-        }
-
-        .add-button-wrapper {
-            padding: 0 10px;
-            justify-content: center;
-            margin-top: 15px;
-        }
-
-        .btn-add-account {
-            padding: 10px 24px;
-            font-size: 15px;
-            width: 100%;
-            max-width: 280px;
+        .avatar-preview img {
+            width: 120px;
+            height: 120px;
         }
     }
 }

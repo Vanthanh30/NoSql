@@ -30,7 +30,3 @@ const courseAPI = {
 };
 
 export default courseAPI;
-// // getAll: () => {
-//     const token = userService.getToken();
-//     return axios.get(API_URL, { headers: { Authorization: `Bearer ${token}` } });
-//   },

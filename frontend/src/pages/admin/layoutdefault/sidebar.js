@@ -5,8 +5,17 @@ import { FaNewspaper } from "react-icons/fa6";
 import { IoLogOut } from "react-icons/io5";
 import { FaRegListAlt } from "react-icons/fa";
 import { MdAccountBox } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 function Sidebar() {
     const ADMIN_PATH = "/admin";
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("account");
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/admin/login");
+    };
     return (
         <div className="sidebar">
             <div className="sidebar__container">
@@ -41,7 +50,7 @@ function Sidebar() {
                         </a>
                     </li>
                     <li className="sidebar__item">
-                        <a href="/logout">
+                        <a onClick={handleLogout} style={{ cursor: "pointer" }}>
                             <div className="icon"><IoLogOut /></div>
                             <span>Đăng xuất</span>
                         </a>
