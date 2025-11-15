@@ -11,6 +11,35 @@ function EditCourse() {
     const { id } = useParams();
     const navigate = useNavigate();
 
+    // --- Các hàm cập nhật dữ liệu gọi API ---
+    const updateCourseField = async (field, value) => {
+        try {
+            const payload = { [field]: value };
+            await courseService.update(id, payload);
+        } catch (error) {
+            alert(`Lỗi cập nhật ${field}: ` + (error.response?.data?.error || error.message));
+            console.error(error);
+        }
+    };
+
+    const updateCourseTime = async (timeData) => {
+        try {
+            await courseService.update(id, { time: timeData });
+        } catch (error) {
+            alert('Lỗi cập nhật thời gian: ' + (error.response?.data?.error || error.message));
+            console.error(error);
+        }
+    };
+
+    const updateCoursePricing = async (pricingData) => {
+        try {
+            await courseService.update(id, { pricing: pricingData });
+        } catch (error) {
+            alert('Lỗi cập nhật học phí: ' + (error.response?.data?.error || error.message));
+            console.error(error);
+        }
+    };
+
     // --- STATE FORM ---
     const [title, setTitle] = useState('');
     const [category, setCategory] = useState('');
@@ -34,9 +63,9 @@ function EditCourse() {
 
     const formRef = useRef(null);
 
-    // --- LOAD COURSE ---
+    // --- LOAD DATA ---
     useEffect(() => {
-        loadCategories(); // gọi thêm API danh mục
+        loadCategories();
         if (!id) return;
         loadCourse();
     }, [id]);
@@ -46,10 +75,11 @@ function EditCourse() {
             const { data } = await categoryAPI.getAll();
             setCategories(data.categories || []);
         } catch (err) {
-            console.error('Lỗi tải danh mục:', err);
             alert('Không tải được danh mục');
+            console.error(err);
         }
     };
+
     const loadCourse = async () => {
         try {
             const { data } = await courseService.getById(id);
@@ -104,6 +134,7 @@ function EditCourse() {
                 setChapters([]);
             }
 
+            // Preview ảnh/video khóa học
             if (formRef.current) {
                 const img = formRef.current.querySelector('.preview-image');
                 if (img) img.src = data.media?.imageUrl || 'https://via.placeholder.com/150';
@@ -125,37 +156,7 @@ function EditCourse() {
         }
     };
 
-    const updateCourseField = async (field, value) => {
-        try {
-            const formData = new FormData();
-            formData.append('data', JSON.stringify({ [field]: value }));
-            await courseService.update(id, formData);
-        } catch (err) {
-            console.error(`Cập nhật khóa học thất bại ở trường ${field}:`, err);
-        }
-    };
-
-    const updateCourseTime = async (newTime) => {
-        try {
-            const formData = new FormData();
-            formData.append('data', JSON.stringify({ time: newTime }));
-            await courseService.update(id, formData);
-        } catch (err) {
-            console.error('Cập nhật thời gian khóa học thất bại:', err);
-        }
-    };
-
-    const updateCoursePricing = async (newPricing) => {
-        try {
-            const formData = new FormData();
-            formData.append('data', JSON.stringify({ pricing: newPricing }));
-            await courseService.update(id, formData);
-        } catch (err) {
-            console.error('Cập nhật học phí khóa học thất bại:', err);
-        }
-    };
-
-    // --- XỬ LÝ PREVIEW ẢNH VÀ VIDEO KHI CHỌN FILE MỚI ---
+    // --- HANDLE FILE PREVIEWS ---
     useEffect(() => {
         if (!formRef.current) return;
 
@@ -191,7 +192,6 @@ function EditCourse() {
 
         if (!lessonId) {
             alert('Bài học này chưa có ID trong CSDL. Hãy bấm "Lưu khóa học" trước khi tải video.');
-            console.error('Không có lessonId khi chọn video:', lesson);
             return;
         }
 
@@ -233,7 +233,7 @@ function EditCourse() {
         };
     }, [chapters]);
 
-    // --- SUBMIT FORM (ĐÃ CẬP NHẬT ĐẦY ĐỦ) ---
+    // --- HANDLE FORM SUBMIT ---
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -259,16 +259,14 @@ function EditCourse() {
         if (videoFile) payload.append('videoUrl', videoFile);
 
         try {
-            // Cập nhật thông tin, ảnh, video khóa học
+            // Cập nhật khóa học
             await courseService.update(id, payload);
-            console.log('Đã cập nhật khóa học');
 
-            // Cập nhật video cho các bài học (nếu có)
+            // Cập nhật video bài học nếu có
             for (const [lessonId, file] of Object.entries(lessonVideoFiles)) {
                 const videoForm = new FormData();
                 videoForm.append('videoUrl', file);
                 await lessonService.uploadVideo(lessonId, videoForm);
-                console.log(`Cập nhật video cho bài học ${lessonId}`);
             }
 
             alert('Lưu thành công!');
@@ -276,12 +274,12 @@ function EditCourse() {
             setLessonVideoFiles({});
             navigate('/admin/courses');
         } catch (err) {
-            console.error('Lỗi khi lưu:', err);
-            alert('Lỗi: ' + (err.response?.data?.error || err.message));
+            alert('Lỗi khi lưu: ' + (err.response?.data?.error || err.message));
+            console.error(err);
         }
     };
 
-    // --- CHAPTER & LESSON ---
+    // --- CHAPTER & LESSON CRUD ---
     const addChapter = async () => {
         try {
             const newChapter = await chapterService.create({ title: 'Chương mới', courseId: id });
@@ -315,12 +313,17 @@ function EditCourse() {
     const updateChapter = async (idx, title) => {
         const ch = chapters[idx];
         if (ch._id) {
-            await chapterService.update(ch._id, { title });
-            setChapters(prev => {
-                const copy = [...prev];
-                copy[idx].title = title;
-                return copy;
-            });
+            try {
+                await chapterService.update(ch._id, { title });
+                setChapters(prev => {
+                    const copy = [...prev];
+                    copy[idx].title = title;
+                    return copy;
+                });
+            } catch (err) {
+                alert('Cập nhật chương thất bại');
+                console.error(err);
+            }
         }
     };
 
@@ -334,12 +337,17 @@ function EditCourse() {
     const updateLesson = async (chIdx, lesIdx, title) => {
         const lesson = chapters[chIdx].lessons[lesIdx];
         if (lesson._id) {
-            await lessonService.update(lesson._id, { title });
-            setChapters(prev => {
-                const copy = [...prev];
-                copy[chIdx].lessons[lesIdx].title = title;
-                return copy;
-            });
+            try {
+                await lessonService.update(lesson._id, { title });
+                setChapters(prev => {
+                    const copy = [...prev];
+                    copy[chIdx].lessons[lesIdx].title = title;
+                    return copy;
+                });
+            } catch (err) {
+                alert('Cập nhật bài học thất bại');
+                console.error(err);
+            }
         }
     };
 
@@ -356,7 +364,6 @@ function EditCourse() {
 
     // --- RENDER ---
     if (!title && !description) return <div className="text-center">Đang tải...</div>;
-
     return (
         <div className="add-course">
             <div className="add-course__header">
