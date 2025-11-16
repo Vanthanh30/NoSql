@@ -1,4 +1,3 @@
-// src/pages/admin/courses/CourseList.jsx
 import React, { useEffect, useState } from "react";
 import courseService from "../../../services/admin/courseService";
 import "./course.scss";
@@ -114,10 +113,18 @@ function CourseList() {
                                             <td>{course.time?.durationHours ?? 0}</td>
                                             <td>
                                                 <span
-                                                    className={`badge ${course.status === "active" ? "bg-success" : "bg-secondary"
+                                                    className={`badge ${course.status === "Sắp khai giảng"
+                                                        ? "bg-info"
+                                                        : course.status === "Đang diễn ra"
+                                                            ? "bg-success"
+                                                            : course.status === "Hoàn thành"
+                                                                ? "bg-primary"
+                                                                : course.status === "Đã hủy"
+                                                                    ? "bg-danger"
+                                                                    : "bg-secondary"
                                                         }`}
                                                 >
-                                                    {course.status === "active" ? "Đang hoạt động" : "Không hoạt động"}
+                                                    {course.status || "Không xác định"}
                                                 </span>
                                             </td>
                                             <td>

@@ -247,43 +247,71 @@
 }
 
 // PHÂN TRANG – GIỮ NGUYÊN NHƯ CŨ (KHÔNG ĐỘNG VÀO)
-.categories__pagination {
+.pagination-wrapper {
   display: flex;
   justify-content: center;
-  align-items: center;
+  gap: 8px;
+  margin: 20px 0;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 20px;
 
   .pagination-btn {
-    padding: 6px 12px;
-    font-size: 14px;
+    padding: 8px 14px;
     border: 1px solid #ddd;
-    border-radius: 6px;
-    background-color: #fff;
+    background: #fff;
     color: #333;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.2s ease;
+    min-width: 40px;
 
     &:hover:not(:disabled) {
-      background-color: #0db9fd;
+      background: #0d6efd;
       color: #fff;
-      border-color: #0db9fd;
+      border-color: #0d6efd;
       transform: translateY(-2px);
     }
 
-    &.active {
-      background-color: #0d6efd;
-      color: #fff;
-      border-color: #0d6efd;
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
-    &:disabled {
-      background-color: #f5f5f5;
-      color: #aaa;
-      border-color: #ddd;
-      cursor: not-allowed;
-      transform: none;
+    &.active {
+      background: #0d6efd;
+      color: #fff;
+      border-color: #0d6efd;
+      font-weight: 600;
     }
+  }
+}
+
+.add-button-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 15px;
+  margin-top: 10px;
+}
+
+.btn-add-account {
+  margin-top: 15px;
+  padding: 10px 18px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background-color: #198754;
+  border-radius: 8px;
+  border: none;
+  transition: all 0.3s ease;
+
+  a {
+    text-decoration: none;
+    color: #fff;
+  }
+
+  &:hover {
+    background-color: #157347;
+    transform: translateY(-2px);
   }
 }

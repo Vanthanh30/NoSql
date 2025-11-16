@@ -2,12 +2,18 @@ import { useState, useEffect } from "react";
 import articleAPI from "../../../services/admin/articleService";
 import { useNavigate } from "react-router-dom";
 import "./article.scss";
+import Pagination from "../../../components/common/Pagination";
+
 
 function ArticlesPage() {
   const [articles, setArticles] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // THÊM PHÂN TRANG
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   useEffect(() => {
     fetchArticles();
@@ -54,6 +60,10 @@ function ArticlesPage() {
     try {
       await articleAPI.delete(id);
       fetchArticles();
+      const newTotalPages = Math.ceil((articles.length - 1) / itemsPerPage);
+      if (currentPage > newTotalPages && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      }
     } catch (err) {
       alert("Xóa thất bại!");
     }
@@ -66,7 +76,9 @@ function ArticlesPage() {
         <button onClick={fetchArticles}>Thử lại</button>
       </div>
     );
-
+  const totalPages = Math.ceil(articles.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentArticles = articles.slice(startIndex, startIndex + itemsPerPage);
   return (
     <div className="articles">
       <div className="container">
@@ -87,16 +99,16 @@ function ArticlesPage() {
                 </tr>
               </thead>
               <tbody>
-                {articles.length === 0 ? (
+                {currentArticles.length === 0 ? (
                   <tr>
                     <td colSpan="7" className="text-center">
                       Chưa có bài viết
                     </td>
                   </tr>
                 ) : (
-                  articles.map((art, idx) => (
+                  currentArticles.map((art, idx) => (
                     <tr key={art._id}>
-                      <td>{idx + 1}</td>
+                      <td>{startIndex + idx + 1}</td> {/* STT đúng theo trang */}
                       <td>{art.title}</td>
                       <td>
                         {art.category && art.category.title
@@ -110,16 +122,10 @@ function ArticlesPage() {
                             ? art.createdBy.account_id.toString().slice(-6)
                             : "Admin"}
                       </td>
-
-
-                      <td>
-                        {new Date(art.createdAt).toLocaleDateString("vi-VN")}
-                      </td>
+                      <td>{new Date(art.createdAt).toLocaleDateString("vi-VN")}</td>
                       <td>
                         <span
-                          className={`badge ${art.status === "active"
-                            ? "bg-success"
-                            : "bg-secondary"
+                          className={`badge ${art.status === "active" ? "bg-success" : "bg-secondary"
                             }`}
                         >
                           {art.status === "active" ? "Hoạt động" : "Ẩn"}
@@ -144,7 +150,12 @@ function ArticlesPage() {
                 )}
               </tbody>
             </table>
-
+            {/* PHÂN TRANG */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
             <button className="articles__btn-add" onClick={handleCreate}>
               Thêm bài viết
             </button>
