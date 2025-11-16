@@ -9,50 +9,50 @@ import CoursePage from "../../pages/client/course";
 import PostDetail from "../../pages/client/posts/postdetail.js";
 
 export const routes = [
-    {
-        path: "/register",
-        element: <Register />,
-    },
-    {
-        path: "/login",
-        element: <Login />,
-    },
-    {
-        path: "/forgot-password",
-        element: <ForgotPassword />,
-    },
-    {
-        path: "/",
-        element: <LayoutDefault />,
-        children: [
-            {
-                index: true,
-                element: <HomePage />,
-            },
-            {
-                path: "course/:id",
-                element: <CoursePage />,
-            },
-        ],
-    },
-    {
-        path: "/posts",
-        element: <LayoutDefault />,
-        children: [
-            {
-                index: true,
-                element: <Posts />,
-            },
-        ],
-    },
-    {
-        path: "/post/:id",
-        element: <LayoutDefault />,
-        children: [
-            {
-                index: ":id",
-                element: <PostDetail />,
-            },
-        ],
-    },
+  {
+    path: "/register",
+    element: <Register />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+  {
+    path: "/",
+    element: <LayoutDefault />,
+    children: [
+      {
+        index: true,
+        element: <HomePage />,
+      },
+      {
+        path: "course/:id",
+        element: <CoursePage />,
+      },
+    ],
+  },
+  {
+    path: "/posts",
+    element: <LayoutDefault />,
+    children: [
+      {
+        index: true,
+        element: <Posts />,
+      },
+    ],
+  },
+  {
+    path: "/article/:id",
+    element: <LayoutDefault />,
+    children: [
+      {
+        index: ":id",
+        element: <PostDetail />,
+      },
+    ],
+  },
 ];

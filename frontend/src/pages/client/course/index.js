@@ -1,131 +1,255 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./course.scss";
-import { FaPlayCircle, FaArrowLeft, FaClock, FaFilm, FaLaptopCode, FaGlobe } from "react-icons/fa";
-import YouTube from "react-youtube";
-
-import post1 from "../../../assets/images/post1.png";
-import post2 from "../../../assets/images/post2.png";
-import post3 from "../../../assets/images/post3.png";
-
-const tempCourses = [
-    {
-        id: 1,
-        title: "Kiến Thức Nhập Môn IT",
-        description: "Khóa học cung cấp kiến thức nền tảng về ngành IT.",
-        thumbnail: post1,
-        videoUrl: "tgbNymZ7vqY",
-        lessons: [
-            { id: 1, name: "Mô hình Client - Server là gì?", time: "00:11" },
-            { id: 2, name: "Domain là gì? Tên miền là gì?", time: "01:30" },
-            { id: 3, name: "Mua tên miền, hosting ở đâu?", time: "02:45" },
-        ],
-        level: "Cơ bản",
-        totalLessons: 12,
-        duration: "03 giờ 26 phút",
-    },
-    {
-        id: 2,
-        title: "Lập Trình C++ Cơ Bản",
-        description: "Khóa học giúp bạn nắm vững C++ cơ bản.",
-        thumbnail: post2,
-        videoUrl: "8jLOx1hD3_o",
-        lessons: [
-            { id: 1, name: "Giới thiệu ngôn ngữ C++", time: "00:09" },
-            { id: 2, name: "Cấu trúc chương trình", time: "00:20" },
-        ],
-        level: "Cơ bản",
-        totalLessons: 8,
-        duration: "02 giờ 10 phút",
-    },
-    {
-        id: 3,
-        title: "HTML, CSS Từ Zero Đến Hero",
-        description: "Học HTML và CSS cơ bản đến nâng cao.",
-        thumbnail: post3,
-        videoUrl: "dD2EISBDjWM",
-        lessons: [
-            { id: 1, name: "HTML cơ bản", time: "00:12" },
-            { id: 2, name: "CSS cơ bản", time: "00:14" },
-        ],
-        level: "Cơ bản",
-        totalLessons: 10,
-        duration: "02 giờ 45 phút",
-    },
-];
+import {
+  FaPlayCircle,
+  FaArrowLeft,
+  FaClock,
+  FaFilm,
+  FaLaptopCode,
+  FaGlobe,
+  FaCheckCircle,
+} from "react-icons/fa";
+import courseService from "../../../services/client/courseService";
 
 const CoursePage = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const course = tempCourses.find((c) => c.id === Number(id));
-    const [playVideo, setPlayVideo] = useState(false);
-    const [player, setPlayer] = useState(null);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [course, setCourse] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [currentLesson, setCurrentLesson] = useState(null);
+  const [selectedLessonId, setSelectedLessonId] = useState(null);
+  const [playVideo, setPlayVideo] = useState(false);
 
-    if (!course) return <h2 className="not-found">Khóa học không tồn tại</h2>;
+  const videoRef = useRef(null);
+  const videoContainerRef = useRef(null);
 
-    const opts = { height: "300", width: "100%", playerVars: { autoplay: 0 } };
-    const onReady = (event) => setPlayer(event.target);
-
-    const handleLessonClick = (time) => {
-        if (!player) return;
-        const [mm, ss] = time.split(":").map(Number);
-        const seconds = mm * 60 + ss;
-        player.seekTo(seconds);
-        player.playVideo();
-        setPlayVideo(true);
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    const fetchCourse = async () => {
+      try {
+        setLoading(true);
+        const data = await courseService.getCourseById(id);
+        setCourse(data);
+      } catch (err) {
+        setError("Không thể tải thông tin khóa học");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    return (
-        <div className="course-detail">
-            <div className="back-button" onClick={() => navigate(-1)}>
-                <FaArrowLeft className="icon" /> Quay lại
-            </div>
+    fetchCourse();
+  }, [id]);
 
-            <div className="course-content">
-                <h1>{course.title}</h1>
-                <p className="desc">{course.description}</p>
+  const calculateTotalDuration = () => {
+    if (!course?.chapters) return "0 giờ 0 phút";
 
-                <div className="lesson-list">
-                    <h3>Bạn sẽ học được gì?</h3>
-                    <ul>
-                        {course.lessons.map((l) => (
-                            <li key={l.id} onClick={() => handleLessonClick(l.time)}>
-                                <FaPlayCircle className="icon" />
-                                {l.name}
-                                <span className="time">{l.time}</span>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </div>
+    let totalMinutes = 0;
+    course.chapters.forEach((chapter) => {
+      chapter.lessons?.forEach((lesson) => {
+        if (lesson.duration) {
+          totalMinutes += lesson.duration;
+        }
+      });
+    });
 
-            <div className="course-video">
-                {!playVideo ? (
-                    <div
-                        className="video-thumb"
-                        style={{ backgroundImage: `url(${course.thumbnail})` }}
-                        onClick={() => setPlayVideo(true)}
-                    >
-                        <FaPlayCircle className="play-icon" />
-                    </div>
-                ) : (
-                    <YouTube videoId={course.videoUrl} opts={opts} onReady={onReady} />
-                )}
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours} giờ ${minutes} phút`;
+  };
 
-                <div className="enroll-box">
-                    <p className="free">Miễn phí</p>
-                    <button className="enroll-btn">Đăng ký học</button>
-
-                    <ul className="course-info">
-                        <li><FaLaptopCode className="icon" /> Trình độ <b>{course.level}</b></li>
-                        <li><FaFilm className="icon" /> Tổng số <b>{course.totalLessons}</b> bài học</li>
-                        <li><FaClock className="icon" /> Thời lượng <b>{course.duration}</b></li>
-                        <li><FaGlobe className="icon" /> Học mọi lúc, mọi nơi</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+  const getTotalLessons = () => {
+    if (!course?.chapters) return 0;
+    return course.chapters.reduce(
+      (total, chapter) => total + (chapter.lessons?.length || 0),
+      0
     );
+  };
+
+  const formatTime = (minutes) => {
+    if (!minutes) return "00:00";
+    const hrs = Math.floor(minutes / 60);
+    const mins = Math.floor(minutes % 60);
+    const secs = Math.floor((minutes % 1) * 60);
+
+    if (hrs > 0) {
+      return `${hrs.toString().padStart(2, "0")}:${mins
+        .toString()
+        .padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
+    }
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
+  };
+
+  const getFinalPrice = () => {
+    if (!course?.pricing) return 0;
+    const { price, discount } = course.pricing;
+    if (!price) return 0;
+    if (!discount) return price;
+    return price - (price * discount) / 100;
+  };
+
+  const handleLessonClick = (lesson) => {
+    setCurrentLesson(lesson);
+    setSelectedLessonId(lesson._id);
+    setPlayVideo(true);
+  };
+
+  if (loading) return <div className="loading">Đang tải...</div>;
+  if (error) return <div className="error">{error}</div>;
+  if (!course) return <h2 className="not-found">Khóa học không tồn tại</h2>;
+
+  const finalPrice = getFinalPrice();
+
+  return (
+    <div className="course-detail">
+      <div className="back-button" onClick={() => navigate(-1)}>
+        <FaArrowLeft className="icon" /> Quay lại
+      </div>
+
+      <div className="course-content">
+        <h1>{course.title}</h1>
+        {course.description && (
+          <div
+            className="desc"
+            dangerouslySetInnerHTML={{ __html: course.description }}
+          />
+        )}
+
+        <div className="lesson-list">
+          <h3>Nội dung khóa học</h3>
+          {course.chapters?.map((chapter, idx) => (
+            <div key={chapter._id} className="chapter-section">
+              <h4>
+                Chương {idx + 1}: {chapter.title}
+              </h4>
+              {chapter.description && (
+                <p className="chapter-desc">{chapter.description}</p>
+              )}
+              <ul>
+                {chapter.lessons?.map((lesson) => (
+                  <li
+                    key={lesson._id}
+                    onClick={() => handleLessonClick(lesson)}
+                    className={selectedLessonId === lesson._id ? "active" : ""}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {selectedLessonId === lesson._id ? (
+                      <FaCheckCircle className="icon active-icon" />
+                    ) : (
+                      <FaPlayCircle className="icon" />
+                    )}
+                    {lesson.title}
+                    {lesson.duration && (
+                      <span className="time">
+                        {formatTime(lesson.duration)}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="course-video" ref={videoContainerRef}>
+        {!playVideo ? (
+          <div
+            className="video-thumb"
+            style={{
+              backgroundImage: `url(${course.media?.imageUrl || ""})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+            onClick={() => setPlayVideo(true)}
+          >
+            <FaPlayCircle className="play-icon" />
+            <div className="video-overlay-text">
+              <p>Video giới thiệu khóa học</p>
+            </div>
+          </div>
+        ) : (
+          (() => {
+            const videoUrl = currentLesson?.videoUrl || course.media?.videoUrl;
+
+            if (videoUrl) {
+              return (
+                <div className="video-wrapper">
+                  <video
+                    ref={videoRef}
+                    controls
+                    className="course-video-player"
+                    style={{ width: "100%", height: "300px" }}
+                    key={currentLesson?._id || "default"}
+                  >
+                    <source src={videoUrl} type="video/mp4" />
+                    Trình duyệt của bạn không hỗ trợ video.
+                  </video>
+                  {currentLesson ? (
+                    <div className="video-lesson-title">
+                      <h5>Đang học: {currentLesson.title}</h5>
+                    </div>
+                  ) : (
+                    <div className="video-lesson-title">
+                      <h5>Video giới thiệu khóa học</h5>
+                    </div>
+                  )}
+                </div>
+              );
+            } else {
+              return (
+                <div className="no-video">
+                  <FaPlayCircle className="play-icon" />
+                  <p>Không có video</p>
+                </div>
+              );
+            }
+          })()
+        )}
+
+        <div className="enroll-box">
+          {finalPrice > 0 ? (
+            <>
+              <p className="price">{finalPrice.toLocaleString("vi-VN")} đ</p>
+              {course.pricing?.discount > 0 && (
+                <p className="original-price">
+                  <del>{course.pricing.price.toLocaleString("vi-VN")} đ</del>
+                  <span className="discount">-{course.pricing.discount}%</span>
+                </p>
+              )}
+            </>
+          ) : (
+            <p className="free">Miễn phí</p>
+          )}
+
+          <button className="enroll-btn">Đăng ký học</button>
+
+          <ul className="course-info">
+            <li>
+              <FaLaptopCode className="icon" />
+              Trình độ <b>{course.level}</b>
+            </li>
+            <li>
+              <FaFilm className="icon" />
+              Tổng số <b>{getTotalLessons()}</b> bài học
+            </li>
+            <li>
+              <FaClock className="icon" />
+              Thời lượng <b>{course.time?.durationHours || 0} giờ</b>
+            </li>
+            <li>
+              <FaGlobe className="icon" />
+              Học mọi lúc, mọi nơi
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default CoursePage;

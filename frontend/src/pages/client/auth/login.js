@@ -1,140 +1,175 @@
 import React, { useState } from "react";
 import "./auth.scss";
 import { motion, AnimatePresence } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../../../assets/images/logo.png";
 import googleLogo from "../../../assets/images/google.png";
 import facebookLogo from "../../../assets/images/facebook.png";
+import authService from "../../../services/client/authService";
 
 const Login = () => {
-    const [step, setStep] = useState(1);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirm, setConfirm] = useState("");
+  const [step, setStep] = useState(1);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirm, setConfirm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-    const handleNext = (e) => {
-        e.preventDefault();
-        if (!email) return alert("Vui lòng nhập email!");
-        setStep(2);
-    };
+  const handleNext = (e) => {
+    e.preventDefault();
+    if (!email) return alert("Vui lòng nhập email!");
+    setStep(2);
+  };
 
-    const handleBack = () => setStep(1);
+  const handleBack = () => setStep(1);
 
-    const handleLogin = (e) => {
-        e.preventDefault();
-        if (!password || !confirm) return alert("Vui lòng nhập mật khẩu!");
-        if (password !== confirm) return alert("Mật khẩu không khớp!");
-        alert(`Đăng nhập thành công với email: ${email}`);
-    };
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!password) {
+      setError("Vui lòng nhập mật khẩu!");
+      return;
+    }
 
-    return (
-        <div className="auth-page">
-            <div className="auth-wrapper">
-                <div className="auth-card">
-                    <div className="auth-header">
-                        <img src={logo} alt="Logo" />
-                        <h2>LEARN1</h2>
-                    </div>
+    setLoading(true);
+    const result = await authService.loginUser(email, password);
 
-                    <h3>Chào mừng trở lại</h3>
-                    <p>Chào mừng trở lại! Vui lòng nhập thông tin của bạn</p>
+    if (result.success) {
+      navigate("/");
+    } else {
+      setError(result.error || "Đăng nhập thất bại");
+    }
 
-                    <AnimatePresence mode="wait">
-                        {step === 1 ? (
-                            <motion.form
-                                key="step1"
-                                initial={{ opacity: 0, x: -30 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: 30 }}
-                                transition={{ duration: 0.3 }}
-                                onSubmit={handleNext}
-                            >
-                                <label>Email</label>
-                                <input
-                                    type="email"
-                                    placeholder="Email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
+    setLoading(false);
+  };
 
-                                <div className="auth-options">
-                                    <span className="link">Dùng số điện thoại</span>
-                                    <Link to="/forgot-password" className="link">Quên mật khẩu?</Link>
-                                </div>
+  return (
+    <div className="auth-page">
+      <div className="auth-wrapper">
+        <div className="auth-card">
+          <div className="auth-header">
+            <img src={logo} alt="Logo" />
+            <h2>LEARN1</h2>
+          </div>
 
-                                <button type="submit" className="btn-primary">
-                                    Tiếp tục
-                                </button>
+          <h3>Chào mừng trở lại</h3>
+          <p>Chào mừng trở lại! Vui lòng nhập thông tin của bạn</p>
 
-                                <div className="social-login">
-                                    <button type="button" className="btn-social facebook">
-                                        <img src={facebookLogo} alt="Facebook" />
-                                        Đăng nhập với Facebook
-                                    </button>
-                                    <button type="button" className="btn-social google">
-                                        <img src={googleLogo} alt="Google" />
-                                        Đăng nhập với Google
-                                    </button>
-                                </div>
-
-                                <p className="footer">
-                                    Chưa có tài khoản? <span className="link">Đăng ký</span>
-                                </p>
-                                <small>
-                                    Việc bạn tiếp tục sử dụng trang web này đồng nghĩa với bạn đồng
-                                    ý với <span className="link">điều khoản sử dụng</span> của chúng tôi
-                                </small>
-                            </motion.form>
-                        ) : (
-                            <motion.form
-                                key="step2"
-                                initial={{ opacity: 0, x: 30 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -30 }}
-                                transition={{ duration: 0.3 }}
-                                onSubmit={handleLogin}
-                            >
-                                <label>Mật khẩu</label>
-                                <input
-                                    type="password"
-                                    placeholder="Mật khẩu"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
-
-                                <label>Xác nhận mật khẩu</label>
-                                <input
-                                    type="password"
-                                    placeholder="Xác nhận mật khẩu"
-                                    value={confirm}
-                                    onChange={(e) => setConfirm(e.target.value)}
-                                />
-
-                                <div className="auth-options">
-                                    <span className="link" onClick={handleBack}>
-                                        ← Quay lại
-                                    </span>
-                                    <Link to="/forgot-password" className="link">Quên mật khẩu?</Link>
-                                </div>
-
-                                <button type="submit" className="btn-primary">
-                                    Tiếp tục
-                                </button>
-
-                                <p className="footer">
-                                    Chưa có tài khoản? <span className="link">Đăng ký</span>
-                                </p>
-                                <small>
-                                    Việc bạn tiếp tục sử dụng trang web này đồng nghĩa với bạn đồng
-                                    ý với <span className="link">điều khoản sử dụng</span> của chúng tôi
-                                </small>
-                            </motion.form>
-                        )}
-                    </AnimatePresence>
-                </div>
+          {error && (
+            <div
+              style={{
+                padding: "10px",
+                marginBottom: "15px",
+                backgroundColor: "#ffebee",
+                color: "#c62828",
+                borderRadius: "4px",
+                fontSize: "14px",
+              }}
+            >
+              {error}
             </div>
+          )}
+
+          <AnimatePresence mode="wait">
+            {step === 1 ? (
+              <motion.form
+                key="step1"
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 30 }}
+                transition={{ duration: 0.3 }}
+                onSubmit={handleNext}
+              >
+                <label>Email</label>
+                <input
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+
+                <div className="auth-options">
+                  <span className="link">Dùng số điện thoại</span>
+                  <Link to="/forgot-password" className="link">
+                    Quên mật khẩu?
+                  </Link>
+                </div>
+
+                <button type="submit" className="btn-primary">
+                  Tiếp tục
+                </button>
+
+                <div className="social-login">
+                  <button type="button" className="btn-social facebook">
+                    <img src={facebookLogo} alt="Facebook" />
+                    Đăng nhập với Facebook
+                  </button>
+                  <button type="button" className="btn-social google">
+                    <img src={googleLogo} alt="Google" />
+                    Đăng nhập với Google
+                  </button>
+                </div>
+
+                <p className="footer">
+                  Chưa có tài khoản?{" "}
+                  <Link to="/register" className="link">
+                    Đăng ký
+                  </Link>
+                </p>
+                <small>
+                  Việc bạn tiếp tục sử dụng trang web này đồng nghĩa với bạn
+                  đồng ý với <span className="link">điều khoản sử dụng</span>{" "}
+                  của chúng tôi
+                </small>
+              </motion.form>
+            ) : (
+              <motion.form
+                key="step2"
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ duration: 0.3 }}
+                onSubmit={handleLogin}
+              >
+                <label>Mật khẩu</label>
+                <input
+                  type="password"
+                  placeholder="Mật khẩu"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+
+                <div className="auth-options">
+                  <span className="link" onClick={handleBack}>
+                    ← Quay lại
+                  </span>
+                  <Link to="/forgot-password" className="link">
+                    Quên mật khẩu?
+                  </Link>
+                </div>
+
+                <button type="submit" className="btn-primary">
+                  {loading ? "Đang đăng nhập..." : "Đăng nhập"}
+                </button>
+
+                <p className="footer">
+                  Chưa có tài khoản?{" "}
+                  <Link to="/register" className="link">
+                    Đăng ký
+                  </Link>
+                </p>
+                <small>
+                  Việc bạn tiếp tục sử dụng trang web này đồng nghĩa với bạn
+                  đồng ý với <span className="link">điều khoản sử dụng</span>{" "}
+                  của chúng tôi
+                </small>
+              </motion.form>
+            )}
+          </AnimatePresence>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default Login;
