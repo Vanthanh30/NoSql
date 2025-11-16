@@ -62,9 +62,12 @@ const authService = {
       }
 
       const data = await response.json();
-
       if (data.token) {
-        localStorage.setItem("authToken", data.token);
+        localStorage.setItem("token", data.token);
+        if (data.user) {
+          localStorage.setItem("user", JSON.stringify(data.user));
+        }
+        window.dispatchEvent(new Event('authChange'));
       }
 
       return { success: true, data };
@@ -79,22 +82,37 @@ const authService = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-    } catch (error) {}
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    window.dispatchEvent(new Event('authChange'));
 
-    localStorage.removeItem("authToken");
     return { success: true };
   },
 
   getToken() {
-    return localStorage.getItem("authToken");
+    return localStorage.getItem("token");
   },
 
   isAuthenticated() {
-    return !!localStorage.getItem("authToken");
+    const token = localStorage.getItem("token");
+    return !!token && token !== "null" && token !== "undefined";
   },
+
+  getUser() {
+    try {
+      const userString = localStorage.getItem("user");
+      return userString ? JSON.parse(userString) : null;
+    } catch (error) {
+      console.error("Error parsing user data:", error);
+      return null;
+    }
+  }
 };
 
 export default authService;

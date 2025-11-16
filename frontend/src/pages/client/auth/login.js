@@ -11,30 +11,41 @@ const Login = () => {
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleNext = (e) => {
     e.preventDefault();
-    if (!email) return alert("Vui lòng nhập email!");
+    if (!email) {
+      setError("Vui lòng nhập email!");
+      return;
+    }
+    setError("");
     setStep(2);
   };
 
-  const handleBack = () => setStep(1);
+  const handleBack = () => {
+    setStep(1);
+    setError("");
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
     if (!password) {
       setError("Vui lòng nhập mật khẩu!");
       return;
     }
 
     setLoading(true);
+    setError("");
+
     const result = await authService.loginUser(email, password);
 
     if (result.success) {
+      // ✅ authService đã tự động lưu token và dispatch event
+      // Navigate về trang chủ
       navigate("/");
     } else {
       setError(result.error || "Đăng nhập thất bại");
@@ -62,8 +73,9 @@ const Login = () => {
                 marginBottom: "15px",
                 backgroundColor: "#ffebee",
                 color: "#c62828",
-                borderRadius: "4px",
+                borderRadius: "8px",
                 fontSize: "14px",
+                border: "1px solid #ef5350"
               }}
             >
               {error}
@@ -83,9 +95,13 @@ const Login = () => {
                 <label>Email</label>
                 <input
                   type="email"
-                  placeholder="Email"
+                  placeholder="Nhập email của bạn"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setError("");
+                  }}
+                  autoFocus
                 />
 
                 <div className="auth-options">
@@ -134,13 +150,22 @@ const Login = () => {
                 <label>Mật khẩu</label>
                 <input
                   type="password"
-                  placeholder="Mật khẩu"
+                  placeholder="Nhập mật khẩu của bạn"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setError("");
+                  }}
+                  autoFocus
+                  disabled={loading}
                 />
 
                 <div className="auth-options">
-                  <span className="link" onClick={handleBack}>
+                  <span
+                    className="link"
+                    onClick={handleBack}
+                    style={{ cursor: 'pointer' }}
+                  >
                     ← Quay lại
                   </span>
                   <Link to="/forgot-password" className="link">
@@ -148,7 +173,11 @@ const Login = () => {
                   </Link>
                 </div>
 
-                <button type="submit" className="btn-primary">
+                <button
+                  type="submit"
+                  className="btn-primary"
+                  disabled={loading}
+                >
                   {loading ? "Đang đăng nhập..." : "Đăng nhập"}
                 </button>
 

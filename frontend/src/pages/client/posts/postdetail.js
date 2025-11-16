@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./post.scss";
 import articleService from "../../../services/client/articleService";
+import DOMPurify from "dompurify";
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -48,11 +49,39 @@ const PostDetail = () => {
     return article?.createdBy?.account_id?.fullName || "Tác giả ẩn danh";
   };
 
+  // Hàm sanitize HTML để bảo mật
+  const createMarkup = (htmlContent) => {
+    if (!htmlContent) return { __html: "" };
+
+    // Sử dụng DOMPurify để loại bỏ các script độc hại
+    const cleanHTML = DOMPurify.sanitize(htmlContent, {
+      ALLOWED_TAGS: [
+        'p', 'br', 'strong', 'em', 'u', 's', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'ul', 'ol', 'li', 'blockquote', 'a', 'img', 'code', 'pre', 'table',
+        'thead', 'tbody', 'tr', 'th', 'td', 'div', 'span', 'hr'
+      ],
+      ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id', 'style', 'target']
+    });
+
+    return { __html: cleanHTML };
+  };
+
+  // Tính thời gian đọc dựa trên độ dài nội dung HTML
+  const calculateReadingTime = (htmlContent) => {
+    if (!htmlContent) return 1;
+    // Loại bỏ HTML tags để đếm từ
+    const plainText = htmlContent.replace(/<[^>]*>/g, '');
+    const wordCount = plainText.split(/\s+/).length;
+    const readingTime = Math.ceil(wordCount / 200); // Giả sử đọc 200 từ/phút
+    return readingTime || 1;
+  };
+
   if (loading) {
     return (
       <div className="post-detail-container">
-        <div style={{ textAlign: "center", marginTop: 50 }}>
-          Đang tải bài viết...
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+          <p>Đang tải bài viết...</p>
         </div>
       </div>
     );
@@ -64,7 +93,7 @@ const PostDetail = () => {
         <button className="back-btn" onClick={() => navigate(-1)}>
           ← Quay lại
         </button>
-        <div style={{ textAlign: "center", marginTop: 50 }}>
+        <div className="error-message">
           {error || "Bài viết không tồn tại."}
         </div>
       </div>
@@ -83,24 +112,27 @@ const PostDetail = () => {
         <div>
           <h4>{getAuthorName()}</h4>
           <span>
-            {formatDate(article.createdAt)} •
-            {Math.ceil((article.content?.length || 0) / 300)} phút đọc
+            {formatDate(article.createdAt)} • {calculateReadingTime(article.content)} phút đọc
           </span>
         </div>
       </div>
 
       {article.image && (
         <img
-          src={article.image || "/placeholder.svg"}
+          src={article.image}
           alt={article.title}
           className="post-cover"
-          onError={(e) => (e.target.src = "/images/article-placeholder.png")}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "/images/article-placeholder.png";
+          }}
         />
       )}
 
-      <div className="post-content">
-        <p>{article.content}</p>
-      </div>
+      <div
+        className="post-content"
+        dangerouslySetInnerHTML={createMarkup(article.content)}
+      />
 
       {article.category && (
         <div className="post-category">

@@ -44,9 +44,9 @@ const Posts = () => {
     selectedTag === "Tất cả"
       ? articles
       : articles.filter(
-          (article) =>
-            article.category && article.category.title === selectedTag
-        );
+        (article) =>
+          article.category && article.category.title === selectedTag
+      );
 
   const totalPages = Math.ceil(filteredArticles.length / postsPerPage);
 
@@ -78,10 +78,49 @@ const Posts = () => {
     return postDate.toLocaleDateString("vi-VN");
   };
 
+  // ✅ Hàm loại bỏ HTML tags và lấy plain text
+  const stripHtmlTags = (html) => {
+    if (!html) return "";
+
+    // Tạo một temporary div để parse HTML
+    const temp = document.createElement("div");
+    temp.innerHTML = html;
+
+    // Lấy text content (không có HTML tags)
+    return temp.textContent || temp.innerText || "";
+  };
+
+  // ✅ Hàm tạo excerpt (trích đoạn) từ nội dung
+  const getExcerpt = (content, maxLength = 150) => {
+    if (!content) return "Nội dung đang được cập nhật...";
+
+    const plainText = stripHtmlTags(content);
+
+    if (plainText.length <= maxLength) {
+      return plainText;
+    }
+
+    return plainText.substring(0, maxLength).trim() + "...";
+  };
+
+  // ✅ Tính thời gian đọc dựa trên plain text
+  const calculateReadingTime = (htmlContent) => {
+    if (!htmlContent) return 1;
+
+    const plainText = stripHtmlTags(htmlContent);
+    const wordCount = plainText.split(/\s+/).length;
+    const readingTime = Math.ceil(wordCount / 200); // 200 từ/phút
+
+    return readingTime || 1;
+  };
+
   if (loading) {
     return (
       <div className="posts-container">
-        <div className="loading">Đang tải bài viết...</div>
+        <div className="loading-spinner">
+          <div className="spinner"></div>
+          <p>Đang tải bài viết...</p>
+        </div>
       </div>
     );
   }
@@ -119,14 +158,16 @@ const Posts = () => {
                 key={article._id}
                 className="post-item"
                 onClick={() => navigate(`/article/${article._id}`)}
+                style={{ cursor: 'pointer' }}
               >
                 <div className="post-image">
                   <img
                     src={article.image || "/placeholder.svg"}
                     alt={article.title}
-                    onError={(e) =>
-                      (e.target.src = "/images/article-placeholder.png")
-                    }
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "/images/article-placeholder.png";
+                    }}
                   />
                 </div>
 
@@ -141,16 +182,19 @@ const Posts = () => {
                   </div>
 
                   <h2 className="post-title">{article.title}</h2>
+
+                  {/* ✅ Hiển thị excerpt đã được strip HTML */}
                   <p className="post-desc">
-                    {article.content?.substring(0, 150)}...
+                    {getExcerpt(article.content, 150)}
                   </p>
 
                   <div className="post-footer">
                     <span className="tag">
                       {article.category?.title || "Chưa phân loại"}
                     </span>
+                    {/* ✅ Tính thời gian đọc chính xác từ plain text */}
                     <span className="read-time">
-                      {Math.ceil((article.content?.length || 0) / 300)} phút đọc
+                      {calculateReadingTime(article.content)} phút đọc
                     </span>
                   </div>
                 </div>
