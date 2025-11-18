@@ -7,6 +7,8 @@ import Register from "../../pages/client/auth/register";
 import Posts from "../../pages/client/posts";
 import CoursePage from "../../pages/client/course";
 import PostDetail from "../../pages/client/posts/postdetail.js";
+import LearningPage from "../../pages/client/course/learning.js";
+import UserProfile from "../../pages/client/UserProfile/index.js";
 
 export const routes = [
   {
@@ -22,6 +24,16 @@ export const routes = [
     element: <ForgotPassword />,
   },
   {
+    path: "/profile",
+    element: <LayoutDefault />,
+    children: [
+      {
+        index: true,
+        element: <UserProfile />,
+      },
+    ],
+  },
+  {
     path: "/",
     element: <LayoutDefault />,
     children: [
@@ -32,6 +44,10 @@ export const routes = [
       {
         path: "course/:id",
         element: <CoursePage />,
+      },
+      {
+        path: "learn/:id",
+        element: <LearningPage />,
       },
     ],
   },

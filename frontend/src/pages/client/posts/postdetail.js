@@ -15,8 +15,19 @@ const PostDetail = () => {
     const fetchArticle = async () => {
       try {
         setLoading(true);
-        const data = await articleService.getArticleById(id);
-        setArticle(data);
+        // Lấy tất cả bài viết (đã có thông tin tác giả)
+        const allArticles = await articleService.getAllArticles();
+
+        // Tìm bài viết theo id
+        const foundArticle = allArticles.find(
+          (article) => article._id === id || article.id === id
+        );
+
+        if (foundArticle) {
+          setArticle(foundArticle);
+        } else {
+          setError("Bài viết không tồn tại");
+        }
       } catch (error) {
         console.error("Lỗi khi tải bài viết:", error);
         setError("Không thể tải bài viết");
@@ -46,7 +57,34 @@ const PostDetail = () => {
   };
 
   const getAuthorName = () => {
-    return article?.createdBy?.account_id?.fullName || "Tác giả ẩn danh";
+    // Xử lý nhiều cấu trúc dữ liệu khác nhau
+    if (article?.createdBy?.account_id?.fullName) {
+      return article.createdBy.account_id.fullName;
+    }
+    if (article?.createdBy?.fullName) {
+      return article.createdBy.fullName;
+    }
+    if (article?.author?.fullName) {
+      return article.author.fullName;
+    }
+    if (article?.authorName) {
+      return article.authorName;
+    }
+    return "Tác giả ẩn danh";
+  };
+
+  const getAuthorAvatar = () => {
+    // Lấy avatar của tác giả nếu có
+    if (article?.createdBy?.account_id?.avatar) {
+      return article.createdBy.account_id.avatar;
+    }
+    if (article?.createdBy?.avatar) {
+      return article.createdBy.avatar;
+    }
+    if (article?.author?.avatar) {
+      return article.author.avatar;
+    }
+    return null;
   };
 
   // Hàm sanitize HTML để bảo mật
@@ -56,11 +94,46 @@ const PostDetail = () => {
     // Sử dụng DOMPurify để loại bỏ các script độc hại
     const cleanHTML = DOMPurify.sanitize(htmlContent, {
       ALLOWED_TAGS: [
-        'p', 'br', 'strong', 'em', 'u', 's', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-        'ul', 'ol', 'li', 'blockquote', 'a', 'img', 'code', 'pre', 'table',
-        'thead', 'tbody', 'tr', 'th', 'td', 'div', 'span', 'hr'
+        "p",
+        "br",
+        "strong",
+        "em",
+        "u",
+        "s",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "ul",
+        "ol",
+        "li",
+        "blockquote",
+        "a",
+        "img",
+        "code",
+        "pre",
+        "table",
+        "thead",
+        "tbody",
+        "tr",
+        "th",
+        "td",
+        "div",
+        "span",
+        "hr",
       ],
-      ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id', 'style', 'target']
+      ALLOWED_ATTR: [
+        "href",
+        "src",
+        "alt",
+        "title",
+        "class",
+        "id",
+        "style",
+        "target",
+      ],
     });
 
     return { __html: cleanHTML };
@@ -70,7 +143,7 @@ const PostDetail = () => {
   const calculateReadingTime = (htmlContent) => {
     if (!htmlContent) return 1;
     // Loại bỏ HTML tags để đếm từ
-    const plainText = htmlContent.replace(/<[^>]*>/g, '');
+    const plainText = htmlContent.replace(/<[^>]*>/g, "");
     const wordCount = plainText.split(/\s+/).length;
     const readingTime = Math.ceil(wordCount / 200); // Giả sử đọc 200 từ/phút
     return readingTime || 1;
@@ -100,6 +173,8 @@ const PostDetail = () => {
     );
   }
 
+  const authorAvatar = getAuthorAvatar();
+
   return (
     <div className="post-detail-container">
       <button className="back-btn" onClick={() => navigate(-1)}>
@@ -109,11 +184,24 @@ const PostDetail = () => {
       <h1 className="post-title">{article.title}</h1>
 
       <div className="post-meta">
-        <div>
-          <h4>{getAuthorName()}</h4>
-          <span>
-            {formatDate(article.createdAt)} • {calculateReadingTime(article.content)} phút đọc
-          </span>
+        <div className="author-info">
+          {authorAvatar && (
+            <img
+              src={authorAvatar}
+              alt={getAuthorName()}
+              className="author-avatar"
+              onError={(e) => {
+                e.target.style.display = "none";
+              }}
+            />
+          )}
+          <div>
+            <h4>{getAuthorName()}</h4>
+            <span>
+              {formatDate(article.createdAt)} •{" "}
+              {calculateReadingTime(article.content)} phút đọc
+            </span>
+          </div>
         </div>
       </div>
 

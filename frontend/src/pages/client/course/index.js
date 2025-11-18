@@ -18,12 +18,7 @@ const CoursePage = () => {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentLesson, setCurrentLesson] = useState(null);
-  const [selectedLessonId, setSelectedLessonId] = useState(null);
   const [playVideo, setPlayVideo] = useState(false);
-
-  const videoRef = useRef(null);
-  const videoContainerRef = useRef(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -92,10 +87,8 @@ const CoursePage = () => {
     return price - (price * discount) / 100;
   };
 
-  const handleLessonClick = (lesson) => {
-    setCurrentLesson(lesson);
-    setSelectedLessonId(lesson._id);
-    setPlayVideo(true);
+  const handleEnrollClick = () => {
+    navigate(`/learn/${id}`);
   };
 
   if (loading) return <div className="loading">Đang tải...</div>;
@@ -131,17 +124,7 @@ const CoursePage = () => {
               )}
               <ul>
                 {chapter.lessons?.map((lesson) => (
-                  <li
-                    key={lesson._id}
-                    onClick={() => handleLessonClick(lesson)}
-                    className={selectedLessonId === lesson._id ? "active" : ""}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {selectedLessonId === lesson._id ? (
-                      <FaCheckCircle className="icon active-icon" />
-                    ) : (
-                      <FaPlayCircle className="icon" />
-                    )}
+                  <li key={lesson._id} className="lesson-preview">
                     {lesson.title}
                     {lesson.duration && (
                       <span className="time">
@@ -156,7 +139,7 @@ const CoursePage = () => {
         </div>
       </div>
 
-      <div className="course-video" ref={videoContainerRef}>
+      <div className="course-video">
         {!playVideo ? (
           <div
             className="video-thumb"
@@ -173,42 +156,20 @@ const CoursePage = () => {
             </div>
           </div>
         ) : (
-          (() => {
-            const videoUrl = currentLesson?.videoUrl || course.media?.videoUrl;
-
-            if (videoUrl) {
-              return (
-                <div className="video-wrapper">
-                  <video
-                    ref={videoRef}
-                    controls
-                    className="course-video-player"
-                    style={{ width: "100%", height: "300px" }}
-                    key={currentLesson?._id || "default"}
-                  >
-                    <source src={videoUrl} type="video/mp4" />
-                    Trình duyệt của bạn không hỗ trợ video.
-                  </video>
-                  {currentLesson ? (
-                    <div className="video-lesson-title">
-                      <h5>Đang học: {currentLesson.title}</h5>
-                    </div>
-                  ) : (
-                    <div className="video-lesson-title">
-                      <h5>Video giới thiệu khóa học</h5>
-                    </div>
-                  )}
-                </div>
-              );
-            } else {
-              return (
-                <div className="no-video">
-                  <FaPlayCircle className="play-icon" />
-                  <p>Không có video</p>
-                </div>
-              );
-            }
-          })()
+          <div className="video-wrapper">
+            <video
+              controls
+              className="course-video-player"
+              style={{ width: "100%", height: "300px" }}
+              key={"default-video"}
+            >
+              <source src={course.media?.videoUrl} type="video/mp4" />
+              Trình duyệt của bạn không hỗ trợ video.
+            </video>
+            <div className="video-lesson-title">
+              <h5>Video giới thiệu khóa học</h5>
+            </div>
+          </div>
         )}
 
         <div className="enroll-box">
@@ -226,7 +187,9 @@ const CoursePage = () => {
             <p className="free">Miễn phí</p>
           )}
 
-          <button className="enroll-btn">Đăng ký học</button>
+          <button className="enroll-btn" onClick={handleEnrollClick}>
+            Đăng ký học
+          </button>
 
           <ul className="course-info">
             <li>
