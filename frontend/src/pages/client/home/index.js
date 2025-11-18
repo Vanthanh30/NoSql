@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./homepage.scss";
 import {
   FaChevronLeft,
@@ -37,12 +37,12 @@ const slides = [
   },
 ];
 
-const SectionHead = ({ title, linkText }) => (
+const SectionHead = ({ title, linkText, linkTo }) => (
   <div className="section-head">
     <h4>{title}</h4>
-    <a className="view-more" href="#">
+    <Link className="view-more" to={linkTo}>
       {linkText}
-    </a>
+    </Link>
   </div>
 );
 
@@ -125,7 +125,8 @@ const HomePage = () => {
   const getAuthorDisplay = (article) => {
     const authorName =
       article.createdBy?.account_id?.fullName || "Tác giả ẩn danh";
-    const readTime = `${Math.floor(Math.random() * 5) + 2} phút đọc`;
+    const readTime = `${Math.floor(Math.random() * 5) + 2
+      } phút đọc`;
     return `${authorName} • ${readTime}`;
   };
 
@@ -144,9 +145,8 @@ const HomePage = () => {
           {[english, photo, math, develop].map((img, i) => (
             <div
               key={i}
-              className={`hero-floating hero-${
-                ["english", "photo", "math", "develop"][i]
-              }`}
+              className={`hero-floating hero-${["english", "photo", "math", "develop"][i]
+                }`}
             >
               <img src={img} alt="" />
             </div>
@@ -206,7 +206,7 @@ const HomePage = () => {
       </section>
 
       <section className="posts">
-        <SectionHead title="Bài viết nổi bật" linkText="Xem tất cả" />
+        <SectionHead title="Bài viết nổi bật" linkText="Xem tất cả" linkTo="/posts" />
 
         {loadingArticles ? (
           <div className="loading">Đang tải bài viết...</div>
