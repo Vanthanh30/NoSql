@@ -93,7 +93,7 @@ const Header = () => {
 
         {!isLoggedIn ? (
           <nav className="top-nav">
-            <Link to="/courses">Bài viết</Link>
+            <Link to="/posts">Bài viết</Link>
             <Link to="/blog">Blog</Link>
             <Link to="/contact">Liên hệ</Link>
             <Link to="/login" className="btn btn-outline">
