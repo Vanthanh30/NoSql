@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import authService from "../../../services/client/authService"; // Đảm bảo đường dẫn đúng
+import authService from "../../../services/client/authService";
 import "./profile.scss";
 
 const Profile = () => {

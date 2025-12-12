@@ -72,8 +72,8 @@ const Header = () => {
   };
 
   const getInitials = () => {
-    if (user?.name) {
-      return user.name.charAt(0).toUpperCase();
+    if (user?.fullName) {
+      return user.fullName.charAt(0).toUpperCase();
     }
     if (user?.email) {
       return user.email.charAt(0).toUpperCase();
@@ -161,9 +161,11 @@ const Header = () => {
                       </div>
                       <div className="user-info">
                         <p className="user-name">
-                          {user?.name ? user.name : user?.email || "Người dùng"}
+                          {user?.fullName
+                            ? user.fullName
+                            : user?.email || "Người dùng"}
                         </p>
-                        {user?.name && (
+                        {user?.fullName && (
                           <p className="user-email">{user?.email || ""}</p>
                         )}
                       </div>
