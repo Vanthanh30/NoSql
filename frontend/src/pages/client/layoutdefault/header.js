@@ -161,9 +161,11 @@ const Header = () => {
                       </div>
                       <div className="user-info">
                         <p className="user-name">
-                          {user?.name || "Người dùng"}
+                          {user?.name ? user.name : user?.email || "Người dùng"}
                         </p>
-                        <p className="user-email">{user?.email || ""}</p>
+                        {user?.name && (
+                          <p className="user-email">{user?.email || ""}</p>
+                        )}
                       </div>
                     </div>
 
