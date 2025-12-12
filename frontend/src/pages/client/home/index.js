@@ -144,9 +144,8 @@ const HomePage = () => {
           {[english, photo, math, develop].map((img, i) => (
             <div
               key={i}
-              className={`hero-floating hero-${
-                ["english", "photo", "math", "develop"][i]
-              }`}
+              className={`hero-floating hero-${["english", "photo", "math", "develop"][i]
+                }`}
             >
               <img src={img} alt="" />
             </div>
@@ -155,7 +154,7 @@ const HomePage = () => {
       </section>
 
       <section className="courses">
-        <SectionHead title="Khóa học" linkText="Xem tất cả" />
+        <SectionHead title="Khóa học" />
 
         {loading ? (
           <div className="loading">Đang tải khóa học...</div>
@@ -206,7 +205,7 @@ const HomePage = () => {
       </section>
 
       <section className="posts">
-        <SectionHead title="Bài viết nổi bật" linkText="Xem tất cả" />
+        <SectionHead title="Bài viết nổi bật" />
 
         {loadingArticles ? (
           <div className="loading">Đang tải bài viết...</div>

@@ -73,7 +73,6 @@
         overflow: hidden;
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
         z-index: 3;
-        animation: floatUpDown 4.5s ease-in-out infinite;
         transform-origin: center;
         transition: transform 0.18s ease;
         cursor: default;
@@ -90,24 +89,28 @@
         top: 20px;
         left: -36px;
         transform: rotate(-12deg);
+        animation: floatEnglish 3s ease-in-out infinite;
     }
 
     .hero-photo {
         top: 20px;
         right: -36px;
         transform: rotate(10deg);
+        animation: floatPhoto 3.5s ease-in-out infinite;
     }
 
     .hero-math {
         bottom: 10px;
         left: -24px;
         transform: rotate(6deg);
+        animation: floatMath 4s ease-in-out infinite;
     }
 
     .hero-develop {
         bottom: 10px;
         right: -24px;
         transform: rotate(-8deg);
+        animation: floatDevelop 3.2s ease-in-out infinite;
     }
 
     @media (max-width: 600px) {
@@ -146,6 +149,55 @@
             bottom: 6px;
             right: -18px;
         }
+    }
+}
+
+/* ===== KEYFRAMES CHO ANIMATION ===== */
+@keyframes floatEnglish {
+
+    0%,
+    100% {
+        transform: rotate(-12deg) translateY(0px);
+    }
+
+    50% {
+        transform: rotate(-12deg) translateY(-15px);
+    }
+}
+
+@keyframes floatPhoto {
+
+    0%,
+    100% {
+        transform: rotate(10deg) translateY(0px);
+    }
+
+    50% {
+        transform: rotate(10deg) translateY(-12px);
+    }
+}
+
+@keyframes floatMath {
+
+    0%,
+    100% {
+        transform: rotate(6deg) translateY(0px) translateX(0px);
+    }
+
+    50% {
+        transform: rotate(6deg) translateY(-10px) translateX(5px);
+    }
+}
+
+@keyframes floatDevelop {
+
+    0%,
+    100% {
+        transform: rotate(-8deg) translateY(0px);
+    }
+
+    50% {
+        transform: rotate(-8deg) translateY(-14px);
     }
 }
 
