@@ -239,7 +239,6 @@ function CreateCourse() {
           formData.append("createBy", userId);
         }
       }
-      // Gọi API tạo course
       const courseRes = await courseAPI.create(formData);
       alert("Tạo khóa học thành công!");
       console.log(courseRes.data);

@@ -15,10 +15,8 @@ const PostDetail = () => {
     const fetchArticle = async () => {
       try {
         setLoading(true);
-        // Lấy tất cả bài viết (đã có thông tin tác giả)
         const allArticles = await articleService.getAllArticles();
 
-        // Tìm bài viết theo id
         const foundArticle = allArticles.find(
           (article) => article._id === id || article.id === id
         );
@@ -57,7 +55,6 @@ const PostDetail = () => {
   };
 
   const getAuthorName = () => {
-    // Xử lý nhiều cấu trúc dữ liệu khác nhau
     if (article?.createdBy?.account_id?.fullName) {
       return article.createdBy.account_id.fullName;
     }
@@ -74,7 +71,6 @@ const PostDetail = () => {
   };
 
   const getAuthorAvatar = () => {
-    // Lấy avatar của tác giả nếu có
     if (article?.createdBy?.account_id?.avatar) {
       return article.createdBy.account_id.avatar;
     }
@@ -87,11 +83,9 @@ const PostDetail = () => {
     return null;
   };
 
-  // Hàm sanitize HTML để bảo mật
   const createMarkup = (htmlContent) => {
     if (!htmlContent) return { __html: "" };
 
-    // Sử dụng DOMPurify để loại bỏ các script độc hại
     const cleanHTML = DOMPurify.sanitize(htmlContent, {
       ALLOWED_TAGS: [
         "p",
@@ -138,14 +132,11 @@ const PostDetail = () => {
 
     return { __html: cleanHTML };
   };
-
-  // Tính thời gian đọc dựa trên độ dài nội dung HTML
   const calculateReadingTime = (htmlContent) => {
     if (!htmlContent) return 1;
-    // Loại bỏ HTML tags để đếm từ
     const plainText = htmlContent.replace(/<[^>]*>/g, "");
     const wordCount = plainText.split(/\s+/).length;
-    const readingTime = Math.ceil(wordCount / 200); // Giả sử đọc 200 từ/phút
+    const readingTime = Math.ceil(wordCount / 200);
     return readingTime || 1;
   };
 

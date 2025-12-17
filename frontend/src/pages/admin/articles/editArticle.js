@@ -47,13 +47,15 @@ function EditArticles() {
           category: data.category?._id || data.category || "",
           content: data.content || "",
           image: data.image
-            ? (data.image.startsWith("http") ? data.image : `http://localhost:3000/${data.image}`)
+            ? data.image.startsWith("http")
+              ? data.image
+              : `http://localhost:3000/${data.image}`
             : "https://via.placeholder.com/150",
         });
 
         setIsDataLoaded(true);
       } catch (error) {
-        console.error("❌ Lỗi tải dữ liệu:", error);
+        console.error(" Lỗi tải dữ liệu:", error);
         alert("Không thể tải thông tin bài viết.");
         navigate("/admin/articles");
       } finally {

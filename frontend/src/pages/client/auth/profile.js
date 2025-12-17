@@ -7,13 +7,11 @@ const Profile = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
-  // KHỞI TẠO STATE: Lấy ngay từ LocalStorage để không bị màn hình trắng/loading
   const [user, setUser] = useState(authService.getUser());
 
   const [isEditing, setIsEditing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // State form
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -28,31 +26,25 @@ const Profile = () => {
       return;
     }
 
-    // 1. Đổ dữ liệu có sẵn từ LocalStorage vào Form ngay lập tức
     const localUser = authService.getUser();
     if (localUser) {
       setUser(localUser);
       setFormData({
-        // Lưu ý: Kiểm tra xem DB của bạn là 'name' hay 'fullName'.
-        // Ở bài trước bạn chốt là 'fullName'.
         fullName: localUser.fullName || localUser.name || "",
         phone: localUser.phone || "",
       });
     }
 
-    // 2. Gọi API lấy dữ liệu mới nhất (chạy ngầm)
     const fetchProfile = async () => {
       try {
         const res = await authService.getUserProfile();
         if (res.success && res.data) {
-          // Cập nhật lại state với dữ liệu mới từ Server
           setUser(res.data);
           setFormData({
             fullName: res.data.fullName || res.data.name || "",
             phone: res.data.phone || "",
           });
 
-          // Cập nhật luôn LocalStorage để lần sau vào cho nhanh
           const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
           localStorage.setItem(
             "user",
@@ -61,7 +53,6 @@ const Profile = () => {
         }
       } catch (error) {
         console.error("Lỗi lấy thông tin mới:", error);
-        // Không làm gì cả, vẫn hiển thị thông tin cũ từ LocalStorage
       }
     };
 
@@ -85,9 +76,7 @@ const Profile = () => {
   const handleSave = async () => {
     setIsLoading(true);
     try {
-      // Dùng FormData để gửi file + text
       const dataToSend = new FormData();
-      // Backend đang mong đợi field là 'fullName', 'phone', 'avatar'
       dataToSend.append("fullName", formData.fullName);
       dataToSend.append("phone", formData.phone);
 
@@ -118,7 +107,6 @@ const Profile = () => {
     navigate("/login");
   };
 
-  // Nếu user null (trường hợp localStorage trống và API chưa trả về) mới hiện loading
   if (!user) {
     return <div className="profile-loading">Loading...</div>;
   }
@@ -143,7 +131,6 @@ const Profile = () => {
           <div className="header-space"></div>
         </div>
 
-        {/* Avatar Section */}
         <div className="profile-avatar-section">
           <div
             className="avatar-circle"
@@ -151,7 +138,6 @@ const Profile = () => {
             style={{ cursor: "pointer", position: "relative" }}
             title={isEditing ? "Click để đổi ảnh" : ""}
           >
-            {/* Logic hiển thị ảnh: Preview > Ảnh từ server > Chữ cái đầu */}
             {previewAvatar || user.avatar ? (
               <img
                 src={previewAvatar || user.avatar}
@@ -200,14 +186,12 @@ const Profile = () => {
             accept="image/*"
           />
 
-          {/* Hiển thị Tên hoặc Email */}
           <h2>
             {formData.fullName || user.fullName || user.email?.split("@")[0]}
           </h2>
           <p className="email">{user.email}</p>
         </div>
 
-        {/* Info Section */}
         <div className="profile-content">
           <div className="profile-card">
             <div className="card-header">
@@ -227,7 +211,7 @@ const Profile = () => {
                 {isEditing ? (
                   <input
                     type="text"
-                    name="fullName" // Quan trọng: phải khớp với formData
+                    name="fullName"
                     value={formData.fullName}
                     onChange={handleInputChange}
                     placeholder="Nhập họ tên"

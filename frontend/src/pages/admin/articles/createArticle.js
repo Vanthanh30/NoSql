@@ -22,7 +22,9 @@ function CreateArticles() {
     categoryAPI
       .getAll()
       .then((res) => {
-        const list = Array.isArray(res.data) ? res.data : res.data.categories || [];
+        const list = Array.isArray(res.data)
+          ? res.data
+          : res.data.categories || [];
         setCategories(list);
       })
       .catch(() => alert("Lỗi tải danh mục!"));
@@ -61,18 +63,20 @@ function CreateArticles() {
       data.append("category", formData.category);
       if (formData.image) data.append("image", formData.image);
 
-      // Backend sẽ lấy userId từ JWT, không cần gửi createdBy từ frontend
-
       await articleAPI.create(data);
       alert("Tạo bài viết thành công!");
       navigate("/admin/articles");
     } catch (err) {
-      alert("Lỗi: " + (err.response?.data?.error || err.message || "Không thể tạo bài viết."));
+      alert(
+        "Lỗi: " +
+          (err.response?.data?.error ||
+            err.message ||
+            "Không thể tạo bài viết.")
+      );
     } finally {
       setLoading(false);
     }
   };
-
 
   return (
     <div className="create-article">
@@ -120,14 +124,21 @@ function CreateArticles() {
 
           <div className="form-group">
             <label>Nội dung bài viết</label>
-            <TextEditor value={formData.content} onChange={handleEditorChange} />
+            <TextEditor
+              value={formData.content}
+              onChange={handleEditorChange}
+            />
           </div>
 
           <div className="btn-actions">
             <button type="submit" className="btn-submit" disabled={loading}>
               {loading ? "Đang lưu..." : "Lưu bài viết"}
             </button>
-            <button type="button" className="btn-cancel" onClick={() => navigate("/admin/articles")}>
+            <button
+              type="button"
+              className="btn-cancel"
+              onClick={() => navigate("/admin/articles")}
+            >
               Hủy
             </button>
           </div>

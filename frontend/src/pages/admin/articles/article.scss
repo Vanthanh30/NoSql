@@ -100,9 +100,6 @@
   }
 }
 
-/* ============================= */
-/* FORM TẠO / SỬA BÀI VIẾT */
-/* ============================= */
 .create-article {
   padding: 40px 0;
   background-color: #f8f9fa;
@@ -193,18 +190,16 @@
       }
     }
 
-    /* TinyMCE container */
     .tox-tinymce {
       border-radius: 8px;
       border: 1px solid #dee2e6;
       overflow: hidden;
     }
 
-    /* Buttons */
     .btn-actions {
       display: flex;
       justify-content: flex-end;
-      gap: 0.75rem; // giảm khoảng cách nút
+      gap: 0.75rem;
       margin-top: 1.5rem;
 
       button {
@@ -278,7 +273,6 @@
   }
 }
 
-// PHÂN TRANG – GIỮ NGUYÊN NHƯ CŨ (KHÔNG ĐỘNG VÀO)
 .pagination-wrapper {
   display: flex;
   justify-content: center;
