@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import "./homepage.scss";
 import {
   FaChevronLeft,
@@ -11,7 +11,6 @@ import { FaRegClock } from "react-icons/fa";
 import courseService from "../../../services/client/courseService";
 import articleService from "../../../services/client/articleService";
 
-/* ====== IMAGES ====== */
 import person from "../../../assets/images/person.png";
 import english from "../../../assets/images/english.jpg";
 import math from "../../../assets/images/math.jpg";
@@ -37,12 +36,12 @@ const slides = [
   },
 ];
 
-const SectionHead = ({ title, linkText, linkTo }) => (
+const SectionHead = ({ title, linkText }) => (
   <div className="section-head">
     <h4>{title}</h4>
-    <Link className="view-more" to={linkTo}>
+    <a className="view-more" href="#">
       {linkText}
-    </Link>
+    </a>
   </div>
 );
 
@@ -52,6 +51,13 @@ const HomePage = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingArticles, setLoadingArticles] = useState(true);
+  const [showLeftArrowCourse, setShowLeftArrowCourse] = useState(false);
+  const [showRightArrowCourse, setShowRightArrowCourse] = useState(false);
+  const [showLeftArrowArticle, setShowLeftArrowArticle] = useState(false);
+  const [showRightArrowArticle, setShowRightArrowArticle] = useState(false);
+
+  const courseScrollRef = useRef(null);
+  const articleScrollRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,7 +65,11 @@ const HomePage = () => {
       try {
         setLoading(true);
         const data = await courseService.getAllCourses();
-        setCourses(data);
+        const activeCourses = data.filter(
+          (course) => course.status === "Hoạt động"
+        );
+
+        setCourses(activeCourses);
       } catch (error) {
         console.error(" Error loading courses:", error);
       } finally {
@@ -89,6 +99,57 @@ const HomePage = () => {
     );
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (courses.length > 0) {
+      setTimeout(() => {
+        checkScrollPosition(
+          courseScrollRef,
+          setShowLeftArrowCourse,
+          setShowRightArrowCourse
+        );
+      }, 100);
+    }
+  }, [courses]);
+
+  useEffect(() => {
+    if (articles.length > 0) {
+      setTimeout(() => {
+        checkScrollPosition(
+          articleScrollRef,
+          setShowLeftArrowArticle,
+          setShowRightArrowArticle
+        );
+      }, 100);
+    }
+  }, [articles]);
+
+  const checkScrollPosition = (ref, setLeft, setRight) => {
+    if (!ref.current) return;
+
+    const { scrollLeft, scrollWidth, clientWidth } = ref.current;
+    setLeft(scrollLeft > 5);
+    setRight(scrollLeft < scrollWidth - clientWidth - 5);
+  };
+
+  const handleScroll = (ref, direction, setLeft, setRight) => {
+    if (!ref.current) return;
+
+    const scrollAmount = 320;
+    const newScrollLeft =
+      direction === "left"
+        ? ref.current.scrollLeft - scrollAmount
+        : ref.current.scrollLeft + scrollAmount;
+
+    ref.current.scrollTo({
+      left: newScrollLeft,
+      behavior: "smooth",
+    });
+
+    setTimeout(() => {
+      checkScrollPosition(ref, setLeft, setRight);
+    }, 300);
+  };
 
   const getFinalPrice = (pricing) => {
     if (!pricing || !pricing.price) return 0;
@@ -125,9 +186,7 @@ const HomePage = () => {
   const getAuthorDisplay = (article) => {
     const authorName =
       article.createdBy?.account_id?.fullName || "Tác giả ẩn danh";
-    const readTime = `${Math.floor(Math.random() * 5) + 2
-      } phút đọc`;
-    return `${authorName} • ${readTime}`;
+    return `${authorName} `;
   };
 
   return (
@@ -155,87 +214,177 @@ const HomePage = () => {
       </section>
 
       <section className="courses">
-        <SectionHead title="Khóa học" linkText="Xem tất cả" />
+        <SectionHead title="Khóa học" />
 
         {loading ? (
           <div className="loading">Đang tải khóa học...</div>
         ) : courses.length === 0 ? (
           <div className="no-courses">Chưa có khóa học nào</div>
         ) : (
-          <div className="course-grid">
-            {courses.slice(0, 4).map((course) => (
-              <div
-                className="course-card"
-                key={course._id}
-                onClick={() => navigate(`/course/${course._id}`)}
-                style={{ cursor: "pointer" }}
+          <div className="course-wrapper">
+            {showLeftArrowCourse && (
+              <button
+                className="scroll-arrow left"
+                onClick={() =>
+                  handleScroll(
+                    courseScrollRef,
+                    "left",
+                    setShowLeftArrowCourse,
+                    setShowRightArrowCourse
+                  )
+                }
               >
-                <div className="thumb">
-                  <img
-                    src={course.media?.imageUrl}
-                    alt={course.title}
-                    onError={(e) =>
-                      (e.target.src = "/images/course-placeholder.png")
-                    }
-                  />
-                </div>
+                <FaChevronLeft />
+              </button>
+            )}
 
-                <div className="course-body">
-                  <h5>{course.title}</h5>
-                  <p className="price">{formatPrice(course.pricing)}</p>
+            <div
+              className="course-grid"
+              ref={courseScrollRef}
+              onScroll={() =>
+                checkScrollPosition(
+                  courseScrollRef,
+                  setShowLeftArrowCourse,
+                  setShowRightArrowCourse
+                )
+              }
+            >
+              {courses.map((course) => (
+                <div
+                  className="course-card"
+                  key={course._id}
+                  onClick={() => navigate(`/course/${course._id}`)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className="thumb">
+                    <img
+                      src={course.media?.imageUrl}
+                      alt={course.title}
+                      onError={(e) =>
+                        (e.target.src = "/images/course-placeholder.png")
+                      }
+                    />
+                  </div>
 
-                  <div className="course-meta">
-                    <div className="meta-item">
-                      <FaUserGroup />
-                      <span>{getStudentCount()}</span>
-                    </div>
-                    <div className="meta-item">
-                      <FaPlay />
-                      <span>{getTotalLessons(course.chapters)}</span>
-                    </div>
-                    <div className="meta-item">
-                      <FaRegClock />
-                      <span>{formatDuration(course.time?.durationHours)}</span>
+                  <div className="course-body">
+                    <h5>{course.title}</h5>
+                    <p className="price">{formatPrice(course.pricing)}</p>
+
+                    <div className="course-meta">
+                      <div className="meta-item">
+                        <FaUserGroup />
+                        <span>{getStudentCount()}</span>
+                      </div>
+                      <div className="meta-item">
+                        <FaPlay />
+                        <span>{getTotalLessons(course.chapters)}</span>
+                      </div>
+                      <div className="meta-item">
+                        <FaRegClock />
+                        <span>
+                          {formatDuration(course.time?.durationHours)}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {showRightArrowCourse && (
+              <button
+                className="scroll-arrow right"
+                onClick={() =>
+                  handleScroll(
+                    courseScrollRef,
+                    "right",
+                    setShowLeftArrowCourse,
+                    setShowRightArrowCourse
+                  )
+                }
+              >
+                <FaChevronRight />
+              </button>
+            )}
           </div>
         )}
       </section>
 
       <section className="posts">
-        <SectionHead title="Bài viết nổi bật" linkText="Xem tất cả" linkTo="/posts" />
+        <SectionHead title="Bài viết nổi bật" />
 
         {loadingArticles ? (
           <div className="loading">Đang tải bài viết...</div>
         ) : articles.length === 0 ? (
           <div className="no-articles">Chưa có bài viết nào</div>
         ) : (
-          <div className="post-list">
-            {articles.slice(0, 4).map((article) => (
-              <div
-                className="post-card"
-                key={article._id}
-                style={{ cursor: "pointer" }}
-                onClick={() => navigate(`/article/${article._id}`)}
+          <div className="post-wrapper">
+            {showLeftArrowArticle && (
+              <button
+                className="scroll-arrow left"
+                onClick={() =>
+                  handleScroll(
+                    articleScrollRef,
+                    "left",
+                    setShowLeftArrowArticle,
+                    setShowRightArrowArticle
+                  )
+                }
               >
-                <div className="post-thumb">
-                  <img
-                    src={article.image}
-                    alt={article.title}
-                    onError={(e) =>
-                      (e.target.src = "/images/course-placeholder.png")
-                    }
-                  />
+                <FaChevronLeft />
+              </button>
+            )}
+
+            <div
+              className="post-list"
+              ref={articleScrollRef}
+              onScroll={() =>
+                checkScrollPosition(
+                  articleScrollRef,
+                  setShowLeftArrowArticle,
+                  setShowRightArrowArticle
+                )
+              }
+            >
+              {articles.map((article) => (
+                <div
+                  className="post-card"
+                  key={article._id}
+                  style={{ cursor: "pointer" }}
+                  onClick={() => navigate(`/article/${article._id}`)}
+                >
+                  <div className="post-thumb">
+                    <img
+                      src={article.image}
+                      alt={article.title}
+                      onError={(e) =>
+                        (e.target.src = "/images/course-placeholder.png")
+                      }
+                    />
+                  </div>
+                  <div className="post-body">
+                    <h6>{article.title}</h6>
+                    <p className="p-meta">{getAuthorDisplay(article)}</p>
+                  </div>
                 </div>
-                <div className="post-body">
-                  <h6>{article.title}</h6>
-                  <p className="p-meta">{getAuthorDisplay(article)}</p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {showRightArrowArticle && (
+              <button
+                className="scroll-arrow right"
+                onClick={() =>
+                  handleScroll(
+                    articleScrollRef,
+                    "right",
+                    setShowLeftArrowArticle,
+                    setShowRightArrowArticle
+                  )
+                }
+              >
+                <FaChevronRight />
+              </button>
+            )}
           </div>
         )}
       </section>

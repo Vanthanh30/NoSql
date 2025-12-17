@@ -88,7 +88,18 @@ const CoursePage = () => {
   };
 
   const handleEnrollClick = () => {
-    navigate(`/learn/${id}`);
+    const price = getFinalPrice();
+    const isLoggedIn = localStorage.getItem("token");
+
+    if (price === 0) {
+      navigate(`/learn/${id}`);
+      return;
+    }
+    if (!isLoggedIn) {
+      alert("Khóa học này có phí. Vui lòng đăng nhập để tiếp tục!");
+      navigate("/login", { state: { from: window.location.pathname } });
+      return;
+    }
   };
 
   if (loading) return <div className="loading">Đang tải...</div>;
@@ -151,9 +162,6 @@ const CoursePage = () => {
             onClick={() => setPlayVideo(true)}
           >
             <FaPlayCircle className="play-icon" />
-            <div className="video-overlay-text">
-              <p>Video giới thiệu khóa học</p>
-            </div>
           </div>
         ) : (
           <div className="video-wrapper">
@@ -166,9 +174,6 @@ const CoursePage = () => {
               <source src={course.media?.videoUrl} type="video/mp4" />
               Trình duyệt của bạn không hỗ trợ video.
             </video>
-            <div className="video-lesson-title">
-              <h5>Video giới thiệu khóa học</h5>
-            </div>
           </div>
         )}
 

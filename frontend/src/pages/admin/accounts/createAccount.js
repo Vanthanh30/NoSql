@@ -1,4 +1,4 @@
-// src/components/admin/accounts/AddAccount.jsx
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import accountService from "../../../services/admin/accountService";
@@ -10,7 +10,7 @@ function AddAccount() {
         email: "",
         password: "",
         phone: "",
-        role_Id: "User", // Mặc định
+        role_Id: "Admin",
         avatar: null
     });
     const [preview, setPreview] = useState(null);
@@ -54,7 +54,6 @@ function AddAccount() {
                     <h1>Thêm tài khoản</h1>
 
                     <form onSubmit={handleSubmit}>
-                        {/* Họ tên */}
                         <div className="form-group">
                             <label>Họ tên *</label>
                             <input
@@ -67,7 +66,6 @@ function AddAccount() {
                             />
                         </div>
 
-                        {/* Email */}
                         <div className="form-group">
                             <label>Email *</label>
                             <input
@@ -80,7 +78,6 @@ function AddAccount() {
                             />
                         </div>
 
-                        {/* Mật khẩu */}
                         <div className="form-group">
                             <label>Mật khẩu *</label>
                             <input
@@ -93,7 +90,6 @@ function AddAccount() {
                             />
                         </div>
 
-                        {/* Điện thoại */}
                         <div className="form-group">
                             <label>Điện thoại</label>
                             <input
@@ -105,24 +101,21 @@ function AddAccount() {
                             />
                         </div>
 
-                        {/* VAI TRÒ - SELECT Ở ĐÂY */}
                         <div className="form-group">
                             <label>Vai trò *</label>
-                            <select
-                                name="role_Id"
-                                value={formData.role_Id}
-                                onChange={handleChange}
-                                required
+                            <input
+                                type="text"
+                                value="Admin"
+                                disabled
                                 className="form-control"
-                            >
-                                <option value="">-- Chọn vai trò --</option>
-                                <option value="Admin">Admin</option>
-                                <option value="User">User</option>
-                                <option value="Editor">Editor</option>
-                            </select>
+                                style={{
+                                    backgroundColor: '#e9ecef',
+                                    cursor: 'not-allowed',
+                                    color: '#495057'
+                                }}
+                            />
                         </div>
 
-                        {/* Avatar */}
                         <div className="form-group">
                             <label>Ảnh đại diện</label>
                             <input
@@ -138,10 +131,8 @@ function AddAccount() {
                             )}
                         </div>
 
-                        {/* Lỗi */}
                         {error && <p className="text-danger">{error}</p>}
 
-                        {/* Nút hành động */}
                         <div className="form-actions">
                             <button type="submit" className="btn btn-primary">
                                 Lưu

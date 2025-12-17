@@ -72,8 +72,8 @@ const Header = () => {
   };
 
   const getInitials = () => {
-    if (user?.name) {
-      return user.name.charAt(0).toUpperCase();
+    if (user?.fullName) {
+      return user.fullName.charAt(0).toUpperCase();
     }
     if (user?.email) {
       return user.email.charAt(0).toUpperCase();
@@ -93,7 +93,7 @@ const Header = () => {
 
         {!isLoggedIn ? (
           <nav className="top-nav">
-            <Link to="/courses">Bài viết</Link>
+            <Link to="/posts">Bài viết</Link>
             <Link to="/blog">Blog</Link>
             <Link to="/contact">Liên hệ</Link>
             <Link to="/login" className="btn btn-outline">
@@ -161,9 +161,13 @@ const Header = () => {
                       </div>
                       <div className="user-info">
                         <p className="user-name">
-                          {user?.name || "Người dùng"}
+                          {user?.fullName
+                            ? user.fullName
+                            : user?.email || "Người dùng"}
                         </p>
-                        <p className="user-email">{user?.email || ""}</p>
+                        {user?.fullName && (
+                          <p className="user-email">{user?.email || ""}</p>
+                        )}
                       </div>
                     </div>
 

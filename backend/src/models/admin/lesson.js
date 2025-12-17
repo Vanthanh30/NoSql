@@ -1,16 +1,19 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const LessonSchema = new Schema({
+const LessonSchema = new Schema(
+  {
     title: String,
     videoUrl: String,
-    videoDuration: Number, // in seconds
+    videoDuration: Number,
     attachmentUrl: String,
-    preview: { type: Boolean, default: false }, // cho phép học thử
-}, {
-    timestamps: true
-});
+    preview: { type: Boolean, default: false },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const Lesson = mongoose.model('Lesson', LessonSchema);
+const Lesson = mongoose.model("Lesson", LessonSchema);
 
 module.exports = Lesson;

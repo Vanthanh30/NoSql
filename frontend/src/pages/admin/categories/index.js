@@ -9,7 +9,6 @@ function CategoriesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // THÊM PHÂN TRANG
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -45,7 +44,6 @@ function CategoriesPage() {
       await categoryAPI.delete(id);
       await fetchCategories();
 
-      // Giảm trang nếu trang hiện tại bị trống
       const newTotal = Math.ceil((categories.length - 1) / itemsPerPage);
       if (currentPage > newTotal && currentPage > 1) {
         setCurrentPage(currentPage - 1);
@@ -55,10 +53,12 @@ function CategoriesPage() {
     }
   };
 
-  // PHÂN TRANG GIỐNG HỆT ACCOUNT
   const totalPages = Math.ceil(categories.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentCategories = categories.slice(startIndex, startIndex + itemsPerPage);
+  const currentCategories = categories.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   if (loading) {
     return (
@@ -112,10 +112,14 @@ function CategoriesPage() {
                   <td>{category.title}</td>
                   <td>
                     <span
-                      className={`badge ${category.status === "active" ? "bg-success" : "bg-danger"
+                      className={`badge ${category.status === "active"
+                          ? "bg-success"
+                          : "bg-danger"
                         }`}
                     >
-                      {category.status === "active" ? "Hoạt động" : "Không hoạt động"}
+                      {category.status === "active"
+                        ? "Hoạt động"
+                        : "Không hoạt động"}
                     </span>
                   </td>
                   <td>
@@ -138,17 +142,17 @@ function CategoriesPage() {
           </tbody>
         </table>
 
-        {/* 👉 GỌI PHÂN TRANG Y CHANG ACCOUNT */}
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={setCurrentPage}
         />
 
-        {/* NÚT THÊM */}
-        <button className="categories__btn-add">
-          <a href="/admin/categories/create">Thêm danh mục</a>
-        </button>
+        <div className="categories__button-wrapper">
+          <button className="categories__btn-add">
+            <a href="/admin/categories/create">Thêm danh mục</a>
+          </button>
+        </div>
       </div>
     </div>
   );

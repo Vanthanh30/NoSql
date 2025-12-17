@@ -1,4 +1,4 @@
-// src/components/admin/accounts/EditAccount.jsx
+
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import accountService from "../../../services/admin/accountService";
@@ -9,21 +9,14 @@ function EditAccount() {
     const [formData, setFormData] = useState({
         fullName: "",
         email: "",
-        password: "", // để trống = không đổi
+        password: "",
         phone: "",
-        role_Id: "User",
+        role_Id: "Admin",
         avatar: null
     });
     const [preview, setPreview] = useState("");
     const [error, setError] = useState("");
 
-    // HÀM CHUẨN HÓA ROLE_ID: admin → Admin, ADMIN → Admin
-    const formatRole = (role) => {
-        if (!role) return "User";
-        return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
-    };
-
-    // LOAD DỮ LIỆU TỪ API → CHUẨN HÓA role_Id Ở ĐÂY
     useEffect(() => {
         const loadAccount = async () => {
             try {
@@ -33,9 +26,9 @@ function EditAccount() {
                 setFormData({
                     fullName: acc.fullName || "",
                     email: acc.email || "",
-                    password: "", // luôn để trống
+                    password: "",
                     phone: acc.phone || "",
-                    role_Id: formatRole(acc.role_Id), // CHUẨN HÓA Ở ĐÂY
+                    role_Id: "Admin",
                     avatar: null
                 });
 
@@ -86,7 +79,6 @@ function EditAccount() {
                     <h1>Sửa tài khoản</h1>
 
                     <form onSubmit={handleSubmit}>
-                        {/* Họ tên */}
                         <div className="form-group">
                             <label>Họ tên *</label>
                             <input
@@ -98,8 +90,7 @@ function EditAccount() {
                             />
                         </div>
 
-                        {/* Email */}
-                        <div class="form-group">
+                        <div className="form-group">
                             <label>Email *</label>
                             <input
                                 type="email"
@@ -110,7 +101,6 @@ function EditAccount() {
                             />
                         </div>
 
-                        {/* Mật khẩu (để trống = không đổi) */}
                         <div className="form-group">
                             <label>Mật khẩu mới (để trống nếu không đổi)</label>
                             <input
@@ -122,7 +112,6 @@ function EditAccount() {
                             />
                         </div>
 
-                        {/* Điện thoại */}
                         <div className="form-group">
                             <label>Điện thoại</label>
                             <input
@@ -133,23 +122,21 @@ function EditAccount() {
                             />
                         </div>
 
-                        {/* VAI TRÒ - SELECT */}
                         <div className="form-group">
                             <label>Vai trò *</label>
-                            <select
-                                name="role_Id"
-                                value={formData.role_Id}
-                                onChange={handleChange}
-                                required
-                            >
-                                <option value="">-- Chọn vai trò --</option>
-                                <option value="Admin">Admin</option>
-                                <option value="User">User</option>
-                                <option value="Editor">Editor</option>
-                            </select>
+                            <input
+                                type="text"
+                                value="Admin"
+                                disabled
+                                className="form-control"
+                                style={{
+                                    backgroundColor: '#e9ecef',
+                                    cursor: 'not-allowed',
+                                    color: '#495057'
+                                }}
+                            />
                         </div>
 
-                        {/* Avatar */}
                         <div className="form-group">
                             <label>Ảnh đại diện</label>
                             <input
@@ -165,10 +152,8 @@ function EditAccount() {
                             )}
                         </div>
 
-                        {/* Lỗi */}
                         {error && <p className="text-danger">{error}</p>}
 
-                        {/* Nút */}
                         <div className="form-actions">
                             <button type="submit" className="btn btn-primary">
                                 Cập nhật

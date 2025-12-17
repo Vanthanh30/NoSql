@@ -8,7 +8,7 @@ import Posts from "../../pages/client/posts";
 import CoursePage from "../../pages/client/course";
 import PostDetail from "../../pages/client/posts/postdetail.js";
 import LearningPage from "../../pages/client/course/learning.js";
-import UserProfile from "../../pages/client/UserProfile/index.js";
+import Profile from "../../pages/client/auth/profile.js";
 
 export const routes = [
   {
@@ -29,7 +29,7 @@ export const routes = [
     children: [
       {
         index: true,
-        element: <UserProfile />,
+        element: <Profile />,
       },
     ],
   },

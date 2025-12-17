@@ -4,14 +4,12 @@ import { useNavigate } from "react-router-dom";
 import "./article.scss";
 import Pagination from "../../../components/common/Pagination";
 
-
 function ArticlesPage() {
   const [articles, setArticles] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // THÊM PHÂN TRANG
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -108,7 +106,7 @@ function ArticlesPage() {
                 ) : (
                   currentArticles.map((art, idx) => (
                     <tr key={art._id}>
-                      <td>{startIndex + idx + 1}</td> {/* STT đúng theo trang */}
+                      <td>{startIndex + idx + 1}</td>
                       <td>{art.title}</td>
                       <td>
                         {art.category && art.category.title
@@ -119,14 +117,19 @@ function ArticlesPage() {
                         {art.createdBy?.account_id?.fullName
                           ? art.createdBy.account_id.fullName
                           : art.createdBy?.account_id
-                            ? art.createdBy.account_id.toString().slice(-6)
-                            : "Admin"}
+                          ? art.createdBy.account_id.toString().slice(-6)
+                          : "Admin"}
                       </td>
-                      <td>{new Date(art.createdAt).toLocaleDateString("vi-VN")}</td>
+                      <td>
+                        {new Date(art.createdAt).toLocaleDateString("vi-VN")}
+                      </td>
                       <td>
                         <span
-                          className={`badge ${art.status === "active" ? "bg-success" : "bg-secondary"
-                            }`}
+                          className={`badge ${
+                            art.status === "active"
+                              ? "bg-success"
+                              : "bg-secondary"
+                          }`}
                         >
                           {art.status === "active" ? "Hoạt động" : "Ẩn"}
                         </span>
@@ -150,7 +153,6 @@ function ArticlesPage() {
                 )}
               </tbody>
             </table>
-            {/* PHÂN TRANG */}
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

@@ -23,6 +23,12 @@ const courseAPI = {
             headers: { "Content-Type": "multipart/form-data", Authorization: `Bearer ${token}` },
         });
     },
+    updateJSON: (id, data) => {
+        const token = userService.getToken();
+        return axios.put(`${API_URL}/${id}`, data, {
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        });
+    },
     delete: (id) => {
         const token = userService.getToken();
         return axios.delete(`${API_URL}/${id}`, { headers: { Authorization: `Bearer ${token}` } });

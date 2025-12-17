@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import TextEditor from "../../../components/TinyMCE";
 import categoryAPI from "../../../services/admin/categoryService";
@@ -16,7 +16,7 @@ function CreateCategories() {
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
 
-  useState(() => {
+  useEffect(() => {
     categoryAPI
       .getAll()
       .then((res) => setCategories(res.data.categories))
@@ -91,7 +91,7 @@ function CreateCategories() {
           <label>Mô tả</label>
           <TextEditor
             value={formData.description}
-            onEditorChange={handleEditorChange}
+            onChange={handleEditorChange}
           />
         </div>
 
