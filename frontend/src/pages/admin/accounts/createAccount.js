@@ -67,7 +67,6 @@ function AddAccount() {
                             />
                         </div>
 
-                        {/* Email */}
                         <div className="form-group">
                             <label>Email *</label>
                             <input
@@ -80,7 +79,6 @@ function AddAccount() {
                             />
                         </div>
 
-                        {/* Mật khẩu */}
                         <div className="form-group">
                             <label>Mật khẩu *</label>
                             <input
@@ -93,7 +91,6 @@ function AddAccount() {
                             />
                         </div>
 
-                        {/* Điện thoại */}
                         <div className="form-group">
                             <label>Điện thoại</label>
                             <input
@@ -121,7 +118,6 @@ function AddAccount() {
                             />
                         </div>
 
-                        {/* Avatar */}
                         <div className="form-group">
                             <label>Ảnh đại diện</label>
                             <input
@@ -137,10 +133,8 @@ function AddAccount() {
                             )}
                         </div>
 
-                        {/* Lỗi */}
                         {error && <p className="text-danger">{error}</p>}
 
-                        {/* Nút hành động */}
                         <div className="form-actions">
                             <button type="submit" className="btn btn-primary">
                                 Lưu

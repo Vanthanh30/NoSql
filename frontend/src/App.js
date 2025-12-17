@@ -1,11 +1,8 @@
-// App.js
 import React from "react";
 import AllRoute from "./components/AllRoutes/index";
 
 function App() {
-  return (
-    <AllRoute />
-  );
+  return <AllRoute />;
 }
 
 export default App;

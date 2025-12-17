@@ -1,4 +1,3 @@
-// admin/index.js
 import AdminLayout from "../../pages/admin/layoutdefault";
 import Dashboard from "../../pages/admin/dashboard";
 import Account from "../../pages/admin/accounts/index";
@@ -17,75 +16,75 @@ import EditArticles from "../../pages/admin/articles/editArticle";
 import AdminPrivateRoute from "../../components/AdminPrivateRoute";
 
 export const adminRoute = [
-    {
-        path: "/admin",
+  {
+    path: "/admin",
+    children: [
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        element: <AdminPrivateRoute />,
         children: [
-            {
-                path: "login", // "/admin/login"
-                element: <Login />,
-            },
-            {
-                element: <AdminPrivateRoute />,
-                children: [
-                    {
-                        element: <AdminLayout />,
-                        children: [
-                            {
-                                index: true, // "/admin"
-                                element: <Dashboard />,
-                            },
-                            {
-                                path: "account",
-                                element: <Account />,
-                            },
-                            {
-                                path: "account/create",
-                                element: <AddUser />,
-                            },
-                            {
-                                path: "account/edit/:id",
-                                element: <EditAccount />,
-                            },
-                            {
-                                path: "categories",
-                                element: <CategoriesPage />,
-                            },
-                            {
-                                path: "categories/create",
-                                element: <CreateCategories />,
-                            },
-                            {
-                                path: "categories/edit/:id",
-                                element: <EditCategories />,
-                            },
-                            {
-                                path: "courses",
-                                element: <CoursesPage />,
-                            },
-                            {
-                                path: "courses/create",
-                                element: <CreateCourse />,
-                            },
-                            {
-                                path: "courses/edit/:id",
-                                element: <EditCourse />,
-                            },
-                            {
-                                path: "articles",
-                                element: <ArticlesPage />,
-                            },
-                            {
-                                path: "articles/create",
-                                element: <CreateArticles />,
-                            },
-                            {
-                                path: "articles/edit/:id",
-                                element: <EditArticles />,
-                            },
-                        ],
-                    },
-                ],
-            },
+          {
+            element: <AdminLayout />,
+            children: [
+              {
+                index: true,
+                element: <Dashboard />,
+              },
+              {
+                path: "account",
+                element: <Account />,
+              },
+              {
+                path: "account/create",
+                element: <AddUser />,
+              },
+              {
+                path: "account/edit/:id",
+                element: <EditAccount />,
+              },
+              {
+                path: "categories",
+                element: <CategoriesPage />,
+              },
+              {
+                path: "categories/create",
+                element: <CreateCategories />,
+              },
+              {
+                path: "categories/edit/:id",
+                element: <EditCategories />,
+              },
+              {
+                path: "courses",
+                element: <CoursesPage />,
+              },
+              {
+                path: "courses/create",
+                element: <CreateCourse />,
+              },
+              {
+                path: "courses/edit/:id",
+                element: <EditCourse />,
+              },
+              {
+                path: "articles",
+                element: <ArticlesPage />,
+              },
+              {
+                path: "articles/create",
+                element: <CreateArticles />,
+              },
+              {
+                path: "articles/edit/:id",
+                element: <EditArticles />,
+              },
+            ],
+          },
         ],
-    },
+      },
+    ],
+  },
 ];

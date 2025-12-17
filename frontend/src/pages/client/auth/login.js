@@ -44,8 +44,6 @@ const Login = () => {
     const result = await authService.loginUser(email, password);
 
     if (result.success) {
-      // ✅ authService đã tự động lưu token và dispatch event
-      // Navigate về trang chủ
       navigate("/");
     } else {
       setError(result.error || "Đăng nhập thất bại");
@@ -75,7 +73,7 @@ const Login = () => {
                 color: "#c62828",
                 borderRadius: "8px",
                 fontSize: "14px",
-                border: "1px solid #ef5350"
+                border: "1px solid #ef5350",
               }}
             >
               {error}
@@ -164,7 +162,7 @@ const Login = () => {
                   <span
                     className="link"
                     onClick={handleBack}
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: "pointer" }}
                   >
                     ← Quay lại
                   </span>

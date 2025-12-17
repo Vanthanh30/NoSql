@@ -3,316 +3,316 @@
 // 1. DANH SÁCH TÀI KHOẢN - CẬP NHẬT MỚI
 // ========================================
 .accounts {
-    padding: 30px 0;
-    background: #f8f9fa;
-    min-height: 80vh;
+  padding: 30px 0;
+  background: #f8f9fa;
+  min-height: 80vh;
 
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 15px;
-        position: relative;
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+    position: relative;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+
+    &::after {
+      content: "";
+      width: 90px;
+      height: 4px;
+      background: #0d6efd;
+      display: block;
+      margin: 14px auto 0;
+      border-radius: 2px;
+    }
+  }
+
+  // ========================================
+  // PHẦN RIÊNG CHO ADMIN VÀ USER SECTIONS
+  // ========================================
+  .account-section {
+    margin-bottom: 40px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 28px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
     }
 
-    h1 {
-        font-size: 28px;
-        font-weight: 700;
-        color: #333;
-        text-align: center;
-        margin-bottom: 30px;
-        position: relative;
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      padding-left: 16px;
+      position: relative;
 
-        &::after {
-            content: "";
-            width: 90px;
-            height: 4px;
-            background: #0d6efd;
-            display: block;
-            margin: 14px auto 0;
-            border-radius: 2px;
-        }
+      // Icon cho từng loại
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 5px;
+        height: 32px;
+        border-radius: 3px;
+      }
     }
 
-    // ========================================
-    // PHẦN RIÊNG CHO ADMIN VÀ USER SECTIONS
-    // ========================================
-    .account-section {
-        margin-bottom: 40px;
-        background: #fff;
-        border-radius: 12px;
-        padding: 28px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    // Styling riêng cho Admin section
+    &.admin-section {
+      border-left: 4px solid #e74c3c;
 
-        &:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+      .section-title {
+        color: #e74c3c;
+        border-bottom: 3px solid #e74c3c;
+
+        &::before {
+          background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%);
         }
-
-        .section-title {
-            font-size: 22px;
-            font-weight: 700;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            padding-bottom: 14px;
-            padding-left: 16px;
-            position: relative;
-
-            // Icon cho từng loại
-            &::before {
-                content: "";
-                position: absolute;
-                left: 0;
-                top: 50%;
-                transform: translateY(-50%);
-                width: 5px;
-                height: 32px;
-                border-radius: 3px;
-            }
-        }
-
-        // Styling riêng cho Admin section
-        &.admin-section {
-            border-left: 4px solid #e74c3c;
-
-            .section-title {
-                color: #e74c3c;
-                border-bottom: 3px solid #e74c3c;
-
-                &::before {
-                    background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%);
-                }
-            }
-        }
-
-        // Styling riêng cho User section  
-        &.user-section {
-            border-left: 4px solid #3498db;
-
-            .section-title {
-                color: #3498db;
-                border-bottom: 3px solid #3498db;
-
-                &::before {
-                    background: linear-gradient(180deg, #3498db 0%, #2980b9 100%);
-                }
-            }
-        }
+      }
     }
 
-    .table-wrapper {
-        overflow: hidden;
-        border-radius: 12px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-        margin-bottom: 20px;
+    // Styling riêng cho User section  
+    &.user-section {
+      border-left: 4px solid #3498db;
+
+      .section-title {
+        color: #3498db;
+        border-bottom: 3px solid #3498db;
+
+        &::before {
+          background: linear-gradient(180deg, #3498db 0%, #2980b9 100%);
+        }
+      }
+    }
+  }
+
+  .table-wrapper {
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+  }
+
+  .accounts__table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin-bottom: 20px;
+
+    th {
+      background: #0db9fd;
+      color: white;
+      font-weight: 600;
+      text-align: center;
+      padding: 14px 12px;
+      font-size: 15px;
+
+      &:nth-child(1) {
+        width: 80px;
+      }
+
+      &:nth-child(2) {
+        width: 100px;
+      }
+
+      &:nth-child(3) {
+        width: 180px;
+      }
+
+      &:nth-child(4) {
+        width: 200px;
+      }
+
+      &:nth-child(5) {
+        width: 130px;
+      }
+
+      &:nth-child(6) {
+        width: 100px;
+      }
+
+      &:nth-child(7) {
+        width: 140px;
+      }
     }
 
-    .accounts__table {
-        width: 100%;
-        border-collapse: collapse;
-        background: white;
-        margin-bottom: 20px;
-
-        th {
-            background: #0db9fd;
-            color: white;
-            font-weight: 600;
-            text-align: center;
-            padding: 14px 12px;
-            font-size: 15px;
-
-            &:nth-child(1) {
-                width: 80px;
-            }
-
-            &:nth-child(2) {
-                width: 100px;
-            }
-
-            &:nth-child(3) {
-                width: 180px;
-            }
-
-            &:nth-child(4) {
-                width: 200px;
-            }
-
-            &:nth-child(5) {
-                width: 130px;
-            }
-
-            &:nth-child(6) {
-                width: 100px;
-            }
-
-            &:nth-child(7) {
-                width: 140px;
-            }
-        }
-
-        td {
-            text-align: center;
-            padding: 14px 12px;
-            font-size: 14.5px;
-            color: #444;
-            vertical-align: middle;
-        }
-
-        tr {
-            transition: background 0.2s ease;
-
-            &:nth-child(even) {
-                background: #f8f9fa;
-            }
-
-            &:hover {
-                background: #e3f2fd;
-            }
-        }
-
-        .accounts__image {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 2px solid #ddd;
-            display: block;
-            margin: 0 auto;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-
-            &.placeholder {
-                background: #f8f9fa;
-                border: 2px dashed #ccc;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 12px;
-                color: #aaa;
-            }
-        }
-
-        .btn {
-            padding: 6px 14px;
-            border: none;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 60px;
-
-            &.btn-edit {
-                background-color: #0d6efd;
-                color: #fff;
-                border-radius: 6px;
-                padding: 6px 14px;
-
-                &:hover {
-                    background-color: #0b5ed7;
-                    transform: translateY(-2px);
-                }
-            }
-
-            &.btn-delete {
-                background-color: #dc3545;
-                color: #fff;
-                border-radius: 6px;
-                margin-left: 8px;
-                padding: 6px 14px;
-
-                &:hover {
-                    background-color: #bb2d3b;
-                    transform: translateY(-2px);
-                }
-            }
-        }
-
-        .me-2 {
-            margin-right: 8px;
-        }
+    td {
+      text-align: center;
+      padding: 14px 12px;
+      font-size: 14.5px;
+      color: #444;
+      vertical-align: middle;
     }
 
-    .pagination-wrapper {
+    tr {
+      transition: background 0.2s ease;
+
+      &:nth-child(even) {
+        background: #f8f9fa;
+      }
+
+      &:hover {
+        background: #e3f2fd;
+      }
+    }
+
+    .accounts__image {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #ddd;
+      display: block;
+      margin: 0 auto;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+      &.placeholder {
+        background: #f8f9fa;
+        border: 2px dashed #ccc;
         display: flex;
+        align-items: center;
         justify-content: center;
-        gap: 8px;
-        margin: 20px 0;
-        flex-wrap: wrap;
-
-        .pagination-btn {
-            padding: 8px 14px;
-            border: 1px solid #ddd;
-            background: #fff;
-            color: #333;
-            font-size: 14px;
-            font-weight: 500;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            min-width: 40px;
-
-            &:hover:not(:disabled) {
-                background: #0d6efd;
-                color: #fff;
-                border-color: #0d6efd;
-                transform: translateY(-2px);
-            }
-
-            &:disabled {
-                opacity: 0.5;
-                cursor: not-allowed;
-            }
-
-            &.active {
-                background: #0d6efd;
-                color: #fff;
-                border-color: #0d6efd;
-                font-weight: 600;
-            }
-        }
+        font-size: 12px;
+        color: #aaa;
+      }
     }
 
-    .add-button-wrapper {
-        display: flex;
-        justify-content: flex-end;
-        padding: 0 15px;
-        margin-top: 10px;
-    }
+    .btn {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 60px;
 
-    .btn-add-account {
-        margin-top: 15px;
-        padding: 10px 18px;
-        font-size: 16px;
-        font-weight: 600;
+      &.btn-edit {
+        background-color: #0d6efd;
         color: #fff;
-        background-color: #198754;
-        border-radius: 8px;
-        border: none;
-        transition: all 0.3s ease;
-        cursor: pointer;
-
-        a {
-            text-decoration: none;
-            color: #fff;
-        }
+        border-radius: 6px;
+        padding: 6px 14px;
 
         &:hover {
-            background-color: #157347;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+          background-color: #0b5ed7;
+          transform: translateY(-2px);
         }
+      }
+
+      &.btn-delete {
+        background-color: #dc3545;
+        color: #fff;
+        border-radius: 6px;
+        margin-left: 8px;
+        padding: 6px 14px;
+
+        &:hover {
+          background-color: #bb2d3b;
+          transform: translateY(-2px);
+        }
+      }
     }
 
-    // Text utilities
-    .text-center {
-        text-align: center;
+    .me-2 {
+      margin-right: 8px;
+    }
+  }
+
+  .pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+
+    .pagination-btn {
+      padding: 8px 14px;
+      border: 1px solid #ddd;
+      background: #fff;
+      color: #333;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 40px;
+
+      &:hover:not(:disabled) {
+        background: #0d6efd;
+        color: #fff;
+        border-color: #0d6efd;
+        transform: translateY(-2px);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      &.active {
+        background: #0d6efd;
+        color: #fff;
+        border-color: #0d6efd;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .add-button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 15px;
+    margin-top: 10px;
+  }
+
+  .btn-add-account {
+    margin-top: 15px;
+    padding: 10px 18px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    background-color: #198754;
+    border-radius: 8px;
+    border: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+
+    a {
+      text-decoration: none;
+      color: #fff;
     }
 
-    .text-danger {
-        color: #dc3545;
-        text-align: center;
-        font-weight: 500;
+    &:hover {
+      background-color: #157347;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
     }
+  }
+
+  // Text utilities
+  .text-center {
+    text-align: center;
+  }
+
+  .text-danger {
+    color: #dc3545;
+    text-align: center;
+    font-weight: 500;
+  }
 }
 
 // ========================================
@@ -320,214 +320,212 @@
 // ========================================
 .add-account,
 .edit-account {
-    padding: 40px 0;
-    background: #f8f9fa;
-    min-height: 85vh;
+  padding: 40px 0;
+  background: #f8f9fa;
+  min-height: 85vh;
 
-    .container {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 0 15px;
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 15px;
+  }
+
+  .card {
+    background: #fff;
+    padding: 36px 40px;
+    border-radius: 16px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #333;
+      text-align: center;
+      margin-bottom: 35px;
+      position: relative;
+
+      &::after {
+        content: "";
+        width: 90px;
+        height: 4px;
+        background: #0d6efd;
+        display: block;
+        margin: 14px auto 0;
+        border-radius: 2px;
+      }
     }
 
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px 30px;
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      label {
+        display: block;
+        font-size: 14.5px;
+        font-weight: 600;
+        color: #444;
+        margin-bottom: 8px;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 11px 14px;
+        border: 1.5px solid #ddd;
+        border-radius: 8px;
+        font-size: 15px;
+        transition: all 0.25s ease;
+
+        &:focus {
+          outline: none;
+          border-color: #0d6efd;
+          box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15);
+        }
+
+        &::placeholder {
+          color: #aaa;
+        }
+      }
+
+      select.form-control {
+        cursor: pointer;
+      }
+
+      input[type="file"] {
+        padding: 8px 0;
+        border: none;
+        font-size: 14px;
+
+        &::file-selector-button {
+          background: #0d6efd;
+          color: #fff;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 6px;
+          cursor: pointer;
+          font-weight: 500;
+          margin-right: 12px;
+          transition: background 0.25s ease;
+
+          &:hover {
+            background: #0b5ed7;
+          }
+        }
+      }
+
+      .avatar-preview {
+        grid-column: 1 / -1;
+        text-align: center;
+        margin-top: 10px;
+
+        img {
+          width: 150px;
+          height: 150px;
+          object-fit: cover;
+          border-radius: 10px;
+          border: 3px solid #0d6efd;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          transition: transform 0.3s ease;
+
+          &:hover {
+            transform: scale(1.05);
+          }
+        }
+      }
+
+      // NÚT HÀNH ĐỘNG – TRONG .form-actions
+      .form-actions {
+        grid-column: 1 / -1;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 16px;
+        margin-top: 40px;
+
+        .btn {
+          padding: 11px 24px;
+          border-radius: 8px;
+          border: none;
+          font-weight: 600;
+          cursor: pointer;
+          min-width: 120px;
+          font-size: 15px;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+          background: #198754;
+          color: #fff;
+
+          &:hover {
+            background: #157347;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(25, 135, 84, 0.35);
+          }
+
+          &:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+          }
+        }
+
+        .btn-secondary {
+          background: #6c757d;
+          color: #fff;
+
+          &:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.25);
+          }
+        }
+      }
+    }
+
+    .text-danger {
+      grid-column: 1 / -1;
+      color: #dc3545;
+      font-size: 14px;
+      margin-top: 12px;
+      text-align: center;
+      font-weight: 500;
+    }
+  }
+
+  @media (max-width: 768px) {
     .card {
-        background: #fff;
-        padding: 36px 40px;
-        border-radius: 16px;
-        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
-        margin-top: 20px;
-
-        h1 {
-            font-size: 26px;
-            font-weight: 700;
-            color: #333;
-            text-align: center;
-            margin-bottom: 35px;
-            position: relative;
-
-            &::after {
-                content: "";
-                width: 90px;
-                height: 4px;
-                background: #0d6efd;
-                display: block;
-                margin: 14px auto 0;
-                border-radius: 2px;
-            }
-        }
-
-        form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 22px 30px;
-
-            .form-group {
-                display: flex;
-                flex-direction: column;
-            }
-
-            label {
-                display: block;
-                font-size: 14.5px;
-                font-weight: 600;
-                color: #444;
-                margin-bottom: 8px;
-            }
-
-            input,
-            select {
-                width: 100%;
-                padding: 11px 14px;
-                border: 1.5px solid #ddd;
-                border-radius: 8px;
-                font-size: 15px;
-                transition: all 0.25s ease;
-
-                &:focus {
-                    outline: none;
-                    border-color: #0d6efd;
-                    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.15);
-                }
-
-                &::placeholder {
-                    color: #aaa;
-                }
-            }
-
-            select.form-control {
-                cursor: pointer;
-            }
-
-            input[type="file"] {
-                padding: 8px 0;
-                border: none;
-                font-size: 14px;
-
-                &::file-selector-button {
-                    background: #0d6efd;
-                    color: #fff;
-                    border: none;
-                    padding: 8px 16px;
-                    border-radius: 6px;
-                    cursor: pointer;
-                    font-weight: 500;
-                    margin-right: 12px;
-                    transition: background 0.25s ease;
-
-                    &:hover {
-                        background: #0b5ed7;
-                    }
-                }
-            }
-
-            .avatar-preview {
-                grid-column: 1 / -1;
-                text-align: center;
-                margin-top: 10px;
-
-                img {
-                    width: 150px;
-                    height: 150px;
-                    object-fit: cover;
-                    border-radius: 10px;
-                    border: 3px solid #0d6efd;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                    transition: transform 0.3s ease;
-
-                    &:hover {
-                        transform: scale(1.05);
-                    }
-                }
-            }
-
-            // NÚT HÀNH ĐỘNG – TRONG .form-actions
-            .form-actions {
-                grid-column: 1 / -1;
-                display: flex;
-                justify-content: flex-start;
-                align-items: center;
-                gap: 16px;
-                margin-top: 40px;
-
-                .btn {
-                    padding: 11px 24px;
-                    border-radius: 8px;
-                    border: none;
-                    font-weight: 600;
-                    cursor: pointer;
-                    min-width: 120px;
-                    font-size: 15px;
-                    transition: all 0.3s ease;
-                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-                }
-
-                // NÚT LƯU – MÀU XANH LÁ #198754
-                .btn-primary {
-                    background: #198754;
-                    color: #fff;
-
-                    &:hover {
-                        background: #157347;
-                        transform: translateY(-2px);
-                        box-shadow: 0 4px 14px rgba(25, 135, 84, 0.35);
-                    }
-
-                    &:disabled {
-                        opacity: 0.7;
-                        cursor: not-allowed;
-                        transform: none;
-                        box-shadow: none;
-                    }
-                }
-
-                // NÚT HỦY
-                .btn-secondary {
-                    background: #6c757d;
-                    color: #fff;
-
-                    &:hover {
-                        background: #5a6268;
-                        transform: translateY(-2px);
-                        box-shadow: 0 4px 12px rgba(108, 117, 125, 0.25);
-                    }
-                }
-            }
-        }
-
-        .text-danger {
-            grid-column: 1 / -1;
-            color: #dc3545;
-            font-size: 14px;
-            margin-top: 12px;
-            text-align: center;
-            font-weight: 500;
-        }
+      padding: 20px;
+      margin: 20px auto;
     }
 
-    @media (max-width: 768px) {
-        .card {
-            padding: 20px;
-            margin: 20px auto;
-        }
-
-        form {
-            grid-template-columns: 1fr !important;
-        }
-
-        .form-actions {
-            flex-direction: column;
-            gap: 16px;
-
-            .btn {
-                width: 100%;
-            }
-        }
-
-        .avatar-preview img {
-            width: 120px;
-            height: 120px;
-        }
+    form {
+      grid-template-columns: 1fr !important;
     }
+
+    .form-actions {
+      flex-direction: column;
+      gap: 16px;
+
+      .btn {
+        width: 100%;
+      }
+    }
+
+    .avatar-preview img {
+      width: 120px;
+      height: 120px;
+    }
+  }
 }
 
 // ========================================
@@ -536,254 +534,248 @@
 
 /* Laptop 14-15 inch và nhỏ hơn */
 @media (max-width: 1366px) {
-    .accounts {
-        padding: 20px 0;
+  .accounts {
+    padding: 20px 0;
 
-        .container {
-            max-width: 96%;
-            padding: 0 12px;
-        }
-
-        h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
-        .account-section {
-            padding: 22px;
-            margin-bottom: 30px;
-
-            .section-title {
-                font-size: 20px;
-                padding-left: 14px;
-
-                &::before {
-                    width: 4px;
-                    height: 28px;
-                }
-            }
-        }
-
-        .accounts__table {
-
-            th,
-            td {
-                padding: 10px 8px;
-                font-size: 13.5px;
-            }
-
-            .accounts__image {
-                width: 44px;
-                height: 44px;
-            }
-
-            .btn {
-                padding: 5px 10px;
-                font-size: 13px;
-                min-width: 50px;
-            }
-        }
-
-        .btn-add-account {
-            padding: 8px 14px;
-            font-size: 14px;
-        }
-
-        .pagination-wrapper .pagination-btn {
-            padding: 6px 10px;
-            font-size: 13px;
-        }
-
-        /* Form */
-        .card {
-            padding: 28px 30px;
-        }
-
-        .form-actions {
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+    .container {
+      max-width: 96%;
+      padding: 0 12px;
     }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .account-section {
+      padding: 22px;
+      margin-bottom: 30px;
+
+      .section-title {
+        font-size: 20px;
+        padding-left: 14px;
+
+        &::before {
+          width: 4px;
+          height: 28px;
+        }
+      }
+    }
+
+    .accounts__table {
+
+      th,
+      td {
+        padding: 10px 8px;
+        font-size: 13.5px;
+      }
+
+      .accounts__image {
+        width: 44px;
+        height: 44px;
+      }
+
+      .btn {
+        padding: 5px 10px;
+        font-size: 13px;
+        min-width: 50px;
+      }
+    }
+
+    .btn-add-account {
+      padding: 8px 14px;
+      font-size: 14px;
+    }
+
+    .pagination-wrapper .pagination-btn {
+      padding: 6px 10px;
+      font-size: 13px;
+    }
+
+    .card {
+      padding: 28px 30px;
+    }
+
+    .form-actions {
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+  }
 }
 
-/* Tablet / cửa sổ thu nhỏ */
 @media (max-width: 992px) {
-    .accounts {
-        padding: 16px 0;
+  .accounts {
+    padding: 16px 0;
 
-        .container {
-            max-width: 98%;
-            padding: 0 10px;
-        }
-
-        .account-section {
-            padding: 18px;
-            margin-bottom: 25px;
-
-            .section-title {
-                font-size: 18px;
-                padding-left: 12px;
-
-                &::before {
-                    width: 4px;
-                    height: 24px;
-                }
-            }
-        }
-
-        /* Cho phép cuộn ngang khi bảng quá rộng */
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        .accounts__table {
-            display: block;
-            white-space: nowrap;
-
-            th,
-            td {
-                padding: 8px 6px;
-                font-size: 13px;
-            }
-
-            tr {
-                display: table-row;
-            }
-
-            .accounts__image {
-                width: 42px;
-                height: 42px;
-            }
-
-            .btn {
-                padding: 5px 8px;
-                font-size: 12.5px;
-            }
-        }
-
-        .add-button-wrapper {
-            justify-content: center;
-            padding: 0 8px;
-        }
-
-        .btn-add-account {
-            width: 100%;
-            max-width: 320px;
-            display: block;
-            text-align: center;
-        }
-
-        .pagination-wrapper {
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        /* Form: chuyển layout form sang dọc nếu cần */
-        .card form {
-            grid-template-columns: 1fr !important;
-            gap: 16px 20px;
-        }
-
-        .form-actions {
-            flex-direction: column;
-            align-items: stretch;
-
-            .btn {
-                width: 100%;
-            }
-        }
+    .container {
+      max-width: 98%;
+      padding: 0 10px;
     }
+
+    .account-section {
+      padding: 18px;
+      margin-bottom: 25px;
+
+      .section-title {
+        font-size: 18px;
+        padding-left: 12px;
+
+        &::before {
+          width: 4px;
+          height: 24px;
+        }
+      }
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    .accounts__table {
+      display: block;
+      white-space: nowrap;
+
+      th,
+      td {
+        padding: 8px 6px;
+        font-size: 13px;
+      }
+
+      tr {
+        display: table-row;
+      }
+
+      .accounts__image {
+        width: 42px;
+        height: 42px;
+      }
+
+      .btn {
+        padding: 5px 8px;
+        font-size: 12.5px;
+      }
+    }
+
+    .add-button-wrapper {
+      justify-content: center;
+      padding: 0 8px;
+    }
+
+    .btn-add-account {
+      width: 100%;
+      max-width: 320px;
+      display: block;
+      text-align: center;
+    }
+
+    .pagination-wrapper {
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .card form {
+      grid-template-columns: 1fr !important;
+      gap: 16px 20px;
+    }
+
+    .form-actions {
+      flex-direction: column;
+      align-items: stretch;
+
+      .btn {
+        width: 100%;
+      }
+    }
+  }
 }
 
-/* Mobile nhỏ */
 @media (max-width: 576px) {
-    .accounts {
-        padding: 12px 0;
+  .accounts {
+    padding: 12px 0;
 
-        h1 {
-            font-size: 20px;
-            margin-bottom: 14px;
-        }
-
-        .account-section {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-
-            .section-title {
-                font-size: 16px;
-                padding-left: 10px;
-                margin-bottom: 15px;
-                padding-bottom: 10px;
-
-                &::before {
-                    width: 3px;
-                    height: 20px;
-                }
-            }
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-            border-radius: 8px;
-        }
-
-        .accounts__table {
-
-            th,
-            td {
-                padding: 6px 8px;
-                font-size: 12px;
-            }
-
-            .accounts__image {
-                width: 36px;
-                height: 36px;
-            }
-
-            .btn {
-                padding: 5px 8px;
-                font-size: 12px;
-                min-width: 44px;
-            }
-        }
-
-        .add-button-wrapper {
-            justify-content: center;
-            padding: 0 10px;
-        }
-
-        .btn-add-account {
-            width: 100%;
-            padding: 8px 12px;
-            font-size: 13px;
-        }
-
-        .pagination-wrapper {
-            gap: 4px;
-
-            .pagination-btn {
-                padding: 4px 8px;
-                font-size: 12px;
-            }
-        }
-
-        /* Form (mobile): co gọn */
-        .card {
-            padding: 18px;
-        }
-
-        .avatar-preview img {
-            width: 100px;
-            height: 100px;
-        }
-
-        .form-actions {
-            gap: 10px;
-
-            .btn {
-                width: 100%;
-            }
-        }
+    h1 {
+      font-size: 20px;
+      margin-bottom: 14px;
     }
+
+    .account-section {
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+
+      .section-title {
+        font-size: 16px;
+        padding-left: 10px;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+
+        &::before {
+          width: 3px;
+          height: 20px;
+        }
+      }
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 8px;
+    }
+
+    .accounts__table {
+
+      th,
+      td {
+        padding: 6px 8px;
+        font-size: 12px;
+      }
+
+      .accounts__image {
+        width: 36px;
+        height: 36px;
+      }
+
+      .btn {
+        padding: 5px 8px;
+        font-size: 12px;
+        min-width: 44px;
+      }
+    }
+
+    .add-button-wrapper {
+      justify-content: center;
+      padding: 0 10px;
+    }
+
+    .btn-add-account {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    .pagination-wrapper {
+      gap: 4px;
+
+      .pagination-btn {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+    }
+
+    .card {
+      padding: 18px;
+    }
+
+    .avatar-preview img {
+      width: 100px;
+      height: 100px;
+    }
+
+    .form-actions {
+      gap: 10px;
+
+      .btn {
+        width: 100%;
+      }
+    }
+  }
 }

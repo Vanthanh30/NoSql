@@ -78,19 +78,15 @@ const Posts = () => {
     return postDate.toLocaleDateString("vi-VN");
   };
 
-  // ✅ Hàm loại bỏ HTML tags và lấy plain text
   const stripHtmlTags = (html) => {
     if (!html) return "";
 
-    // Tạo một temporary div để parse HTML
     const temp = document.createElement("div");
     temp.innerHTML = html;
 
-    // Lấy text content (không có HTML tags)
     return temp.textContent || temp.innerText || "";
   };
 
-  // ✅ Hàm tạo excerpt (trích đoạn) từ nội dung
   const getExcerpt = (content, maxLength = 150) => {
     if (!content) return "Nội dung đang được cập nhật...";
 
@@ -102,15 +98,12 @@ const Posts = () => {
 
     return plainText.substring(0, maxLength).trim() + "...";
   };
-
-  // ✅ Tính thời gian đọc dựa trên plain text
   const calculateReadingTime = (htmlContent) => {
     if (!htmlContent) return 1;
 
     const plainText = stripHtmlTags(htmlContent);
     const wordCount = plainText.split(/\s+/).length;
-    const readingTime = Math.ceil(wordCount / 200); // 200 từ/phút
-
+    const readingTime = Math.ceil(wordCount / 200);
     return readingTime || 1;
   };
 
@@ -127,7 +120,6 @@ const Posts = () => {
 
   return (
     <div className="posts-container">
-      {/* Bộ lọc chủ đề */}
       <div className="topic-filter">
         <h3>XEM CÁC BÀI VIẾT THEO CHỦ ĐỀ</h3>
         <div className="topic-buttons">
@@ -146,7 +138,6 @@ const Posts = () => {
         </div>
       </div>
 
-      {/* Danh sách bài viết */}
       <div className="featured-posts">
         <h3>BÀI VIẾT NỔI BẬT</h3>
         <p>Tổng hợp các bài viết chia sẻ hữu ích, cập nhật liên tục.</p>
@@ -183,7 +174,6 @@ const Posts = () => {
 
                   <h2 className="post-title">{article.title}</h2>
 
-                  {/* ✅ Hiển thị excerpt đã được strip HTML */}
                   <p className="post-desc">
                     {getExcerpt(article.content, 150)}
                   </p>
@@ -202,7 +192,6 @@ const Posts = () => {
         </div>
       </div>
 
-      {/* Phân trang */}
       {totalPages > 1 && (
         <div className="pagination">
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (

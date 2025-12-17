@@ -6,7 +6,6 @@ import articleAPI from "../../services/admin/articleService";
 import categoryAPI from "../../services/admin/categoryService";
 import { FaSearch } from "react-icons/fa";
 
-// Hàm lấy dữ liệu từ các service
 const SERVICE_MAP = {
   account: async (keyword) => {
     const accounts = await accountService.getAccounts();
@@ -59,7 +58,6 @@ const SERVICE_MAP = {
   },
 };
 
-// Map _type sang route edit
 const TYPE_ROUTE_MAP = {
   account: "account",
   course: "courses",
@@ -83,7 +81,6 @@ function SearchBar({ types = ["account", "course", "article", "category"] }) {
     setError(null);
 
     try {
-      // Gọi tất cả types cùng lúc
       const promises = types.map((t) => SERVICE_MAP[t](searchKey.trim()));
       const resArrays = await Promise.all(promises);
       const combined = resArrays.flat();

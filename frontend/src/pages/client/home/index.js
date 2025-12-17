@@ -11,7 +11,6 @@ import { FaRegClock } from "react-icons/fa";
 import courseService from "../../../services/client/courseService";
 import articleService from "../../../services/client/articleService";
 
-/* ====== IMAGES ====== */
 import person from "../../../assets/images/person.png";
 import english from "../../../assets/images/english.jpg";
 import math from "../../../assets/images/math.jpg";
@@ -101,20 +100,26 @@ const HomePage = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Check scroll position for courses
   useEffect(() => {
     if (courses.length > 0) {
       setTimeout(() => {
-        checkScrollPosition(courseScrollRef, setShowLeftArrowCourse, setShowRightArrowCourse);
+        checkScrollPosition(
+          courseScrollRef,
+          setShowLeftArrowCourse,
+          setShowRightArrowCourse
+        );
       }, 100);
     }
   }, [courses]);
 
-  // Check scroll position for articles
   useEffect(() => {
     if (articles.length > 0) {
       setTimeout(() => {
-        checkScrollPosition(articleScrollRef, setShowLeftArrowArticle, setShowRightArrowArticle);
+        checkScrollPosition(
+          articleScrollRef,
+          setShowLeftArrowArticle,
+          setShowRightArrowArticle
+        );
       }, 100);
     }
   }, [articles]);

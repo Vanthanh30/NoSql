@@ -80,7 +80,6 @@ function EditAccount() {
                     <h1>Sửa tài khoản</h1>
 
                     <form onSubmit={handleSubmit}>
-                        {/* Họ tên */}
                         <div className="form-group">
                             <label>Họ tên *</label>
                             <input
@@ -104,7 +103,6 @@ function EditAccount() {
                             />
                         </div>
 
-                        {/* Mật khẩu (để trống = không đổi) */}
                         <div className="form-group">
                             <label>Mật khẩu mới (để trống nếu không đổi)</label>
                             <input
@@ -116,7 +114,6 @@ function EditAccount() {
                             />
                         </div>
 
-                        {/* Điện thoại */}
                         <div className="form-group">
                             <label>Điện thoại</label>
                             <input
@@ -143,7 +140,6 @@ function EditAccount() {
                             />
                         </div>
 
-                        {/* Avatar */}
                         <div className="form-group">
                             <label>Ảnh đại diện</label>
                             <input
@@ -159,10 +155,8 @@ function EditAccount() {
                             )}
                         </div>
 
-                        {/* Lỗi */}
                         {error && <p className="text-danger">{error}</p>}
 
-                        {/* Nút */}
                         <div className="form-actions">
                             <button type="submit" className="btn btn-primary">
                                 Cập nhật

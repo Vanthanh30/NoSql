@@ -1,6 +1,5 @@
-// src/services/admin/accountService.js
 import axios from "axios";
-import userService from "./userService"; // Import để lấy token
+import userService from "./userService";
 
 const ADMIN_ACCOUNTS_URL = "http://localhost:3000/api/admin/accounts";
 const USER_ACCOUNTS_URL = "http://localhost:3000/api/client/user";

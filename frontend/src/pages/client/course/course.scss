@@ -18,12 +18,9 @@
     padding: 20px;
     gap: 20px;
   }
-
-  /* =====  LEARNING MODE STYLES  ===== */
   &.learning-mode {
     display: grid;
     grid-template-columns: 3fr 1.5fr;
-    /* Video lớn (trái) | Sidebar (phải) */
     max-width: none;
     margin: 0;
     padding-bottom: 10px;
@@ -48,7 +45,6 @@
       border-radius: 5px;
     }
 
-    /* Phần Video (Mặt chính - Trái) */
     .course-video {
       order: 1;
       position: relative;
@@ -110,7 +106,6 @@
       }
     }
 
-    /* Danh sách bài học (Sidebar - Phải) */
     .lesson-list-sidebar {
       order: 2;
       background: #fff;
@@ -196,7 +191,6 @@
     }
   }
 
-  /* ===== Back Button (Vị trí mặc định) ===== */
   .back-button {
     position: absolute;
     top: 20px;
@@ -219,7 +213,6 @@
     }
   }
 
-  /* ===== Course Content (Phần Chính) ===== */
   .course-content {
     flex: 2;
 
@@ -281,7 +274,6 @@
     }
   }
 
-  /* ===== Course Video + Enroll Box (Sidebar Mặc định) ===== */
   .course-video {
     flex: 1;
     display: flex;
