@@ -94,8 +94,8 @@ const LearningPage = () => {
                 <h3>{currentLesson.title}</h3>
               </div>
               <div className="lesson-description">
-                <h5>Mô tả bài học:</h5>
-                <p>{currentLesson.description || "Không có mô tả chi tiết."}</p>
+                <h5>Mô tả khóa học:</h5>
+                <div dangerouslySetInnerHTML={{ __html: course.description }} />
               </div>
             </>
           ) : (
@@ -131,7 +131,9 @@ const LearningPage = () => {
                   ) : (
                     <FaPlayCircle className="icon" />
                   )}
-                  {lesson.title}
+                  <span style={{ flex: 1 }}>
+                    {lesson.title.replace(/(bài học \d+)/i, "$1:")}
+                  </span>
                   {lesson.duration && (
                     <span className="time">{formatTime(lesson.duration)}</span>
                   )}

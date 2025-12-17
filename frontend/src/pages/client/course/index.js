@@ -88,7 +88,15 @@ const CoursePage = () => {
   };
 
   const handleEnrollClick = () => {
-    navigate(`/learn/${id}`);
+    const isLoggedIn = localStorage.getItem("token");
+
+    if (isLoggedIn) {
+      navigate(`/learn/${id}`);
+    } else {
+      alert("Vui lòng đăng nhập để đăng ký khóa học!");
+
+      navigate("/login", { state: { from: window.location.pathname } });
+    }
   };
 
   if (loading) return <div className="loading">Đang tải...</div>;
