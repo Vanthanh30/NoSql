@@ -11,14 +11,11 @@ function AccountList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Phân trang riêng cho Admin và User
+
   const [adminPage, setAdminPage] = useState(1);
   const [userPage, setUserPage] = useState(1);
   const itemsPerPage = 5;
 
-  // ========================================
-  // LOAD ADMIN ACCOUNTS
-  // ========================================
   const loadAdminAccounts = async () => {
     try {
       const data = await accountService.getAdminAccounts();
@@ -30,9 +27,6 @@ function AccountList() {
     }
   };
 
-  // ========================================
-  // LOAD USER ACCOUNTS
-  // ========================================
   const loadUserAccounts = async () => {
     try {
       const data = await accountService.getUserAccounts();
@@ -44,15 +38,11 @@ function AccountList() {
     }
   };
 
-  // ========================================
-  // LOAD TẤT CẢ (gọi song song)
-  // ========================================
   const loadAllAccounts = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // Gọi song song 2 hàm load
       await Promise.all([
         loadAdminAccounts(),
         loadUserAccounts()
@@ -69,30 +59,17 @@ function AccountList() {
     loadAllAccounts();
   }, []);
 
-  // ========================================
-  // XỬ LÝ XÓA
-  // ========================================
-  const handleDelete = async (id, isAdmin) => {
-    if (!window.confirm("Bạn có chắc muốn xóa tài khoản này?")) return;
+  const handleDelete = async (id) => {
+    if (!window.confirm("Bạn có chắc muốn xóa tài khoản Admin này?")) return;
 
     try {
       await accountService.deleteAccount(id);
 
-      // Reload lại danh sách tương ứng
-      if (isAdmin) {
-        await loadAdminAccounts();
-        // Tự động về trang trước nếu trang hiện tại trống
-        const newTotal = Math.ceil((adminAccounts.length - 1) / itemsPerPage);
-        if (adminPage > newTotal && adminPage > 1) {
-          setAdminPage(adminPage - 1);
-        }
-      } else {
-        await loadUserAccounts();
-        // Tự động về trang trước nếu trang hiện tại trống
-        const newTotal = Math.ceil((userAccounts.length - 1) / itemsPerPage);
-        if (userPage > newTotal && userPage > 1) {
-          setUserPage(userPage - 1);
-        }
+      await loadAdminAccounts();
+
+      const newTotal = Math.ceil((adminAccounts.length - 1) / itemsPerPage);
+      if (adminPage > newTotal && adminPage > 1) {
+        setAdminPage(adminPage - 1);
       }
 
       alert("Xóa thành công!");
@@ -101,16 +78,10 @@ function AccountList() {
     }
   };
 
-  // ========================================
-  // XỬ LÝ SỬA (chỉ cho Admin)
-  // ========================================
   const handleEdit = (id) => {
     navigate(`/admin/account/edit/${id}`);
   };
 
-  // ========================================
-  // PHÂN TRANG CHO ADMIN
-  // ========================================
   const totalAdminPages = Math.ceil(adminAccounts.length / itemsPerPage);
   const startAdminIndex = (adminPage - 1) * itemsPerPage;
   const currentAdminAccounts = adminAccounts.slice(
@@ -118,20 +89,13 @@ function AccountList() {
     startAdminIndex + itemsPerPage
   );
 
-  // ========================================
-  // PHÂN TRANG CHO USER
-  // ========================================
   const totalUserPages = Math.ceil(userAccounts.length / itemsPerPage);
   const startUserIndex = (userPage - 1) * itemsPerPage;
   const currentUserAccounts = userAccounts.slice(
     startUserIndex,
     startUserIndex + itemsPerPage
   );
-
-  // ========================================
-  // COMPONENT HIỂN THỊ BẢNG
-  // ========================================
-  const renderTable = (accountsList, startIndex, isAdmin = false) => (
+  const renderAdminTable = (accountsList, startIndex) => (
     <table className="accounts__table">
       <thead>
         <tr>
@@ -148,7 +112,7 @@ function AccountList() {
         {accountsList.length === 0 ? (
           <tr>
             <td colSpan={7} className="text-center">
-              Không có tài khoản nào
+              Không có tài khoản Admin nào
             </td>
           </tr>
         ) : (
@@ -176,20 +140,15 @@ function AccountList() {
                   : "-"}
               </td>
               <td>
-                {/* ADMIN: có cả Sửa và Xóa */}
-                {isAdmin && (
-                  <button
-                    className="btn btn-edit me-2"
-                    onClick={() => handleEdit(acc._id)}
-                  >
-                    Sửa
-                  </button>
-                )}
-
-                {/* CẢ ADMIN VÀ USER: đều có nút Xóa */}
+                <button
+                  className="btn btn-edit me-2"
+                  onClick={() => handleEdit(acc._id)}
+                >
+                  Sửa
+                </button>
                 <button
                   className="btn btn-delete"
-                  onClick={() => handleDelete(acc._id, isAdmin)}
+                  onClick={() => handleDelete(acc._id)}
                 >
                   Xóa
                 </button>
@@ -201,29 +160,69 @@ function AccountList() {
     </table>
   );
 
-  // ========================================
-  // LOADING & ERROR STATES
-  // ========================================
+  const renderUserTable = (accountsList, startIndex) => (
+    <table className="accounts__table accounts__table--user">
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>Hình ảnh</th>
+          <th>Họ và tên</th>
+          <th>Email</th>
+          <th>Số điện thoại</th>
+          <th>Vai trò</th>
+        </tr>
+      </thead>
+      <tbody>
+        {accountsList.length === 0 ? (
+          <tr>
+            <td colSpan={6} className="text-center">
+              Không có tài khoản User nào
+            </td>
+          </tr>
+        ) : (
+          accountsList.map((acc, i) => (
+            <tr key={acc._id}>
+              <td>{startIndex + i + 1}</td>
+              <td>
+                {acc.avatar ? (
+                  <img
+                    src={acc.avatar}
+                    alt="avatar"
+                    className="accounts__image"
+                  />
+                ) : (
+                  <div className="accounts__image placeholder" />
+                )}
+              </td>
+              <td>{acc.fullName}</td>
+              <td>{acc.email}</td>
+              <td>{acc.phone || "-"}</td>
+              <td>
+                {acc.role_Id
+                  ? acc.role_Id.charAt(0).toUpperCase() +
+                  acc.role_Id.slice(1).toLowerCase()
+                  : "User"}
+              </td>
+            </tr>
+          ))
+        )}
+      </tbody>
+    </table>
+  );
+
   if (loading) return <p className="text-center">Đang tải danh sách...</p>;
   if (error) return <p className="text-danger text-center">{error}</p>;
 
-  // ========================================
-  // RENDER MAIN UI
-  // ========================================
   return (
     <div className="accounts">
       <div className="container">
         <h1>Quản lý tài khoản</h1>
-
-        {/* ========================================
-                    PHẦN ADMIN
-                ======================================== */}
         <div className="account-section admin-section">
           <h2 className="section-title">
             Tài khoản Admin ({adminAccounts.length})
           </h2>
           <div className="table-wrapper">
-            {renderTable(currentAdminAccounts, startAdminIndex, true)}
+            {renderAdminTable(currentAdminAccounts, startAdminIndex)}
           </div>
 
           {totalAdminPages > 1 && (
@@ -234,16 +233,12 @@ function AccountList() {
             />
           )}
         </div>
-
-        {/* ========================================
-                    PHẦN USER
-                ======================================== */}
         <div className="account-section user-section">
           <h2 className="section-title">
             Tài khoản User ({userAccounts.length})
           </h2>
           <div className="table-wrapper">
-            {renderTable(currentUserAccounts, startUserIndex, false)}
+            {renderUserTable(currentUserAccounts, startUserIndex)}
           </div>
 
           {totalUserPages > 1 && (
@@ -254,10 +249,6 @@ function AccountList() {
             />
           )}
         </div>
-
-        {/* ========================================
-                    NÚT THÊM
-                ======================================== */}
         <div className="add-button-wrapper">
           <button
             className="btn-add-account"

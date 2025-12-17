@@ -4,7 +4,7 @@ import userService from "./userService";
 const ADMIN_ACCOUNTS_URL = "http://localhost:3000/api/admin/accounts";
 const USER_ACCOUNTS_URL = "http://localhost:3000/api/client/user";
 
-// Tạo axios instance với interceptor
+
 const createApiInstance = (baseURL) => {
     const api = axios.create({ baseURL });
 
@@ -26,15 +26,13 @@ const adminApi = createApiInstance(ADMIN_ACCOUNTS_URL);
 const userApi = createApiInstance(USER_ACCOUNTS_URL);
 
 const accountService = {
-    // Tạo tài khoản
+
     createAccount: (data) =>
         adminApi.post("", data, {
             headers: { "Content-Type": "multipart/form-data" },
         }),
 
-    // ========================================
-    // HÀM MỚI: LẤY ADMIN ACCOUNTS
-    // ========================================
+
     getAdminAccounts: async () => {
         try {
             const response = await adminApi.get("");
@@ -47,7 +45,6 @@ const accountService = {
                 accounts = data.accounts;
             }
 
-            // Lọc bỏ tài khoản đã xóa và chỉ lấy role Admin
             return accounts.filter(
                 (acc) => !acc.deleted && acc.role_Id?.toLowerCase() === 'admin'
             );
@@ -57,9 +54,7 @@ const accountService = {
         }
     },
 
-    // ========================================
-    // HÀM MỚI: LẤY USER ACCOUNTS
-    // ========================================
+
     getUserAccounts: async () => {
         try {
             const response = await userApi.get("/all");
@@ -74,7 +69,6 @@ const accountService = {
                 accounts = data.accounts;
             }
 
-            // Lọc bỏ tài khoản đã xóa và chỉ lấy role User
             return accounts.filter(
                 (acc) => !acc.deleted &&
                     (!acc.role_Id || acc.role_Id?.toLowerCase() === 'user')
@@ -85,18 +79,16 @@ const accountService = {
         }
     },
 
-    // ========================================
-    // HÀM GỘP: LẤY TẤT CẢ ACCOUNTS (dùng 2 hàm trên)
-    // ========================================
+
     getAccounts: async () => {
         try {
-            // Gọi song song 2 hàm
+
             const [adminAccounts, userAccounts] = await Promise.all([
                 accountService.getAdminAccounts(),
                 accountService.getUserAccounts()
             ]);
 
-            // Gộp 2 mảng lại
+
             return [...adminAccounts, ...userAccounts];
         } catch (err) {
             console.error("Lỗi getAccounts:", err);
@@ -104,13 +96,13 @@ const accountService = {
         }
     },
 
-    // Lấy account theo ID (thử cả 2 API)
+
     getAccountById: async (id) => {
         try {
-            // Thử admin API trước
+
             return await adminApi.get(`/${id}`);
         } catch (adminErr) {
-            // Nếu không có trong admin, thử user API
+
             try {
                 return await userApi.get(`/${id}`);
             } catch (userErr) {
@@ -119,14 +111,13 @@ const accountService = {
         }
     },
 
-    // Cập nhật account (tự động chọn API dựa vào role)
+
     updateAccount: async (id, data) => {
         try {
-            // Lấy thông tin account để biết role
+
             const accountInfo = await accountService.getAccountById(id);
             const role = accountInfo.data?.account?.role_Id || accountInfo.data?.role_Id;
 
-            // Chọn API phù hợp
             const api = role?.toLowerCase() === 'admin' ? adminApi : userApi;
 
             return await api.put(`/${id}`, data, {
@@ -138,14 +129,13 @@ const accountService = {
         }
     },
 
-    // Xóa account (tự động chọn API dựa vào role)
+
     deleteAccount: async (id) => {
         try {
-            // Lấy thông tin account để biết role
+
             const accountInfo = await accountService.getAccountById(id);
             const role = accountInfo.data?.account?.role_Id || accountInfo.data?.role_Id;
 
-            // Chọn API phù hợp
             const api = role?.toLowerCase() === 'admin' ? adminApi : userApi;
 
             return await api.delete(`/${id}`);

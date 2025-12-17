@@ -134,12 +134,9 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
-// ========================================
-// HÀM MỚI: LẤY TẤT CẢ USER
-// ========================================
 const getAllUsers = async (req, res) => {
   try {
-    // Lấy tất cả user, không bao gồm password
+
     const users = await User.find({ deleted: false }).select("-password");
 
     res.status(200).json({
@@ -151,7 +148,7 @@ const getAllUsers = async (req, res) => {
         fullName: user.fullName,
         phone: user.phone,
         avatar: user.avatar,
-        role_Id: user.role_Id || "User", // Mặc định là User
+        role_Id: user.role_Id || "User",
         createdAt: user.createdAt,
         updatedAt: user.updatedAt
       }))
@@ -166,14 +163,12 @@ const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Tìm user theo ID, không bao gồm password
     const user = await User.findById(id).select("-password");
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Kiểm tra nếu user đã bị xóa (soft delete)
     if (user.deleted) {
       return res.status(404).json({ error: "User has been deleted" });
     }
@@ -196,7 +191,6 @@ const getUserById = async (req, res) => {
   } catch (error) {
     console.error("Error in getUserById:", error);
 
-    // Xử lý lỗi ID không hợp lệ
     if (error.kind === "ObjectId") {
       return res.status(400).json({ error: "Invalid user ID format" });
     }
@@ -211,6 +205,6 @@ module.exports = {
   logoutUser,
   getUserProfile,
   updateUserProfile,
-  getAllUsers,      // Export hàm mới
-  getUserById,      // Export hàm mới
+  getAllUsers,
+  getUserById,
 };
