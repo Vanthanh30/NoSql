@@ -11,19 +11,13 @@ function EditAccount() {
         email: "",
         password: "", // để trống = không đổi
         phone: "",
-        role_Id: "User",
+        role_Id: "Admin", // ← KHÓA CỨNG: Luôn là Admin
         avatar: null
     });
     const [preview, setPreview] = useState("");
     const [error, setError] = useState("");
 
-    // HÀM CHUẨN HÓA ROLE_ID: admin → Admin, ADMIN → Admin
-    const formatRole = (role) => {
-        if (!role) return "User";
-        return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase();
-    };
-
-    // LOAD DỮ LIỆU TỪ API → CHUẨN HÓA role_Id Ở ĐÂY
+    // LOAD DỮ LIỆU TỪ API
     useEffect(() => {
         const loadAccount = async () => {
             try {
@@ -35,7 +29,7 @@ function EditAccount() {
                     email: acc.email || "",
                     password: "", // luôn để trống
                     phone: acc.phone || "",
-                    role_Id: formatRole(acc.role_Id), // CHUẨN HÓA Ở ĐÂY
+                    role_Id: "Admin", // ← KHÓA CỨNG: Luôn là Admin
                     avatar: null
                 });
 
@@ -99,7 +93,7 @@ function EditAccount() {
                         </div>
 
                         {/* Email */}
-                        <div class="form-group">
+                        <div className="form-group">
                             <label>Email *</label>
                             <input
                                 type="email"
@@ -133,20 +127,20 @@ function EditAccount() {
                             />
                         </div>
 
-                        {/* VAI TRÒ - SELECT */}
+                        {/* VAI TRÒ - HIỂN THỊ CỐ ĐỊNH */}
                         <div className="form-group">
                             <label>Vai trò *</label>
-                            <select
-                                name="role_Id"
-                                value={formData.role_Id}
-                                onChange={handleChange}
-                                required
-                            >
-                                <option value="">-- Chọn vai trò --</option>
-                                <option value="Admin">Admin</option>
-                                <option value="User">User</option>
-                                <option value="Editor">Editor</option>
-                            </select>
+                            <input
+                                type="text"
+                                value="Admin"
+                                disabled
+                                className="form-control"
+                                style={{
+                                    backgroundColor: '#e9ecef',
+                                    cursor: 'not-allowed',
+                                    color: '#495057'
+                                }}
+                            />
                         </div>
 
                         {/* Avatar */}

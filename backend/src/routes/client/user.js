@@ -14,4 +14,6 @@ router.put(
   upload.single("avatar"),
   userController.updateUserProfile
 );
+router.get("/all", authClient, userController.getAllUsers);
+router.get("/:id", authClient, userController.getUserById);
 module.exports = router;

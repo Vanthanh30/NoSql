@@ -10,7 +10,7 @@ function AddAccount() {
         email: "",
         password: "",
         phone: "",
-        role_Id: "User", // Mặc định
+        role_Id: "Admin", // ← KHÓA CỨNG: Luôn là Admin
         avatar: null
     });
     const [preview, setPreview] = useState(null);
@@ -105,21 +105,20 @@ function AddAccount() {
                             />
                         </div>
 
-                        {/* VAI TRÒ - SELECT Ở ĐÂY */}
+                        {/* VAI TRÒ - HIỂN THỊ CỐ ĐỊNH */}
                         <div className="form-group">
                             <label>Vai trò *</label>
-                            <select
-                                name="role_Id"
-                                value={formData.role_Id}
-                                onChange={handleChange}
-                                required
+                            <input
+                                type="text"
+                                value="Admin"
+                                disabled
                                 className="form-control"
-                            >
-                                <option value="">-- Chọn vai trò --</option>
-                                <option value="Admin">Admin</option>
-                                <option value="User">User</option>
-                                <option value="Editor">Editor</option>
-                            </select>
+                                style={{
+                                    backgroundColor: '#e9ecef',
+                                    cursor: 'not-allowed',
+                                    color: '#495057'
+                                }}
+                            />
                         </div>
 
                         {/* Avatar */}

@@ -1,6 +1,6 @@
 // src/styles/account.scss
 // ========================================
-// 1. DANH SÁCH TÀI KHOẢN - GIỮ NGUYÊN HOÀN TOÀN
+// 1. DANH SÁCH TÀI KHOẢN - CẬP NHẬT MỚI
 // ========================================
 .accounts {
     padding: 30px 0;
@@ -30,6 +30,73 @@
             display: block;
             margin: 14px auto 0;
             border-radius: 2px;
+        }
+    }
+
+    // ========================================
+    // PHẦN RIÊNG CHO ADMIN VÀ USER SECTIONS
+    // ========================================
+    .account-section {
+        margin-bottom: 40px;
+        background: #fff;
+        border-radius: 12px;
+        padding: 28px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            padding-left: 16px;
+            position: relative;
+
+            // Icon cho từng loại
+            &::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 5px;
+                height: 32px;
+                border-radius: 3px;
+            }
+        }
+
+        // Styling riêng cho Admin section
+        &.admin-section {
+            border-left: 4px solid #e74c3c;
+
+            .section-title {
+                color: #e74c3c;
+                border-bottom: 3px solid #e74c3c;
+
+                &::before {
+                    background: linear-gradient(180deg, #e74c3c 0%, #c0392b 100%);
+                }
+            }
+        }
+
+        // Styling riêng cho User section  
+        &.user-section {
+            border-left: 4px solid #3498db;
+
+            .section-title {
+                color: #3498db;
+                border-bottom: 3px solid #3498db;
+
+                &::before {
+                    background: linear-gradient(180deg, #3498db 0%, #2980b9 100%);
+                }
+            }
         }
     }
 
@@ -159,6 +226,10 @@
                 }
             }
         }
+
+        .me-2 {
+            margin-right: 8px;
+        }
     }
 
     .pagination-wrapper {
@@ -218,6 +289,7 @@
         border-radius: 8px;
         border: none;
         transition: all 0.3s ease;
+        cursor: pointer;
 
         a {
             text-decoration: none;
@@ -227,12 +299,24 @@
         &:hover {
             background-color: #157347;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
         }
+    }
+
+    // Text utilities
+    .text-center {
+        text-align: center;
+    }
+
+    .text-danger {
+        color: #dc3545;
+        text-align: center;
+        font-weight: 500;
     }
 }
 
 // ========================================
-// 2. FORM THÊM / SỬA – ĐỒNG BỘ VỚI CODE INDEX
+// 2. FORM THÊM / SỬA – ĐỒNG BỘ VỚI CODE
 // ========================================
 .add-account,
 .edit-account {
@@ -277,6 +361,11 @@
             grid-template-columns: 1fr 1fr;
             gap: 22px 30px;
 
+            .form-group {
+                display: flex;
+                flex-direction: column;
+            }
+
             label {
                 display: block;
                 font-size: 14.5px;
@@ -303,6 +392,10 @@
                 &::placeholder {
                     color: #aaa;
                 }
+            }
+
+            select.form-control {
+                cursor: pointer;
             }
 
             input[type="file"] {
@@ -353,7 +446,7 @@
                 display: flex;
                 justify-content: flex-start;
                 align-items: center;
-                gap: 16px; // TÁCH RỘNG 32PX
+                gap: 16px;
                 margin-top: 40px;
 
                 .btn {
@@ -437,6 +530,9 @@
     }
 }
 
+// ========================================
+// 3. RESPONSIVE - LAPTOP, TABLET, MOBILE
+// ========================================
 
 /* Laptop 14-15 inch và nhỏ hơn */
 @media (max-width: 1366px) {
@@ -451,6 +547,21 @@
         h1 {
             font-size: 24px;
             margin-bottom: 20px;
+        }
+
+        .account-section {
+            padding: 22px;
+            margin-bottom: 30px;
+
+            .section-title {
+                font-size: 20px;
+                padding-left: 14px;
+
+                &::before {
+                    width: 4px;
+                    height: 28px;
+                }
+            }
         }
 
         .accounts__table {
@@ -491,7 +602,6 @@
         .form-actions {
             gap: 12px;
             flex-wrap: wrap;
-            /* tránh đè nút */
         }
     }
 }
@@ -504,6 +614,21 @@
         .container {
             max-width: 98%;
             padding: 0 10px;
+        }
+
+        .account-section {
+            padding: 18px;
+            margin-bottom: 25px;
+
+            .section-title {
+                font-size: 18px;
+                padding-left: 12px;
+
+                &::before {
+                    width: 4px;
+                    height: 24px;
+                }
+            }
         }
 
         /* Cho phép cuộn ngang khi bảng quá rộng */
@@ -580,8 +705,27 @@
             margin-bottom: 14px;
         }
 
+        .account-section {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+
+            .section-title {
+                font-size: 16px;
+                padding-left: 10px;
+                margin-bottom: 15px;
+                padding-bottom: 10px;
+
+                &::before {
+                    width: 3px;
+                    height: 20px;
+                }
+            }
+        }
+
         .table-wrapper {
             overflow-x: auto;
+            border-radius: 8px;
         }
 
         .accounts__table {
