@@ -118,7 +118,7 @@ function EditCategories() {
           <label>Mô tả</label>
           <TextEditor
             value={formData.description}
-            onEditorChange={handleEditorChange}
+            onChange={handleEditorChange}
           />
         </div>
 

@@ -1,5 +1,6 @@
 .categories {
   padding: 30px 0;
+  min-height: calc(100vh - 200px);
 
   &__title {
     margin-bottom: 25px;
@@ -101,9 +102,14 @@
     }
   }
 
+  &__button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+    margin-bottom: 40px;
+  }
+
   &__btn-add {
-    float: right;
-    margin-top: 15px;
     padding: 10px 18px;
     font-size: 16px;
     font-weight: 600;
@@ -112,6 +118,7 @@
     border-radius: 8px;
     border: none;
     transition: all 0.3s ease;
+    cursor: pointer;
 
     a {
       text-decoration: none;
@@ -121,6 +128,7 @@
     &:hover {
       background-color: #157347;
       transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
     }
   }
 }
@@ -308,5 +316,19 @@
   &:hover {
     background-color: #157347;
     transform: translateY(-2px);
+  }
+}
+
+@media (max-width: 768px) {
+  .categories {
+    &__button-wrapper {
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    &__btn-add {
+      width: 100%;
+      max-width: 300px;
+    }
   }
 }

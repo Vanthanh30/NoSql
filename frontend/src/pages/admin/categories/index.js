@@ -112,11 +112,10 @@ function CategoriesPage() {
                   <td>{category.title}</td>
                   <td>
                     <span
-                      className={`badge ${
-                        category.status === "active"
+                      className={`badge ${category.status === "active"
                           ? "bg-success"
                           : "bg-danger"
-                      }`}
+                        }`}
                     >
                       {category.status === "active"
                         ? "Hoạt động"
@@ -149,9 +148,11 @@ function CategoriesPage() {
           onPageChange={setCurrentPage}
         />
 
-        <button className="categories__btn-add">
-          <a href="/admin/categories/create">Thêm danh mục</a>
-        </button>
+        <div className="categories__button-wrapper">
+          <button className="categories__btn-add">
+            <a href="/admin/categories/create">Thêm danh mục</a>
+          </button>
+        </div>
       </div>
     </div>
   );
