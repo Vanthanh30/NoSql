@@ -14,29 +14,36 @@ function EditCourse() {
     // --- Các hàm cập nhật dữ liệu gọi API ---
     const updateCourseField = async (field, value) => {
         try {
-            const payload = { [field]: value };
-            await courseService.update(id, payload);
+            const formData = new FormData();
+            formData.append(field, value);
+            await courseService.update(id, formData);
         } catch (error) {
-            alert(`Lỗi cập nhật ${field}: ` + (error.response?.data?.error || error.message));
-            console.error(error);
+            console.error(`Lỗi cập nhật ${field}:`, error.response?.data);
         }
     };
 
     const updateCourseTime = async (timeData) => {
         try {
-            await courseService.update(id, { time: timeData });
+            const formData = new FormData();
+            // Gửi JSON string, không phải object
+            formData.append('time', JSON.stringify(timeData));
+            await courseService.update(id, formData);
         } catch (error) {
-            alert('Lỗi cập nhật thời gian: ' + (error.response?.data?.error || error.message));
-            console.error(error);
+            console.error('Lỗi cập nhật thời gian:', error.response?.data);
         }
     };
 
     const updateCoursePricing = async (pricingData) => {
         try {
-            await courseService.update(id, { pricing: pricingData });
+            const formData = new FormData();
+            // Gửi JSON string, không phải object
+            formData.append('pricing', JSON.stringify({
+                price: Number(pricingData.price) || 0,
+                discount: Number(pricingData.discount) || 0
+            }));
+            await courseService.update(id, formData);
         } catch (error) {
-            alert('Lỗi cập nhật học phí: ' + (error.response?.data?.error || error.message));
-            console.error(error);
+            console.error('Lỗi cập nhật học phí:', error.response?.data);
         }
     };
 
