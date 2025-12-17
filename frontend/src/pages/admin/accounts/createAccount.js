@@ -1,4 +1,4 @@
-// src/components/admin/accounts/AddAccount.jsx
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import accountService from "../../../services/admin/accountService";
@@ -10,7 +10,7 @@ function AddAccount() {
         email: "",
         password: "",
         phone: "",
-        role_Id: "Admin", // ← KHÓA CỨNG: Luôn là Admin
+        role_Id: "Admin",
         avatar: null
     });
     const [preview, setPreview] = useState(null);
@@ -54,7 +54,6 @@ function AddAccount() {
                     <h1>Thêm tài khoản</h1>
 
                     <form onSubmit={handleSubmit}>
-                        {/* Họ tên */}
                         <div className="form-group">
                             <label>Họ tên *</label>
                             <input
@@ -102,7 +101,6 @@ function AddAccount() {
                             />
                         </div>
 
-                        {/* VAI TRÒ - HIỂN THỊ CỐ ĐỊNH */}
                         <div className="form-group">
                             <label>Vai trò *</label>
                             <input

@@ -1,4 +1,4 @@
-// src/components/admin/accounts/EditAccount.jsx
+
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import accountService from "../../../services/admin/accountService";
@@ -9,15 +9,14 @@ function EditAccount() {
     const [formData, setFormData] = useState({
         fullName: "",
         email: "",
-        password: "", // để trống = không đổi
+        password: "",
         phone: "",
-        role_Id: "Admin", // ← KHÓA CỨNG: Luôn là Admin
+        role_Id: "Admin",
         avatar: null
     });
     const [preview, setPreview] = useState("");
     const [error, setError] = useState("");
 
-    // LOAD DỮ LIỆU TỪ API
     useEffect(() => {
         const loadAccount = async () => {
             try {
@@ -27,9 +26,9 @@ function EditAccount() {
                 setFormData({
                     fullName: acc.fullName || "",
                     email: acc.email || "",
-                    password: "", // luôn để trống
+                    password: "",
                     phone: acc.phone || "",
-                    role_Id: "Admin", // ← KHÓA CỨNG: Luôn là Admin
+                    role_Id: "Admin",
                     avatar: null
                 });
 
@@ -91,7 +90,6 @@ function EditAccount() {
                             />
                         </div>
 
-                        {/* Email */}
                         <div className="form-group">
                             <label>Email *</label>
                             <input
@@ -124,7 +122,6 @@ function EditAccount() {
                             />
                         </div>
 
-                        {/* VAI TRÒ - HIỂN THỊ CỐ ĐỊNH */}
                         <div className="form-group">
                             <label>Vai trò *</label>
                             <input
