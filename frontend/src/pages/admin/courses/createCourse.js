@@ -41,7 +41,6 @@ function CreateCourse() {
     };
     fetchCategories();
   }, []);
-  // --- Module / Lesson logic ---
   const addModule = () => {
     const newModule = {
       id: Date.now(),
@@ -126,9 +125,39 @@ function CreateCourse() {
       )
     );
 
-  // --- Input change handler ---
+  const getTodayDate = () => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const dd = String(today.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  };
+
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
+
+    if (name === "startDate") {
+      const today = getTodayDate();
+      if (value < today) {
+        alert("Ngày bắt đầu không được chọn ngày trong quá khứ!");
+        return;
+      }
+      if (courseInfo.endDate && value > courseInfo.endDate) {
+        alert("Ngày bắt đầu không được trễ hơn ngày kết thúc!");
+        return;
+      }
+    }
+
+    if (name === "endDate") {
+      if (!courseInfo.startDate) {
+        alert("Vui lòng chọn ngày bắt đầu trước!");
+        return;
+      }
+      if (value < courseInfo.startDate) {
+        alert("Ngày kết thúc không được sớm hơn ngày bắt đầu!");
+        return;
+      }
+    }
 
     if (files) {
       setCourseInfo({ ...courseInfo, [name]: files[0] });
@@ -142,18 +171,14 @@ function CreateCourse() {
     }
   };
 
-  // --- Submit form ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const chaptersData = [];
 
-      // 1️⃣ Tạo từng lesson và upload video, rồi tạo chapter
       for (const module of modules) {
         const lessonIds = [];
         for (const lesson of module.lessons) {
-          // Nếu muốn, có thể gọi lessonAPI.create riêng
-          // hoặc backend không cần tạo lesson riêng, tùy nhu cầu
           if (lesson.videoFile) {
             const lessonForm = new FormData();
             lessonForm.append("title", lesson.title);
@@ -161,13 +186,11 @@ function CreateCourse() {
             const resLesson = await lessonAPI.create(lessonForm);
             lessonIds.push(resLesson.data.lesson._id);
           } else {
-            // Nếu không có video, vẫn tạo lesson
             const resLesson = await lessonAPI.create({ title: lesson.title });
             lessonIds.push(resLesson.data.lesson._id);
           }
         }
 
-        // Tạo chapter với các lessonId
         const chapterRes = await chapterAPI.create({
           title: module.title,
           lessons: lessonIds,
@@ -175,16 +198,14 @@ function CreateCourse() {
         chaptersData.push(chapterRes.data.chapter._id);
       }
 
-      // 2️⃣ Tạo FormData cho khóa học
       const formData = new FormData();
       formData.append("title", courseInfo.title);
       formData.append("category", courseInfo.category);
       formData.append("level", courseInfo.level);
       formData.append("language", courseInfo.language);
-      formData.append("instructor", courseInfo.teacher); // sửa từ instruc
+      formData.append("instructor", courseInfo.teacher);
       formData.append("status", courseInfo.status);
 
-      // Gửi object time và pricing dưới dạng JSON string
       formData.append(
         "time",
         JSON.stringify({
@@ -203,10 +224,8 @@ function CreateCourse() {
 
       formData.append("description", courseInfo.description);
 
-      // chapters: mảng ID
       formData.append("chapters", JSON.stringify(chaptersData));
 
-      // Media files
       if (courseInfo.thumbnail)
         formData.append("imageUrl", courseInfo.thumbnail);
       if (courseInfo.introVideo)
@@ -215,7 +234,7 @@ function CreateCourse() {
       const token = userService.getToken();
       if (token) {
         const decoded = jwtDecode(token);
-        const userId = decoded.id || decoded._id; // tùy payload token
+        const userId = decoded.id || decoded._id;
         if (userId) {
           formData.append("createBy", userId);
         }
@@ -246,7 +265,6 @@ function CreateCourse() {
       </div>
 
       <form id="add-course-form" className="add-course__form">
-        {/* Left column */}
         <div className="add-course__left">
           <div className="form-group">
             <label htmlFor="title">Tên khóa học</label>
@@ -312,7 +330,6 @@ function CreateCourse() {
             />
           </div>
 
-          {/* Modules */}
           <div className="panel">
             <div className="panel__title">Nội dung khóa học</div>
             <div className="modules">
@@ -444,7 +461,6 @@ function CreateCourse() {
           </div>
         </div>
 
-        {/* Right column */}
         <div className="add-course__right">
           <div className="form-group">
             <label>Giảng viên</label>
