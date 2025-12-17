@@ -44,9 +44,9 @@ const Posts = () => {
     selectedTag === "Tất cả"
       ? articles
       : articles.filter(
-        (article) =>
-          article.category && article.category.title === selectedTag
-      );
+          (article) =>
+            article.category && article.category.title === selectedTag
+        );
 
   const totalPages = Math.ceil(filteredArticles.length / postsPerPage);
 
@@ -158,7 +158,7 @@ const Posts = () => {
                 key={article._id}
                 className="post-item"
                 onClick={() => navigate(`/article/${article._id}`)}
-                style={{ cursor: 'pointer' }}
+                style={{ cursor: "pointer" }}
               >
                 <div className="post-image">
                   <img
@@ -191,10 +191,6 @@ const Posts = () => {
                   <div className="post-footer">
                     <span className="tag">
                       {article.category?.title || "Chưa phân loại"}
-                    </span>
-                    {/* ✅ Tính thời gian đọc chính xác từ plain text */}
-                    <span className="read-time">
-                      {calculateReadingTime(article.content)} phút đọc
                     </span>
                   </div>
                 </div>

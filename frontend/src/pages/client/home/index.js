@@ -59,7 +59,11 @@ const HomePage = () => {
       try {
         setLoading(true);
         const data = await courseService.getAllCourses();
-        setCourses(data);
+        const activeCourses = data.filter(
+          (course) => course.status === "Hoạt động"
+        );
+
+        setCourses(activeCourses);
       } catch (error) {
         console.error(" Error loading courses:", error);
       } finally {
@@ -125,8 +129,7 @@ const HomePage = () => {
   const getAuthorDisplay = (article) => {
     const authorName =
       article.createdBy?.account_id?.fullName || "Tác giả ẩn danh";
-    const readTime = `${Math.floor(Math.random() * 5) + 2} phút đọc`;
-    return `${authorName} • ${readTime}`;
+    return `${authorName} `;
   };
 
   return (
@@ -144,8 +147,9 @@ const HomePage = () => {
           {[english, photo, math, develop].map((img, i) => (
             <div
               key={i}
-              className={`hero-floating hero-${["english", "photo", "math", "develop"][i]
-                }`}
+              className={`hero-floating hero-${
+                ["english", "photo", "math", "develop"][i]
+              }`}
             >
               <img src={img} alt="" />
             </div>

@@ -197,10 +197,6 @@ const PostDetail = () => {
           )}
           <div>
             <h4>{getAuthorName()}</h4>
-            <span>
-              {formatDate(article.createdAt)} •{" "}
-              {calculateReadingTime(article.content)} phút đọc
-            </span>
           </div>
         </div>
       </div>

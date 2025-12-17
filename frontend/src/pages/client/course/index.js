@@ -88,14 +88,17 @@ const CoursePage = () => {
   };
 
   const handleEnrollClick = () => {
+    const price = getFinalPrice();
     const isLoggedIn = localStorage.getItem("token");
 
-    if (isLoggedIn) {
+    if (price === 0) {
       navigate(`/learn/${id}`);
-    } else {
-      alert("Vui lòng đăng nhập để đăng ký khóa học!");
-
+      return;
+    }
+    if (!isLoggedIn) {
+      alert("Khóa học này có phí. Vui lòng đăng nhập để tiếp tục!");
       navigate("/login", { state: { from: window.location.pathname } });
+      return;
     }
   };
 
